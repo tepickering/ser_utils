@@ -1,8 +1,11 @@
 import sys
-import subprocess
 import argparse
-
 import logging
+
+from pathlib import Path
+
+from fass.indi import INDI_Camera
+
 
 log = logging.getLogger('SER video capture')
 log.setLevel(logging.INFO)
@@ -14,48 +17,80 @@ ch.setFormatter(formatter)
 log.addHandler(ch)
 
 
-def set_prop(dev, property, key, value, host='localhost', port=7624):
-    """
-    Wrapper to use indi_setprop to set an INDI property on the server at host:port
+def main():
+    parser = argparse.ArgumentParser(description='Utility for recording videos from INDI cameras')
 
-    Arguments
-    ---------
-    dev : str
-        INDI device to be configured
+    parser.add_argument(
+        '-h', '--host',
+        metavar="<hostname>",
+        help="Hostname of INDI Server Host Computer",
+        default='localhost'
+    )
 
-    property : str
-        INDI property of device to be configured
+    parser.add_argument(
+        '-p', '--port',
+        metavar="<port>",
+        help="INDI Server Port",
+        default=7624
+    )
 
-    key : str
-        Which key of the property to configure
+    parser.add_argument(
+        '-c', '--camera',
+        metavar="<INDI camera>",
+        help="Name of INDI Camera",
+        default='CCD Simulator'
+    )
 
-    value : str or float
-        New value of the property key
+    parser.add_argument(
+        '-e', '--exposure',
+        metavar="<exposure time>",
+        help="Camera Exposure Time in seconds",
+        default=0.1
+    )
 
-    host : str (default: localhost)
-        Hostname of the INDI server host computer
+    parser.add_argument(
+        '-n', '--nframes',
+        metavar="<N frames>",
+        help="Number of Frames to Capture",
+        default=100
+    )
 
-    port : int (default: 7624)
-        Port the INDI server is using
-    """
-    cmd = ['indi_setprop', '-h', host, '-p', str(port)]
+    parser.add_argument(
+        '--savedir',
+        metavar="<save directory>",
+        help="Directory to Save to"
+    )
 
-    indi_str = f"{dev}.{property}.{key}={value}"
+    parser.add_argument(
+        '--filename',
+        metavar="<filename>",
+        help="Filename to Save Video to"
+    )
 
-    cmd.append(indi_str)
+    parser.add_argument(
+        '--ser',
+        action='store_true',
+        help="Use SER Video Recorder"
+    )
 
-    try:
-        p = subprocess.run(cmd, check=True, capture_output=True)
-    except Exception as e:
-        log.error(f"Command failed: {e}")
-        return e
+    parser.add_argument(
+        '--ogv',
+        action='store_true',
+        help="Use OGV Video Recorder"
+    )
 
-    log.info(f"Set {indi_str} on {host}:{port}")
+    parser.add_argument(
+        '--raw',
+        action='store_true',
+        help="Use RAW Video Encoder"
+    )
 
-    if len(p.stdout) > 0:
-        log.info(p.stdout)
-    if len(p.stderr) > 0:
-        log.error(p.stderr)
+    parser.add_argument(
+        '--mjpeg',
+        action='store_true',
+        help="Use MJPEG Video Encoder"
+    )
 
-    return p
+    args = parser.parse_args()
 
+    cam = INDI_Camera(args.camera, host=args.host, port=args.port)
