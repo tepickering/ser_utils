@@ -21,14 +21,14 @@ def main():
     parser = argparse.ArgumentParser(description='Utility for recording videos from INDI cameras')
 
     parser.add_argument(
-        '-h', '--host',
+        '--host',
         metavar="<hostname>",
         help="Hostname of INDI Server Host Computer",
         default='localhost'
     )
 
     parser.add_argument(
-        '-p', '--port',
+        '--port',
         metavar="<port>",
         help="INDI Server Port",
         default=7624
@@ -94,3 +94,7 @@ def main():
     args = parser.parse_args()
 
     cam = INDI_Camera(args.camera, host=args.host, port=args.port)
+
+
+if __name__ == "__main__":
+    main()
