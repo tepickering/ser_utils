@@ -179,6 +179,32 @@ class INDI_Camera(INDI_Device):
         self.set_prop("CCD_STREAM_RECORDER", "SER", "Off")
         self.set_prop("CCD_STREAM_RECORDER", "OGV", "On")
 
+    def mjpeg_mode(self):
+        """
+        Configure camera to encode video using MJPEG
+        """
+        self.set_prop("CCD_STREAM_ENCODER", "MJPEG", "On")
+        self.set_prop("CCD_STREAM_ENCODER", "RAW", "Off")
+
+    def raw_mode(self):
+        """
+        Configure camera to use raw video encoding
+        """
+        self.set_prop("CCD_STREAM_ENCODER", "MJPEG", "Off")
+        self.set_prop("CCD_STREAM_ENCODER", "RAW", "On")
+
+    def set_filename(self, filename):
+        """
+        Configure filename for saved video
+        """
+        self.set_prop("RECORD_FILE", "RECORD_FILE_NAME", filename)
+
+    def set_savedir(self, dirname):
+        """
+        Configure directory to save video files to
+        """
+        self.set_prop("RECORD_FILE", "RECORD_FILE_DIR", dirname)
+
     def set_stream_ROI(self, x, y, width, height):
         """
         Configure Region of Interest (ROI) to stream

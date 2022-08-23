@@ -48,11 +48,17 @@ def main():
         default=0.1
     )
 
-    parser.add_argument(
+    capture_group = parser.add_mutually_exclusive_group()
+    capture_group.add_argument(
         '-n', '--nframes',
-        metavar="<N frames>",
+        metavar="<record N frames>",
         help="Number of Frames to Capture",
-        default=100
+    )
+
+    capture_group.add_argument(
+        '-d', '--duration',
+        metavar="<record N seconds>",
+        help="Duration to capture in seconds",
     )
 
     parser.add_argument(
@@ -67,25 +73,27 @@ def main():
         help="Filename to Save Video to"
     )
 
-    parser.add_argument(
+    record_group = parser.add_mutually_exclusive_group()
+    record_group.add_argument(
         '--ser',
         action='store_true',
         help="Use SER Video Recorder"
     )
 
-    parser.add_argument(
+    record_group.add_argument(
         '--ogv',
         action='store_true',
         help="Use OGV Video Recorder"
     )
 
-    parser.add_argument(
+    encoder_group = parser.add_mutually_exclusive_group()
+    encoder_group.add_argument(
         '--raw',
         action='store_true',
         help="Use RAW Video Encoder"
     )
 
-    parser.add_argument(
+    encoder_group.add_argument(
         '--mjpeg',
         action='store_true',
         help="Use MJPEG Video Encoder"
@@ -95,6 +103,26 @@ def main():
 
     cam = INDI_Camera(args.camera, host=args.host, port=args.port)
 
+    if args.mjpeg:
+        cam.mjpeg_mode()
+
+    if args.raw:
+        cam.raw_mode()
+
+    if args.ogv:
+        cam.ogv_mode()
+
+    if args.ser:
+        cam.ser_mode()
+
+    cam.stream_exposure(args.exposure)
+
+    if args.nframes:
+        cam.record_frames(args.nframes, savedir=args.savedir, filename=args.filename)
+    elif args.duration:
+        cam.record_duration(args.duration, savedir=args.savedir, filename=args.filename)
+    else:
+        raise Exception("Must specify whether to record number of frames or duration of time.")
 
 if __name__ == "__main__":
     main()
