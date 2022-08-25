@@ -4,6 +4,8 @@ import logging
 
 from pathlib import Path
 
+from astropy.time import Time
+
 from fass.indi import INDI_Camera
 
 
@@ -102,6 +104,11 @@ def main():
     args = parser.parse_args()
 
     cam = INDI_Camera(args.camera, host=args.host, port=args.port)
+
+    target = cam.get_prop("FITS_HEADER", "FITS_OBJECT")
+
+    if args.filename is None:
+        args.filename = f"{Time.now().strftime('%Y-%m-%dZ%H-%M-%S')}_{target}"
 
     if args.mjpeg:
         cam.mjpeg_mode()
