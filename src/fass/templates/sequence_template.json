@@ -1,8 +1,8 @@
 {
     "SequenceQueue": {
         "@version": "2.3",
-        "CCD": "CCD Simulator",
-        "FilterWheel": "CCD Simulator",
+        "CCD": "",
+        "FilterWheel": "",
         "GuideDeviation": {
             "@enabled": "false",
             "#text": "2"
@@ -44,7 +44,7 @@
                 "@force": "false",
                 "#text": "0"
             },
-            "Filter": "Red",
+            "Filter": "",
             "Type": "Light",
             "Prefix": {
                 "RawPrefix": null,
@@ -54,8 +54,8 @@
             },
             "Count": "2",
             "Delay": "30",
-            "PostCaptureScript": "/home/tim/conda/envs/fass/bin/vid_capture",
-            "FITSDirectory": "/home/tim",
+            "PostCaptureScript": "/path/to/bin/vid_capture",
+            "FITSDirectory": "",
             "UploadMode": "0",
             "Properties": null,
             "Calibration": {
