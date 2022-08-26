@@ -55,6 +55,7 @@ def main():
         '-n', '--nframes',
         metavar="<record N frames>",
         help="Number of Frames to Capture",
+        default=10
     )
 
     capture_group.add_argument(
@@ -124,12 +125,13 @@ def main():
 
     cam.stream_exposure(args.exposure)
 
-    if args.nframes:
-        cam.record_frames(args.nframes, savedir=args.savedir, filename=args.filename)
-    elif args.duration:
+    if args.duration:
         cam.record_duration(args.duration, savedir=args.savedir, filename=args.filename)
     else:
-        raise Exception("Must specify whether to record number of frames or duration of time.")
+        cam.record_frames(args.nframes, savedir=args.savedir, filename=args.filename)
+
+    return 0
+
 
 if __name__ == "__main__":
     main()
