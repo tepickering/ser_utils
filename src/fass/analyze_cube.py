@@ -87,7 +87,7 @@ def seeing(
     return seeing.to(u.arcsec)
 
 
-def find_apertures(data, fwhm=7.0, threshold=5.0, plot=False, ap_size=5, contrast=0.05, std=None):
+def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contrast=0.05, std=None):
     """
     Use photutils.DAOStarFinder() to find and centroid star images from each DIIMM aperture.
 
@@ -111,7 +111,7 @@ def find_apertures(data, fwhm=7.0, threshold=5.0, plot=False, ap_size=5, contras
     if std is None:
         mean, median, std = stats.sigma_clipped_stats(data, sigma=3.0, maxiters=5)
 
-    daofind = photutils.DAOStarFinder(fwhm=fwhm, threshold=threshold*std, sharphi=0.95)
+    daofind = photutils.DAOStarFinder(fwhm=fwhm, threshold=threshold*std, sharphi=0.95, brightest=3)
     stars = daofind(data)
 
     if stars is None:
