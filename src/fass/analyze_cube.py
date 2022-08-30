@@ -72,7 +72,7 @@ def seeing(
     wavelength : ~astropy.units.Quantity (default: 0.5 um)
         Effective wavelength of observation
     pixel_scale : ~astropy.units.Quantity (default: 0.93 arcsec/pixel)
-        Angle subtended by each pixel
+        Angle subtended by each pixel (default is for 9 um pixels and 2000 mm focal length)
     """
     b = (baseline / aperture_diameter).decompose().value
     variance = sigma * (pixel_scale.to(u.radian).value) ** 2.0
