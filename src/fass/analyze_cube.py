@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -6,6 +8,8 @@ import astropy.units as u
 from astropy import stats, visualization
 
 import photutils
+
+from fass.ser import load_ser_file
 
 
 def moments(data, aperture_diameter=76.2 * u.mm, wavelength=0.5 * u.um, pixel_scale=0.93 * u.arcsec):
@@ -87,7 +91,7 @@ def seeing(
     return seeing.to(u.arcsec)
 
 
-def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contrast=0.05, std=None):
+def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contrast=0.05, brightest=3, std=None):
     """
     Use photutils.DAOStarFinder() to find and centroid star images from each DIIMM aperture.
 
@@ -111,7 +115,7 @@ def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contras
     if std is None:
         mean, median, std = stats.sigma_clipped_stats(data, sigma=3.0, maxiters=5)
 
-    daofind = photutils.DAOStarFinder(fwhm=fwhm, threshold=threshold*std, sharphi=0.95, brightest=3)
+    daofind = photutils.DAOStarFinder(fwhm=fwhm, threshold=threshold*std, sharphi=0.95, brightest=brightest)
     stars = daofind(data)
 
     if stars is None:
@@ -134,3 +138,64 @@ def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contras
         fig.colorbar(im)
         apertures.plot(color='red', lw=1.5, alpha=0.5, axes=ax)
     return apertures, fig
+
+
+def dimm_calc(data, aps):
+    """
+    Calculate longitudinal distance for each baseline in the 3-aperture Hartmann-DIMM mask
+
+    Arguments
+    ---------
+    data : 2D numpy.ndarray image
+        Image frame to perform centroids on
+
+    aps : ~photutils.CircularAperture
+        Aperture positions
+    """
+    ap_stats = photutils.ApertureStats(data, aps)
+    ap_pos = ap_stats.centroid
+    new_aps = photutils.CircularAperture(ap_pos, aps.r)
+    base1 = ap_pos[1] - ap_pos[0]
+    base2 = ap_pos[2] - ap_pos[0]
+    base3 = ap_pos[2] - ap_pos[1]
+    d_base1 = np.sqrt(np.dot(base1.T, base1))
+    d_base2 = np.sqrt(np.dot(base2.T, base2))
+    d_base3 = np.sqrt(np.dot(base3.T, base3))
+
+    return new_aps, [d_base1, d_base2, d_base3]
+
+
+def analyze_dimm_cube(filename, init_ave=3):
+    """
+    Analyze an SER format data cube of DIMM observations and calculate the seeing from the
+    differential motion along the longitudinal axis of each baseline. This is currently hard-coded
+    to the 3-aperture mask used at the MMTO.
+
+    Arguments
+    ---------
+    filename : str or ~pathlib.Path
+        Filename of the SER data cube to analyze
+    init_ave : int
+        Number of frames at the beginning of the cube to average to do initial aperture location
+    """
+    cube = load_ser_file(Path(filename))
+
+    nframes = cube['data'].shape[0]
+
+    apertures, fig = find_apertures(cube['data'][0:init_ave, :, :].sum(axis=0), plot=True)
+
+    baselines = []
+
+    for i in range(nframes):
+        apertures, ap_distances = dimm_calc(cube['data'][i, :, :], apertures)
+        baselines.append(ap_distances)
+
+    baselines = np.array(baselines).transpose()
+
+    seeing_vals = []
+    for baseline in baselines:
+        seeing_vals.append(seeing(baseline.std()))
+
+    ave_seeing = u.Quantity(seeing_vals).mean()
+
+    return ave_seeing, seeing_vals, apertures, fig
