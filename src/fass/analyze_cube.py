@@ -165,7 +165,7 @@ def dimm_calc(data, aps):
     return new_aps, [d_base1, d_base2, d_base3]
 
 
-def analyze_dimm_cube(filename, init_ave=3):
+def analyze_dimm_cube(filename, init_ave=3, plot=False):
     """
     Analyze an SER format data cube of DIMM observations and calculate the seeing from the
     differential motion along the longitudinal axis of each baseline. This is currently hard-coded
@@ -182,15 +182,18 @@ def analyze_dimm_cube(filename, init_ave=3):
 
     nframes = cube['data'].shape[0]
 
-    apertures, fig = find_apertures(cube['data'][0:init_ave, :, :].sum(axis=0), plot=True)
+    apertures, fig = find_apertures(cube['data'][0:init_ave, :, :].sum(axis=0), plot=plot)
 
     baselines = []
+    positions = []
 
     for i in range(nframes):
         apertures, ap_distances = dimm_calc(cube['data'][i, :, :], apertures)
         baselines.append(ap_distances)
+        positions.append(apertures.positions.mean(axis=0))
 
     baselines = np.array(baselines).transpose()
+    positions = np.array(positions).transpose()
 
     seeing_vals = []
     for baseline in baselines:
@@ -198,4 +201,4 @@ def analyze_dimm_cube(filename, init_ave=3):
 
     ave_seeing = u.Quantity(seeing_vals).mean()
 
-    return ave_seeing, seeing_vals, apertures, fig
+    return ave_seeing, seeing_vals, baselines, positions, cube['frame_times'], fig
