@@ -36,17 +36,17 @@ def moments(data, aperture_diameter=76.2 * u.mm, wavelength=0.5 * u.um, pixel_sc
     """
     total = data.sum()
     dx = pixel_scale.to(u.radian).value  # convert pixel scale to radians
-    X, Y = np.indices(data.shape)
+    Y, X = np.indices(data.shape)
     x = (X * data).sum() / total
     y = (Y * data).sum() / total
-    col = data[:, int(y)]
+    col = data[:, int(x)]
     width_x = np.sqrt(
         abs((np.arange(col.size) - y) ** 2 * col).sum() / col.sum()
-        )
-    row = data[int(x), :]
+    )
+    row = data[int(y), :]
     width_y = np.sqrt(
         abs((np.arange(row.size) - x) ** 2 * row).sum() / row.sum()
-        )
+     )
     height = data.max()
     strehl = (height / total) * (4.0 / np.pi) * (wavelength / (aperture_diameter * dx)).decompose().value ** 2
     return height, strehl, x, y, width_x, width_y
