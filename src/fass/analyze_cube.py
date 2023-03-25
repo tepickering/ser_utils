@@ -1,6 +1,11 @@
 from pathlib import Path
 
+from functools import partial
+from multiprocessing import Pool
+
 import numpy as np
+
+from skimage.transform import warp_polar
 
 import matplotlib.pyplot as plt
 
@@ -203,3 +208,134 @@ def analyze_dimm_cube(filename, init_ave=3, plot=False):
     ave_seeing = u.Quantity(seeing_vals).mean()
 
     return ave_seeing, seeing_vals, baselines, positions, cube['frame_times'], fig
+
+
+def process_fass_image(image, background_box_size=15, width_cut=0.1):
+    """
+    Process FASS image to measure background, image statistics, pupil center, and pupil width
+
+    Parameters
+    ----------
+    image : np.ndarray
+        Raw image to process
+    background_box_size : int (default: 15)
+        Size of the box to use for background estimation. Uses the four corners of the image.
+    width_cut : float (default: 0.1)
+        Fraction of the maximum pixel value to use for determining the width of the pupil.
+
+    Returns
+    -------
+    proc_image : np.ndarray
+        Background subtracted image
+    bkg_mean : float
+        Mean background value
+    bkg_median : float
+        Median background value
+    bkg_std : float
+        Standard deviation in the background regions
+    x : float
+        X coordinate of the pupil center
+    y : float
+        Y coordinate of the pupil center
+    width : float
+        Width of the pupil
+    """
+    ul = image[:background_box_size, :background_box_size]
+    ll = image[-background_box_size:, :background_box_size]
+    ur = image[:background_box_size, -background_box_size:]
+    lr = image[-background_box_size:, -background_box_size:]
+    background = np.vstack([ul, ll, ur, lr])
+    bkg_mean = np.mean(background)
+    bkg_median = np.median(background)
+    bkg_std = np.std(background)
+    proc_image = image.copy() - bkg_median
+
+    Y, X = np.indices(proc_image.shape)
+    proc_sum = proc_image.sum()
+    x = (X * proc_image).sum() / proc_sum
+    y = (Y * proc_image).sum() / proc_sum
+
+    x_sum = proc_image.sum(axis=0)
+    y_sum = proc_image.sum(axis=1)
+
+    width_x = np.where(x_sum > width_cut * x_sum.max())[0].size
+    width_y = np.where(y_sum > width_cut * y_sum.max())[0].size
+
+    width = (width_x + width_y) / 2
+    return proc_image, bkg_mean, bkg_median, bkg_std, x, y, width
+
+
+def init_fass_cube(image_cube, n_frames=500):
+    """
+    Average first n_frames of the image cube to determine the pupil size and initial pupil center position.
+
+    Parameters
+    ----------
+    image_cube : np.ndarray
+        Image cube to process
+    n_frames : int (default: 500)
+        Number of frames to average
+
+    Returns
+    -------
+    proc_image : np.ndarray
+        Background subtracted, coadded first n_frames of image_cube
+    x : float
+        X coordinate of the pupil center
+    y : float
+        Y coordinate of the pupil center
+    width : float
+        Width of the pupil
+    """
+    image = image_cube[:n_frames, :, :].mean(axis=0)
+    proc_image, _, _, _, x, y, width = process_fass_image(image)
+    return proc_image, x, y, width
+
+
+def _process_slice_func(image, x0=0, y0=0, radius=100, output_shape=(100, 100), center_gain=0.1):
+    proc_image, _, _, _, x, y, _ = process_fass_image(image)
+    x0 = x0 + center_gain * (x - x0)
+    y0 = y0 + center_gain * (y - y0)
+    unwrapped = warp_polar(
+        proc_image,
+        output_shape=output_shape,
+        center=(x0, y0),
+        radius=radius,
+        scaling='linear',
+        preserve_range=True
+    )
+    return unwrapped
+
+
+def unwrap_fass_cube(image_cube, center_gain=0.1, radial_pad=10, oversample=2, nproc=8):
+    """
+    Unwrap FASS image cube to polar coordinates.
+
+    Parameters
+    ----------
+    image_cube : np.ndarray
+        Image cube to unwrap
+    center_gain : float (default: 0.1)
+        Gain factor to use for centering the pupil
+    radial_pad : int (default: 20)
+        Number of pixels to pad the radial dimension
+    oversample : int (default: 2)
+        Oversampling factor to use for the unwrapping
+    nproc : int (default: 8)
+        Number of processes to use for parallel processing
+
+    Returns
+    -------
+    unwrapped_cube : np.ndarray
+        Unwrapped image cube
+    """
+    _, x, y, width = init_fass_cube(image_cube)
+    x0 = x
+    y0 = y
+    radius = width/2 + radial_pad
+    unwrapped_cube = []
+    output_shape = (int(2 * np.pi * oversample * radius), int(oversample * radius))
+    with Pool(processes=nproc) as pool:
+        proc_slice = partial(_process_slice_func, x0=x0, y0=y0, radius=radius, output_shape=output_shape, center_gain=center_gain)
+        unwrapped_cube = pool.map(proc_slice, image_cube)
+    return np.stack(unwrapped_cube)
