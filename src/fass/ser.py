@@ -13,13 +13,14 @@ import astropy.units as u
 
 
 def read_int(fp, endian="<"):
-    i = unpack(f"{endian}I", fp.read(4))[0]
-    return i
+    val = unpack(f"{endian}I", fp.read(4))[0]
+    return val
 
 
 def read_long(fp, endian="<"):
-    l = unpack(f"{endian}Q", fp.read(8))[0]
-    return l
+    val = unpack(f"{endian}Q", fp.read(8))[0]
+    return val
+
 
 def read_str(fp, len):
     return fp.read(len).decode().strip()
@@ -180,9 +181,15 @@ def load_ser_file(filename):
         # Size of every image frame in byte is: 5_ImageWidth x 6_ImageHeigth x BytePerPixel
         data_buf = fp.read(output['nframe'] * output['im_width'] * output['im_height'] * output['bytes_per_pixel'])
         if output['bytes_per_pixel'] == 1:
-            output['data'] = np.frombuffer(data_buf, dtype=np.uint8).reshape((output['nframe'], output['im_height'], output['im_width']))
+            output['data'] = np.frombuffer(
+                data_buf,
+                dtype=np.uint8
+            ).reshape((output['nframe'], output['im_height'], output['im_width']))
         else:
-            output['data'] = np.frombuffer(data_buf, dtype=np.uint16).reshape((output['nframe'], output['im_height'], output['im_width']))
+            output['data'] = np.frombuffer(
+                data_buf,
+                dtype=np.uint16
+            ).reshape((output['nframe'], output['im_height'], output['im_width']))
 
         # Trailer starts at byte offset: 178 + 8_FrameCount x 5_ImageWidth x 6_ImageHeigth x BytePerPixel.
         # Trailer contains Date / Integer_64 (little-endian) time stamps in UTC for every image frame.

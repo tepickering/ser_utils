@@ -5,8 +5,6 @@ import shutil
 
 from pathlib import Path
 
-import xmltodict
-
 
 class Sequence:
     """

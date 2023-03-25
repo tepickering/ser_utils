@@ -2,8 +2,6 @@ import sys
 import argparse
 import logging
 
-from pathlib import Path
-
 from astropy.time import Time
 
 from fass.indi import INDI_Camera

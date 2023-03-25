@@ -58,7 +58,8 @@ def seeing(
     aperture_diameter=76.2 * u.mm,
     wavelength=0.5 * u.um,
     pixel_scale=0.93 * u.arcsec,
-    direction='longitudinal'):
+    direction='longitudinal'
+):
     """
     Calculate seeing from image motion variance, sigma, using the equations from
     Tokovinin (2002; https://www.jstor.org/stable/10.1086/342683). Numbers are for the
