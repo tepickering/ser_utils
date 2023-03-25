@@ -179,7 +179,10 @@ def load_ser_file(filename):
         # Image data starts at File start offset decimal 178
         # Size of every image frame in byte is: 5_ImageWidth x 6_ImageHeigth x BytePerPixel
         data_buf = fp.read(output['nframe'] * output['im_width'] * output['im_height'] * output['bytes_per_pixel'])
-        output['data'] = np.frombuffer(data_buf, dtype=np.uint8).reshape((output['nframe'], output['im_height'], output['im_width']))
+        if output['bytes_per_pixel'] == 1:
+            output['data'] = np.frombuffer(data_buf, dtype=np.uint8).reshape((output['nframe'], output['im_height'], output['im_width']))
+        else:
+            output['data'] = np.frombuffer(data_buf, dtype=np.uint16).reshape((output['nframe'], output['im_height'], output['im_width']))
 
         # Trailer starts at byte offset: 178 + 8_FrameCount x 5_ImageWidth x 6_ImageHeigth x BytePerPixel.
         # Trailer contains Date / Integer_64 (little-endian) time stamps in UTC for every image frame.
