@@ -46,7 +46,7 @@ def moments(data, aperture_diameter=76.2 * u.mm, wavelength=0.5 * u.um, pixel_sc
     row = data[int(y), :]
     width_y = np.sqrt(
         abs((np.arange(row.size) - x) ** 2 * row).sum() / row.sum()
-     )
+    )
     height = data.max()
     strehl = (height / total) * (4.0 / np.pi) * (wavelength / (aperture_diameter * dx)).decompose().value ** 2
     return height, strehl, x, y, width_x, width_y
