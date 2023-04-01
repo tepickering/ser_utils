@@ -5,12 +5,16 @@ from multiprocessing import Pool
 
 import numpy as np
 
-from skimage.transform import warp_polar
+from skimage.transform import warp_polar, warp, PiecewiseAffineTransform
+from skimage.util import img_as_uint
+from skimage import filters
+from skimage import measure
 
 import matplotlib.pyplot as plt
 
 import astropy.units as u
 from astropy import stats, visualization
+from astropy.modeling import models, fitting
 
 import photutils
 
@@ -304,7 +308,9 @@ def _process_slice_func(image, x0=0, y0=0, radius=100, output_shape=(100, 100), 
         scaling='linear',
         preserve_range=True
     )
-    return unwrapped
+    # recast output as float32. memory savings/performance
+    # worth the small loss of precision.
+    return unwrapped.astype(np.float32)
 
 
 def unwrap_fass_cube(image_cube, center_gain=0.1, radial_pad=10, oversample=2, nproc=8):
@@ -339,3 +345,40 @@ def unwrap_fass_cube(image_cube, center_gain=0.1, radial_pad=10, oversample=2, n
         proc_slice = partial(_process_slice_func, x0=x0, y0=y0, radius=radius, output_shape=output_shape, center_gain=center_gain)
         unwrapped_cube = pool.map(proc_slice, image_cube)
     return np.stack(unwrapped_cube)
+
+
+def rectify_fass_cube(
+    image_cube,
+    smooth_sigma=4,
+    contour_level=0.3,
+    contour_degree=5
+):
+    stacked = image_cube.mean(axis=0)
+    smoothed = filters.gaussian(stacked, sigma=smooth_sigma)
+    contours = measure.find_contours(smoothed, contour_level * smoothed.max())
+    pup_inner = np.mean(contours[0][:, 1])
+    pup_outer = np.mean(contours[1][:, 1])
+
+    fitter = fitting.LinearLSQFitter()
+    contour_model = models.Legendre1D(degree=contour_degree)
+    contour_inner = fitter(contour_model, contours[0][:, 0], contours[0][:, 1])
+    contour_outer = fitter(contour_model, contours[1][:, 0], contours[1][:, 1])
+
+    y = np.arange(stacked.shape[0])
+    src_inner = np.array([pup_inner * np.ones(stacked.shape[0]), y]).T
+    src_outer = np.array([pup_outer * np.ones(stacked.shape[0]), y]).T
+    src = np.vstack([src_inner, src_outer])
+
+    dst_inner = np.array([contour_inner(y), y]).T
+    dst_outer = np.array([contour_outer(y), y]).T
+    dst = np.vstack([dst_inner, dst_outer])
+
+    tform = PiecewiseAffineTransform()
+    tform.estimate(src, dst)
+
+    flat_image = warp(stacked, tform, output_shape=stacked.shape)
+
+    for imslice in image_cube:
+        imslice = warp(imslice, tform, output_shape=imslice.shape)
+
+    return image_cube, flat_image
