@@ -1,7 +1,8 @@
 from pathlib import Path
 
 from functools import partial
-from multiprocessing import Pool
+from multiprocessing import Pool, shared_memory
+from multiprocessing.managers import SharedMemoryManager
 
 import numpy as np
 
@@ -296,13 +297,61 @@ def init_fass_cube(image_cube, n_frames=500):
     return proc_image, x, y, width
 
 
-def _process_slice_func(image, x0=0, y0=0, radius=100, output_shape=(100, 100), center_gain=0.1):
+def _process_slice_func(
+    index,
+    x0=0,
+    y0=0,
+    radius=100,
+    input_dtype=np.float32,
+    input_cube_shape=(1000, 100, 100),
+    output_cube_shape=(1000, 100, 100),
+    slice_shape=(100, 100),
+    input_key=None,
+    output_key=None,
+    center_gain=0.1
+):
+    """
+    Process a slice of a FASS cube to unwrap polar coordinates to a cartesian grid
+    of radius vs azimuth.
+
+    Parameters
+    ----------
+    index : int
+        Index of the cube to process
+    x0 : float
+        Initial guess for the pupil center x coordinate
+    y0 : float
+        Initial guess for the pupil center y coordinate
+    radius : float
+        Pupil radius to pass to warp_polar()
+    input_dtype : np.dtype
+        dtype of the input cube
+    input_cube_shape : tuple
+        Shape of the input cube
+    output_cube_shape : tuple
+        Shape of the output cube
+    slice_shape : tuple
+        Shape of a slice in the output cube
+    input_key : str
+        Name of the shared memory block containing the input cube
+    output_key : str
+        Name of the shared memory block containing the output cube
+    center_gain : float
+        Gain to use for updating the pupil center position
+    """
+    input_shm = shared_memory.SharedMemory(name=input_key)
+    output_shm = shared_memory.SharedMemory(name=output_key)
+    input_cube = np.ndarray(input_cube_shape, dtype=input_dtype, buffer=input_shm.buf)
+    output_cube = np.ndarray(output_cube_shape, dtype=np.float32, buffer=output_shm.buf)
+    image = input_cube[index, :, :]
+
     proc_image, _, _, _, x, y, _ = process_fass_image(image)
     x0 = x0 + center_gain * (x - x0)
     y0 = y0 + center_gain * (y - y0)
+
     unwrapped = warp_polar(
         proc_image,
-        output_shape=output_shape,
+        output_shape=slice_shape,
         center=(x0, y0),
         radius=radius,
         scaling='linear',
@@ -310,7 +359,7 @@ def _process_slice_func(image, x0=0, y0=0, radius=100, output_shape=(100, 100), 
     )
     # recast output as float32. memory savings/performance
     # worth the small loss of precision.
-    return unwrapped.astype(np.float32)
+    output_cube[index, :, :] = unwrapped.astype(np.float32)
 
 
 def unwrap_fass_cube(image_cube, center_gain=0.1, radial_pad=10, oversample=2, nproc=8):
@@ -339,12 +388,36 @@ def unwrap_fass_cube(image_cube, center_gain=0.1, radial_pad=10, oversample=2, n
     x0 = x
     y0 = y
     radius = width/2 + radial_pad
-    unwrapped_cube = []
-    output_shape = (int(2 * np.pi * oversample * radius), int(oversample * radius))
-    with Pool(processes=nproc) as pool:
-        proc_slice = partial(_process_slice_func, x0=x0, y0=y0, radius=radius, output_shape=output_shape, center_gain=center_gain)
-        unwrapped_cube = pool.map(proc_slice, image_cube)
-    return np.stack(unwrapped_cube)
+
+    with SharedMemoryManager() as smm:
+        input_shm = shared_memory.SharedMemory(create=True, size=image_cube.nbytes)
+        input_dtype = image_cube.dtype
+        input_shm_cube = np.ndarray(image_cube.shape, dtype=input_dtype, buffer=input_shm.buf)
+        input_shm_cube[:] = image_cube[:]
+        output_slice_shape = (int(2 * np.pi * oversample * radius), int(oversample * radius))
+        output_cube_shape = (image_cube.shape[0],) + output_slice_shape
+        output_size = image_cube.shape[0] * output_slice_shape[0] * output_slice_shape[1] * 4  # we'll use float32 outputs
+        output_shm = shared_memory.SharedMemory(create=True, size=output_size)
+        unwrapped_cube = np.ndarray(output_cube_shape, dtype=np.float32, buffer=output_shm.buf)
+        returned_cube = np.ndarray(output_cube_shape, dtype=np.float32)
+        with Pool(processes=nproc) as pool:
+            proc_slice = partial(
+                _process_slice_func,
+                x0=x0,
+                y0=y0,
+                radius=radius,
+                input_dtype=input_dtype,
+                input_cube_shape=image_cube.shape,
+                output_cube_shape=output_cube_shape,
+                slice_shape=output_slice_shape,
+                input_key=input_shm.name,
+                output_key=output_shm.name,
+                center_gain=center_gain
+            )
+            pool.map(proc_slice, range(image_cube.shape[0]))
+            # copy data out of shared memory before closing
+            returned_cube[:] = unwrapped_cube[:]
+    return returned_cube
 
 
 def rectify_fass_cube(
