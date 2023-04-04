@@ -362,6 +362,14 @@ def _process_slice_func(
     output_cube[index, :, :] = unwrapped.astype(np.float32)
 
 
+def _rectify_slice(index, tform=None, input_key=None, input_dtype=np.float32, input_shape=(1000, 100, 100)):
+    input_shm = shared_memory.SharedMemory(name=input_key)
+    input_cube = np.ndarray(input_shape, dtype=input_dtype, buffer=input_shm.buf)
+    imslice = input_cube[index, :, :]
+    rect_slice = warp(imslice, tform, output_shape=input_shape[1:], preserve_range=True)
+    input_cube[index, :, :] = rect_slice.astype(input_dtype)
+
+
 def unwrap_fass_cube(image_cube, center_gain=0.1, radial_pad=10, oversample=2, nproc=8):
     """
     Unwrap FASS image cube to polar coordinates.
@@ -424,7 +432,8 @@ def rectify_fass_cube(
     image_cube,
     smooth_sigma=4,
     contour_level=0.3,
-    contour_degree=5
+    contour_degree=5,
+    nproc=8
 ):
     stacked = image_cube.mean(axis=0)
     smoothed = filters.gaussian(stacked, sigma=smooth_sigma)
@@ -451,7 +460,23 @@ def rectify_fass_cube(
 
     flat_image = warp(stacked, tform, output_shape=stacked.shape)
 
-    for imslice in image_cube:
-        imslice = warp(imslice, tform, output_shape=imslice.shape)
+    returned_cube = np.ndarray(image_cube.shape, dtype=np.float32)
 
-    return image_cube, flat_image
+    with SharedMemoryManager() as smm:
+        input_shm = shared_memory.SharedMemory(create=True, size=image_cube.nbytes)
+        input_dtype = image_cube.dtype
+        input_shm_cube = np.ndarray(image_cube.shape, dtype=input_dtype, buffer=input_shm.buf)
+        input_shm_cube[:] = image_cube[:]
+        with Pool(processes=nproc) as pool:
+            proc_slice = partial(
+                _rectify_slice,
+                tform=tform,
+                input_key=input_shm.name,
+                input_dtype=input_dtype,
+                input_shape=image_cube.shape
+            )
+            pool.map(proc_slice, range(image_cube.shape[0]))
+            # copy data out of shared memory before closing
+            returned_cube[:] = input_shm_cube[:]
+
+    return returned_cube, flat_image
