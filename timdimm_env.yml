@@ -6,7 +6,6 @@ dependencies:
   - python>=3.10
   - numpy>=1.22
   - scipy>=1.9
-  - scikit-learn>=1.0
   - astropy>=5.1
   - setuptools>=46.4
   - matplotlib>=3.4
