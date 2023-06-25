@@ -1,4 +1,6 @@
 from pathlib import Path
+import argparse
+import warnings
 
 from functools import partial
 from multiprocessing import Pool, shared_memory
@@ -15,11 +17,14 @@ import matplotlib.pyplot as plt
 import astropy.units as u
 from astropy import stats, visualization
 from astropy.modeling import models, fitting
+from astropy.time import TimezoneInfo
 
 import photutils
 from photutils.aperture import ApertureStats, CircularAperture
 
 from timdimm_tng.ser import load_ser_file
+
+warnings.filterwarnings('ignore', module='erfa')
 
 
 def moments(
@@ -547,3 +552,38 @@ def rectify_fass_cube(
             returned_cube[:] = input_shm_cube[:]
 
     return returned_cube, flat_image
+
+
+def timdimm_analyze():
+    """
+    Set up command-line interface to analyze timDIMM datacubes
+    """
+    parser = argparse.ArgumentParser(description='Utility for analyzing timDIMM data cubes')
+
+    parser.add_argument(
+        '-f', '--filename',
+        metavar="<filename>",
+        help="Filename of SER data cube to analyze"
+    )
+
+    parser.add_argument(
+        '-a', '--airmass',
+        metavar="<airmass>",
+        help="Airmass of observation",
+        type=float,
+        default=1.0
+    )
+
+    args = parser.parse_args()
+
+    results = analyze_dimm_cube(args.filename, airmass=args.airmass, plot=True)
+
+    print(f"Seeing: {results['seeing']:.2f}")
+    with open("seeing.txt", 'w') as f:
+        print(f"{results['seeing'].value:.2f}", file=f)
+        tobs = results['frame_times'][-1].to_datetime(timezone=TimezoneInfo(2 * u.hour))
+        print(tobs, file=f)
+
+    results['aperture_plot'].savefig("apertures.png")
+
+    return 0

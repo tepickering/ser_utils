@@ -1,12 +1,14 @@
 import sys
 import argparse
 import logging
+import warnings
 
 from astropy.time import Time
 
-from fass.indi import INDI_Camera
+from timdimm_tng.indi import INDI_Camera
 
 
+warnings.filterwarnings('error', module='astropy._erfa')
 log = logging.getLogger('SER video capture')
 log.setLevel(logging.INFO)
 
