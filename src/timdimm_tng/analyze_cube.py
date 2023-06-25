@@ -7,7 +7,6 @@ from multiprocessing.managers import SharedMemoryManager
 import numpy as np
 
 from skimage.transform import warp_polar, warp, PiecewiseAffineTransform
-from skimage.util import img_as_uint
 from skimage import filters
 from skimage import measure
 
@@ -18,11 +17,17 @@ from astropy import stats, visualization
 from astropy.modeling import models, fitting
 
 import photutils
+from photutils.aperture import ApertureStats, CircularAperture
 
-from fass.ser import load_ser_file
+from timdimm_tng.ser import load_ser_file
 
 
-def moments(data, aperture_diameter=76.2 * u.mm, wavelength=0.5 * u.um, pixel_scale=0.93 * u.arcsec):
+def moments(
+    data,
+    aperture_diameter=76.2 * u.mm,
+    wavelength=0.5 * u.um,
+    pixel_scale=0.93 * u.arcsec
+):
     """
     Returns (height, x, y, width_x, width_y)
     the gaussian parameters of a 2D distribution by calculating its
@@ -58,7 +63,9 @@ def moments(data, aperture_diameter=76.2 * u.mm, wavelength=0.5 * u.um, pixel_sc
         abs((np.arange(row.size) - x) ** 2 * row).sum() / row.sum()
     )
     height = data.max()
-    strehl = (height / total) * (4.0 / np.pi) * (wavelength / (aperture_diameter * dx)).decompose().value ** 2
+    strehl = (height / total) * (4.0 / np.pi) * (
+        wavelength / (aperture_diameter * dx)
+    ).decompose().value ** 2
     return height, strehl, x, y, width_x, width_y
 
 
@@ -66,15 +73,15 @@ def seeing(
     sigma,
     baseline=143 * u.mm,
     aperture_diameter=76.2 * u.mm,
-    wavelength=0.5 * u.um,
-    pixel_scale=0.93 * u.arcsec,
+    wavelength=0.64 * u.um,
+    pixel_scale=0.742 * u.arcsec,
     direction='longitudinal'
 ):
     """
     Calculate seeing from image motion variance, sigma, using the equations from
     Tokovinin (2002; https://www.jstor.org/stable/10.1086/342683). Numbers are for the
-    MMTO's 3-aperture Hartmann mask on an LX200 with an ASI 432MM camera (9 um pixels).
-    For this system, 1.22 * lambda/D is 1.66 arcsec (1.78 pixels)
+    MMTO's 3-aperture Hartmann mask on an LX200 with an ASI 432MM camera (9 um pixels;
+    6400 A effective wavelength). For this system, 1.22 * lambda/D is 1.66 arcsec.
 
     Arguments
     ---------
@@ -86,8 +93,8 @@ def seeing(
         Diameter of DIMM apertures
     wavelength : ~astropy.units.Quantity (default: 0.5 um)
         Effective wavelength of observation
-    pixel_scale : ~astropy.units.Quantity (default: 0.93 arcsec/pixel)
-        Angle subtended by each pixel (default is for 9 um pixels and 2000 mm focal length)
+    pixel_scale : ~astropy.units.Quantity (default: 0.742 arcsec/pixel)
+        Angle subtended by each pixel (default is for 9 um pixels and 2500 mm focal length)
     """
     b = (baseline / aperture_diameter).decompose().value
     variance = sigma * (pixel_scale.to(u.radian).value) ** 2.0
@@ -100,6 +107,29 @@ def seeing(
 
     seeing = 0.98 * ((aperture_diameter / wavelength).decompose().value ** 0.2) * ((variance / k[direction]) ** 0.6) * u.radian
     return seeing.to(u.arcsec)
+
+
+def massdimm_seeing(sigma):
+    """
+    Calculate seeing for an ASI432MM camera on an LX200 attached to the MASSDIMM instrument
+    """
+    return seeing(
+        sigma,
+        baseline=170 * u.mm,
+        aperture_diameter=70 * u.mm
+    )
+
+
+def timdimm_seeing(sigma):
+    """
+    Calculate seeing for the new timDIMM configuration with the old SAAO DIMM mask
+    and an ASI432MM camera
+    """
+    return seeing(
+        sigma,
+        baseline=200 * u.mm,
+        aperture_diameter=50 * u.mm
+    )
 
 
 def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contrast=0.05, brightest=3, std=None):
@@ -133,7 +163,7 @@ def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contras
         raise Exception("No stars detected in image")
 
     positions = list(zip(stars['xcentroid'], stars['ycentroid']))
-    apertures = photutils.CircularAperture(positions, r=ap_size)
+    apertures = CircularAperture(positions, r=ap_size)
 
     fig = None
     if plot:
@@ -151,7 +181,7 @@ def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contras
     return apertures, fig
 
 
-def dimm_calc(data, aps):
+def hdimm_calc(data, aps):
     """
     Calculate longitudinal distance for each baseline in the 3-aperture Hartmann-DIMM mask
 
@@ -163,9 +193,9 @@ def dimm_calc(data, aps):
     aps : ~photutils.CircularAperture
         Aperture positions
     """
-    ap_stats = photutils.ApertureStats(data, aps)
+    ap_stats = ApertureStats(data, aps)
     ap_pos = ap_stats.centroid
-    new_aps = photutils.CircularAperture(ap_pos, aps.r)
+    new_aps = CircularAperture(ap_pos, aps.r)
     base1 = ap_pos[1] - ap_pos[0]
     base2 = ap_pos[2] - ap_pos[0]
     base3 = ap_pos[2] - ap_pos[1]
@@ -176,7 +206,31 @@ def dimm_calc(data, aps):
     return new_aps, [d_base1, d_base2, d_base3]
 
 
-def analyze_dimm_cube(filename, init_ave=3, plot=False):
+def dimm_calc(data, aps):
+    """
+    Calculate longitudinal distance between two spots creatded by a DIMM mask
+
+    Arguments
+    ---------
+    data : 2D numpy.ndarray image
+        Image frame to perform centroids on
+
+    aps : ~photutils.CircularAperture
+        Aperture positions
+    """
+    ap_stats = photutils.ApertureStats(data, aps)
+    ap_pos = ap_stats.centroid
+    if not np.isnan(ap_pos).any():
+        new_aps = photutils.CircularAperture(ap_pos, aps.r)
+        baseline = ap_pos[1] - ap_pos[0]
+        dist_baseline = np.sqrt(np.dot(baseline.T, baseline))
+        return new_aps, [dist_baseline]
+    else:
+        print("Bad centroid")
+        return None
+
+
+def analyze_dimm_cube(filename, seeing=timdimm_seeing, dimm_calc=dimm_calc, plot=False):
     """
     Analyze an SER format data cube of DIMM observations and calculate the seeing from the
     differential motion along the longitudinal axis of each baseline. This is currently hard-coded
@@ -193,15 +247,20 @@ def analyze_dimm_cube(filename, init_ave=3, plot=False):
 
     nframes = cube['data'].shape[0]
 
-    apertures, fig = find_apertures(cube['data'][0:init_ave, :, :].sum(axis=0), plot=plot)
+    apertures, fig = find_apertures(cube['data'][0], plot=plot)
 
     baselines = []
     positions = []
+    nbad = 0
 
     for i in range(nframes):
-        apertures, ap_distances = dimm_calc(cube['data'][i, :, :], apertures)
-        baselines.append(ap_distances)
-        positions.append(apertures.positions.mean(axis=0))
+        dimm_meas = dimm_calc(cube['data'][i, :, :], apertures)
+        if dimm_meas is not None:
+            apertures, ap_distances = dimm_meas[0], dimm_meas[1]
+            baselines.append(ap_distances)
+            positions.append(apertures.positions.mean(axis=0))
+        else:
+            nbad += 1
 
     baselines = np.array(baselines).transpose()
     positions = np.array(positions).transpose()
@@ -212,7 +271,7 @@ def analyze_dimm_cube(filename, init_ave=3, plot=False):
 
     ave_seeing = u.Quantity(seeing_vals).mean()
 
-    return ave_seeing, seeing_vals, baselines, positions, cube['frame_times'], fig
+    return ave_seeing, seeing_vals, baselines, positions, cube['frame_times'], nbad, fig
 
 
 def process_fass_image(image, background_box_size=15, width_cut=0.1):
@@ -397,7 +456,7 @@ def unwrap_fass_cube(image_cube, center_gain=0.1, radial_pad=10, oversample=2, n
     y0 = y
     radius = width/2 + radial_pad
 
-    with SharedMemoryManager() as smm:
+    with SharedMemoryManager() as _:
         input_shm = shared_memory.SharedMemory(create=True, size=image_cube.nbytes)
         input_dtype = image_cube.dtype
         input_shm_cube = np.ndarray(image_cube.shape, dtype=input_dtype, buffer=input_shm.buf)
@@ -462,7 +521,7 @@ def rectify_fass_cube(
 
     returned_cube = np.ndarray(image_cube.shape, dtype=np.float32)
 
-    with SharedMemoryManager() as smm:
+    with SharedMemoryManager() as _:
         input_shm = shared_memory.SharedMemory(create=True, size=image_cube.nbytes)
         input_dtype = image_cube.dtype
         input_shm_cube = np.ndarray(image_cube.shape, dtype=input_dtype, buffer=input_shm.buf)
