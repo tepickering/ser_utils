@@ -230,7 +230,7 @@ def dimm_calc(data, aps):
         return None
 
 
-def analyze_dimm_cube(filename, seeing=timdimm_seeing, dimm_calc=dimm_calc, plot=False):
+def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, dimm_calc=dimm_calc, plot=False):
     """
     Analyze an SER format data cube of DIMM observations and calculate the seeing from the
     differential motion along the longitudinal axis of each baseline. This is currently hard-coded
@@ -269,9 +269,17 @@ def analyze_dimm_cube(filename, seeing=timdimm_seeing, dimm_calc=dimm_calc, plot
     for baseline in baselines:
         seeing_vals.append(seeing(baseline.std()))
 
-    ave_seeing = u.Quantity(seeing_vals).mean()
+    ave_seeing = u.Quantity(seeing_vals).mean() / airmass**0.6
 
-    return ave_seeing, seeing_vals, baselines, positions, cube['frame_times'], nbad, fig
+    return {
+        "seeing": ave_seeing,
+        "raw_seeing": seeing_vals,
+        "baseline_lengths": baselines,
+        "aperture_positions": positions,
+        "frame_times": cube['frame_times'],
+        "N_bad": nbad,
+        "aperture_plot": fig
+    }
 
 
 def process_fass_image(image, background_box_size=15, width_cut=0.1):
