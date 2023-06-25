@@ -1,3 +1,6 @@
+[tool.ruff]
+line-length = 132
+
 [build-system]
 requires = ["setuptools>=42",
             "setuptools_scm[toml]>=6.2"]
