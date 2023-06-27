@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 the OxWagon class implements the most important features required to control
 the ox wagon enclosure.
@@ -7,11 +5,39 @@ the ox wagon enclosure.
 
 import serial
 import io
-import sys
-from binutils import *
 import string
+import argparse
 
 from datetime import datetime
+
+
+def hex2bin(str):
+    """
+    take a hexadecimal number as a string and convert it to a binary string
+    """
+    bin = [
+        '0000', '0001', '0010', '0011',
+        '0100', '0101', '0110', '0111',
+        '1000', '1001', '1010', '1011',
+        '1100', '1101', '1110', '1111'
+    ]
+    aa = ''
+    for i in range(len(str)):
+        aa += bin[int(str[i], base=16)]
+    return aa
+
+
+def checksum(str):
+    """
+    twos complement checksum as used by the ox wagon PLC
+    """
+    command = str[1:len(str) - 4]
+    sum = 0
+    for i in range(0, len(command), 2):
+        byte = command[i] + command[i + 1]
+        sum = sum + int(byte, base=16)
+    neg = ~sum & 0xFF
+    return neg + 1
 
 
 class OxWagon:
@@ -26,66 +52,73 @@ class OxWagon:
     # dict of most commonly used commands:
     # the last bit in CLOSE was changed from 0 to 2
     # to keep the scope on when the ox wagon is closed
-    commands = {'RESET':           "2C008000",
-                'OPEN':            "10428C02",
-                'CLOSE':           "14218000",
-                'MONITOR':         "14228C00",
-                'SCOPE':           "00000002",
-                'LIGHT':           "00000001",
-                'OFF':             "00000000",
-                'CLOSE_SCOPE_ON':  "14218002",
-                'CLOSE_SCOPE_OFF': "14218000",
-                'RESET_SCOPE_ON':  "2C008002",
-                'RESET_SCOPE_OFF': "2C008000"
-                }
+    commands = {
+        'RESET':           "2C008000",
+        'OPEN':            "10428C02",
+        'CLOSE':           "14218000",
+        'MONITOR':         "14228C00",
+        'SCOPE':           "00000002",
+        'LIGHT':           "00000001",
+        'OFF':             "00000000",
+        'CLOSE_SCOPE_ON':  "14218002",
+        'CLOSE_SCOPE_OFF': "14218000",
+        'RESET_SCOPE_ON':  "2C008002",
+        'RESET_SCOPE_OFF': "2C008000"
+    }
 
     # bit map for the first 16-bit register used to monitor status
-    reg_106e_map = ['Manual Close Drop Roof',
-                    'Manual Open Drop Roof',
-                    'Manual Close Slide Roof',
-                    'Manual Open Slide Roof',
-                    'Forced Rain Closure',
-                    'Raining',
-                    False,
-                    'Drop Roof Slowdown',
-                    'Drop Roof Moving',
-                    'Drop Roof Opened',
-                    'Drop Roof Closed',
-                    'Remote Enabled',
-                    'Slide Roof Slowdown',
-                    'Slide Roof Moving',
-                    'Slide Roof Fully Opened',
-                    'Slide Roof Closed']
+    reg_106e_map = [
+        'Manual Close Drop Roof',
+        'Manual Open Drop Roof',
+        'Manual Close Slide Roof',
+        'Manual Open Slide Roof',
+        'Forced Rain Closure',
+        'Raining',
+        False,
+        'Drop Roof Slowdown',
+        'Drop Roof Moving',
+        'Drop Roof Opened',
+        'Drop Roof Closed',
+        'Remote Enabled',
+        'Slide Roof Slowdown',
+        'Slide Roof Moving',
+        'Slide Roof Fully Opened',
+        'Slide Roof Closed'
+    ]
 
     # bit map for the second register
-    reg_106f_map = ['Watchdog Tripped',
-                    'Drop Roof Inverter Fault',
-                    'Slide roof Inverter Fault',
-                    False,
-                    False,
-                    'Telescope Powered On',
-                    'Closed due to Power Failure',
-                    False,
-                    False,
-                    'Emergency Stop',
-                    'Power Failure',
-                    'Proximity Close Drop Roof',
-                    'Proximity Open Drop Roof',
-                    'Proximity Close Slide Roof',
-                    'Proximity Open Slide Roof',
-                    'Lights On']
+    reg_106f_map = [
+        'Watchdog Tripped',
+        'Drop Roof Inverter Fault',
+        'Slide roof Inverter Fault',
+        False,
+        False,
+        'Telescope Powered On',
+        'Closed due to Power Failure',
+        False,
+        False,
+        'Emergency Stop',
+        'Power Failure',
+        'Proximity Close Drop Roof',
+        'Proximity Open Drop Roof',
+        'Proximity Close Slide Roof',
+        'Proximity Open Slide Roof',
+        'Lights On'
+    ]
 
-# old port location "/dev/tty.usbserial-A700dz6N"):
+    # this may need to change for new computer
     def __init__(self, port="/dev/ttyUSBtoPLC"):
-        '''
-        we use the py27-serial package to implement RS232 communication.
-        beware, the port may change if the USB-RS232 cable is ever moved
-        to a different port
-        '''
-        self.ser = serial.Serial(port,
-                                 bytesize=7,
-                                 parity=serial.PARITY_EVEN,
-                                 timeout=1)
+        """
+        we use the pyserial package, https://pyserial.readthedocs.io/, to
+        implement RS232 communication. beware, the port may change if the
+        USB-RS232 cable is ever movedto a different port
+        """
+        self.ser = serial.Serial(
+            port,
+            bytesize=7,
+            parity=serial.PARITY_EVEN,
+            timeout=1
+        )
 
         # use this trick to make sure the CR-LF conversions are
         # handled correctly
@@ -94,123 +127,107 @@ class OxWagon:
         self.status()
 
     def command(self, cmd):
-        '''
+        """
         take a hexadecimal string, build a command out of it by tacking
         on the delay parameters, and calculating the checksum.
-        '''
-        cmd_header = ":01101064000408"
+        """
+        cmd_header = ':01101064000408'
         if cmd in self.commands:
             cmd = cmd_header + self.commands[cmd] + \
                   self.watch_delay + self.pwr_delay
         else:
             return False
-        print cmd
+        print(cmd)
 
-        # use checksum from binutils.py
+        # use ox wagon compatible checksum
         sum = checksum(cmd + "0000")
         to_send = "%s%x\n" % (cmd, sum)
         to_send = to_send.upper()
 
-        self.sio.write(unicode(to_send))
+        self.sio.write(str(to_send))
         self.sio.flush()
 
-        resp = self.sio.readline()
-        print resp
+        resp = self.sio.readline().decode('utf-8')
+        print(resp)
+
         return resp
 
     def open(self, delay=3600):
-        '''
+        """
         use pre-defined command to open the ox wagon completely
-        '''
-        print 'Opening for %i seconds' %delay
-# ejk: 2023-02-01 - start
-# Removing this ancient check: It stops TechOps from doing maintenance between 15:00-16:00        
-##this is all here because i'm trying to figure out
-#        #who or what is running this at 3:15 every day
-#        import traceback as tb
+        """
+        print(f"Opening for {delay} seconds")
         now=datetime.now()
-        fout=open('/home/massdimm/ox.log', 'a')
-#        if now.hour==15:
-#           msg='I refuse to open during 3 pm, and I am not sure who is asking but they should stop'
-#           print msg
-#           fout.write(now)
-#           fout.write(msg)
-#           fout.write(tb.format_exc())
-#           fout.write(str(tb.format_stack()))
-#           fout.write('\n')
-#           return
-#        else:
-#           fout.write('Opening %s\n' % str(now))
-        fout.write('Opening %s\n' % str(now))
-# ejk: 2023-02-01 - end
-        fout.close()
+        with open('/home/timdimm/ox.log', 'a') as fout:
+            fout.write(f"Opening {str(now)}\n")
+
         self.watch_delay=string.zfill(int(delay),4)
         self.command('OPEN')
 
     def monitor(self):
-        '''
+        """
         use pre-defined command to open the ox wagon slide roof only
-        '''
+        """
         self.command('MONITOR')
 
     def close(self):
-        '''
+        """
         use pre-defined command to close the ox wagon
-        '''
+        """
         self.command('CLOSE')
 
     def reset(self):
-        '''
+        """
         use pre-defined command to reset the ox wagon controller and
         clear forced closure bits
-        '''
+        """
         self.command('RESET')
 
     def scope(self):
-        '''
+        """
         use pre-defined command to turn on power to telescope
-        '''
+        """
         self.command('SCOPE')
 
     def close_scope_on(self):
-        '''
+        """
         use pre-defined command to close the ox wagon
-        '''
+        """
         self.command('CLOSE_SCOPE_ON')
 
     def close_scope_off(self):
-        '''
+        """
         use pre-defined command to close the ox wagon
-        '''
+        """
         self.command('CLOSE_SCOPE_OFF')
 
     def reset_scope_on(self):
-        '''
+        """
         use pre-defined command to reset the ox wagon controller and
         clear forced closure bits
-        '''
+        """
         self.command('RESET_SCOPE_ON')
 
     def reset_scope_off(self):
-        '''
+        """
         use pre-defined command to reset the ox wagon controller and
         clear forced closure bits
-        '''
+        """
         self.command('RESET_SCOPE_OFF')
 
     def light_on(self):
-        '''
+        """
         use pre-defined command to reset the ox wagon controller and
         clear forced closure bits
-        '''
+        """
         self.command('LIGHT')
 
     def status(self):
-        '''
+        """
         send pre-defined command to query status and parse response into
         dict that is cached into state{} and also returned to caller.
-        '''
-        self.sio.write(unicode(":0103106E000579\n"))
+        """
+        self.sio.write(str(":0103106E000579\n"))
         self.sio.flush()
 
         resp = self.sio.readline()
@@ -235,18 +252,37 @@ class OxWagon:
 
         return self.state
 
+
 # handle running this as a standalone script.
-if __name__ == '__main__':
+def main():
     o = OxWagon()
-    if len(sys.argv) == 1:
-        print "Usage: ox_wagon.py <OPEN|CLOSE|RESET|STATUS>"
+
+    parser = argparse.ArgumentParser(
+        description='Utility for controlling the ox wagon enclosure'
+    )
+
+    parser.add_argument(
+        'cmd',
+        default='STATUS',
+        choices=['OPEN', 'CLOSE', 'RESET', 'STATUS'],
+        required=True,
+        help='Command to send to ox wagon controller'
+    )
+
+    parser.add_argument(
+        'extra_args',
+        required=False,
+        help='Extra arguments for ox wagon commands'
+    )
+
+    args = parser.parse_args()
+
+    command = args.cmd.lower()
+
+    if command == 'status':
+        state = o.status()
+        for k, v in state.items():
+            print("%30s : \t %s") % (k, v)
     else:
-        if sys.argv[1].lower() == 'status':
-            state = o.status()
-            for k, v in state.items():
-                print "%30s : \t %s" % (k, v)
-        else:
-            # eval is your friend!
-            method = sys.argv[1].lower()
-            args = ", ".join(sys.argv[2:])
-            eval("o.%s(%s)" % (method, args))
+        extra_args = ", ".join(args.extra_args)
+        eval("o.%s(%s)" % (command, extra_args))

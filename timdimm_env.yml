@@ -21,3 +21,4 @@ dependencies:
     - astroplan
     - photutils
     - xmltodict
+    - binutils
