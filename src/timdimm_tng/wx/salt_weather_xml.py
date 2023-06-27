@@ -77,7 +77,7 @@ def parse_salt_xml():
     e['Bar_Press'] = float(d['bms_external_conditions__Air_pressure']) * 10
     e['DewTemp'] = float(d['bms_external_conditions__Dewpoint'])
     e['Rel_Hum'] = float(d['bms_external_conditions__Rel_Humidity'])
-    e['Wind_sp'] = float(d['bms_external_conditions__Wind_mag_10m']) * 3.6
+    e['Wind_speed'] = float(d['bms_external_conditions__Wind_mag_10m']) * 3.6
     e['Wind_dir'] = float(d['bms_external_conditions__Wind_dir_10m'])
     e['Temp'] = float(d['bms_external_conditions__Temperatures'])
     e['Rain'] =  int(d['bms_external_conditions__Rain_detected'])
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         print("------------ SALT Weather Data ------------")
         print("TimeStamp (SAST) : ", SALT['TimeStamp_SAST'])
         print("Sky Condition    : ", SALT['SkyCon'])
-        print("Wind Speed (km/h): ", SALT['Wind_sp'])
+        print("Wind Speed (km/h): ", SALT['Wind_speed'])
         print("Wind Direction   : ", SALT['Wind_dir'])
         print("Temperature      : ", SALT['Temp'])
         print("Relative Humidity: ", SALT['Rel_Hum'], "%")

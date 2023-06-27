@@ -67,7 +67,7 @@ def get_weather():
         d['TimeStamp_SAST'] = d['TimeStamp_SAST'] + datetime.timedelta(hours=2)
 
         d['Temp'] = round(float(data[1]), 1)
-        d['Wind_sp'] = round(float(data[3]), 0) * 3.6 # from m/s to km/h
+        d['Wind_speed'] = round(float(data[3]), 0) * 3.6 # from m/s to km/h
         d['Wind_dir'] = round(float(data[5]), 0)
         d['Rel_Hum'] = round(float(data[7]), 0)
         d['DewTemp'] = round(float(data[9]), 1)
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     print("------------ LCOGT Weather Data ------------")
     print("TimeStamp (SAST) : ", LCOGT['TimeStamp_SAST'])
     print("Sky Condition    : ", LCOGT['SkyCon'])
-    print("Wind Speed (km/h): ", LCOGT['Wind_sp'])
+    print("Wind Speed (km/h): ", LCOGT['Wind_speed'])
     print("Wind Direction   : ", LCOGT['Wind_dir'])
     print("Temperature      : ", LCOGT['Temp'])
     print("Relative Humidity: ", LCOGT['Rel_Hum'], "%")

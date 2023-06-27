@@ -80,7 +80,7 @@ def get_weather():
 		SkyCon = text[28].strip()
 	else:
 		d['Wind_dir'] = float(text[28].strip())
-		d['Wind_sp'] = round(float(text[30].strip())*3.6, 1)
+		d['Wind_speed'] = round(float(text[30].strip())*3.6, 1)
 		SkyCon = text[34].strip()
 
 	if (SkyCon == "-0.0") or (SkyCon == "0.0"):
@@ -109,7 +109,7 @@ if __name__ == "__main__":
 		print("------------ GFZ Weather Data -------------")
 		print("TimeStamp (SAST) : ", GFZ['TimeStamp_SAST'])
 		print("Sky Condition    : ", GFZ['SkyCon'])
-		print("Wind Speed (km/h): ", GFZ['Wind_sp'])
+		print("Wind Speed (km/h): ", GFZ['Wind_speed'])
 		print("Wind Direction   : ", GFZ['Wind_dir'])
 		print("Temperature      : ", GFZ['Temp'])
 		print("Relative Humidity: ", GFZ['Rel_Hum'], "%")
