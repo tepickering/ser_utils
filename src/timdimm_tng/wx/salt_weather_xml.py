@@ -116,7 +116,7 @@ if __name__ == "__main__":
         print("Relative Humidity: ", SALT['Rel_Hum'], "%")
         print("T - T(dew)       : ", float(SALT['Temp']) - float(SALT['DewTemp']))
         print("Barometric Press : ", SALT['Bar_Press'])
-        print("\n\n")
+        print("\n")
 
     else:
         print('Connection is down or information from BMS is invalid')
