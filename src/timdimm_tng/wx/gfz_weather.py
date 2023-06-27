@@ -1,32 +1,31 @@
-#!/usr/bin/python
-import MySQLdb as ml
-import urllib2
+# -*- coding: utf-8 -*-
+
+from urllib.request import urlopen
+from urllib.error import URLError
 import math
 import datetime
-import os, sys
-import time
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
+
 
 def get_weather():
 	#****************************************************************************************
 	#Open up the GFZ weather pages and parse the html code from relevant weather info
 
-	d={}
+	d = {}
 
 	try:
-		page = urllib2.urlopen("http://sg1a.suth.saao.ac.za/tmp/grav-sg37.htm")
-		# page = urllib2.urlopen("http://sg1a.suth.saao.ac.za/tmp/kan1.htm")
+		page = urlopen("http://sg1a.suth.saao.ac.za/tmp/grav-sg37.htm")
 
-	except urllib2.URLError:
+	except URLError:
 		d['Valid'] = False
 		return d
 
-	soup = BeautifulSoup(page)
+	soup = BeautifulSoup(page, features="html.parser")
 
-	text = soup.table.findAllNext(text=True)
+	text = soup.table.findAllNext(string=True)
 	if text[23] != "hPa":
 		print("Error with GFZ weather page info.")
-		sys.exit()
+		raise
 	else:
 		Time = text[31].strip()[11:]
 		Hours = int(Time[:2])
@@ -45,19 +44,17 @@ def get_weather():
 		# print(text[37])
 		d['Bar_Press'] = float(text[37].strip())
 
-
 	try:
-		page = urllib2.urlopen("http://sg1a.suth.saao.ac.za/tmp/wetter-0.htm")
-		# page = urllib2.urlopen("http://sg1a.suth.saao.ac.za/tmp/kan11.htm")
+		page = urlopen("http://sg1a.suth.saao.ac.za/tmp/wetter-0.htm")
 
-	except urllib2.URLError:
+	except URLError:
 		d['Valid'] = False
 		return d
 
-	soup = BeautifulSoup(page)
+	soup = BeautifulSoup(page, features="html.parser")
 
-	text = soup.table.findAllNext(text=True)
-	
+	text = soup.table.findAllNext(string=True)
+
 	# Check if the GFZ website is populating the headers correctly.
 	if text[18] != "deg_C":
 		Temp = text[43].strip()
@@ -65,17 +62,16 @@ def get_weather():
 	else:
 		Temp = text[34].strip()
 		Rel_Hum = text[36].strip()
-	
+
 	try:
-		page = urllib2.urlopen("http://sg1a.suth.saao.ac.za/tmp/wetter-1.htm")
-		# page = urllib2.urlopen("http://sg1a.suth.saao.ac.za/tmp/kan16.htm")
-	except urllib2.URLError:
+		page = urlopen("http://sg1a.suth.saao.ac.za/tmp/wetter-1.htm")
+	except URLError:
 		d['Valid'] = False
 		return d
 
-	soup = BeautifulSoup(page)
+	soup = BeautifulSoup(page, features="html.parser")
 
-	text = soup.table.findAllNext(text=True)
+	text = soup.table.findAllNext(string=True)
 
 	# Check if the GFZ website is populating the headers correctly.
 	if text[18] != "m/s":
@@ -100,10 +96,7 @@ def get_weather():
 	DewTemp = (varB*gamma)/(varA - gamma)
 	d['Temp'] = Temp
 	d['Rel_Hum'] = Rel_Hum
-	T_min_Dew = round(Temp - DewTemp, 1)
 	d['DewTemp'] = DewTemp
-	Cloud = "N/A"
-
 	d['Valid'] = True
 
 	return d
@@ -112,18 +105,16 @@ if __name__ == "__main__":
 	GFZ = get_weather()
 
 	if GFZ['Valid']:
-		print
-		print "------------ GFZ Weather Data -------------"
-		print "TimeStamp (SAST) : ", GFZ['TimeStamp_SAST']
-		print "Sky Condition    : ", GFZ['SkyCon']
-		print "Wind Speed (km/h): ", GFZ['Wind_sp']
-		print "Wind Direction   : ", GFZ['Wind_dir']
-		print "Temperature      : ", GFZ['Temp']
-		print "Relative Humidity: ", GFZ['Rel_Hum'], "%"
-		print "T - T(dew)       : ", float(GFZ['Temp']) - float(GFZ['DewTemp'])
-		print "Barometric Press : ", GFZ['Bar_Press']
-		print ""
+		print()
+		print("------------ GFZ Weather Data -------------")
+		print("TimeStamp (SAST) : ", GFZ['TimeStamp_SAST'])
+		print("Sky Condition    : ", GFZ['SkyCon'])
+		print("Wind Speed (km/h): ", GFZ['Wind_sp'])
+		print("Wind Direction   : ", GFZ['Wind_dir'])
+		print("Temperature      : ", GFZ['Temp'])
+		print("Relative Humidity: ", GFZ['Rel_Hum'], "%")
+		print("T - T(dew)       : ", float(GFZ['Temp']) - float(GFZ['DewTemp']))
+		print("Barometric Press : ", GFZ['Bar_Press'])
+		print("\n")
 	else:
-		print 'No connection to the GFZ site'
-
-
+		print('No connection to the GFZ site')
