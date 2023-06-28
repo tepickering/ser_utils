@@ -12,14 +12,13 @@ def parse_salt_xml():
 
     try:
         sock = urlopen(TCS_URL)
-        out = open('tcs.xml', 'w')
-        out.write(sock.read().decode('utf-8'))
-        out.close()
+        with open('tcs.xml', 'w') as out:
+            out.write(sock.read().decode('utf-8'))
 
     except URLError:
         e['Valid'] = False
         return e
-    #try:
+
     dom = minidom.parse('tcs.xml')
 
     def getText(nodelist):
@@ -102,7 +101,7 @@ def parse_salt_xml():
     return e
 
 
-if __name__ == "__main__":
+def main():
     SALT = parse_salt_xml()
 
     if SALT['Valid']:
@@ -120,3 +119,7 @@ if __name__ == "__main__":
 
     else:
         print('Connection is down or information from BMS is invalid')
+
+
+if __name__ == "__main__":
+    main()

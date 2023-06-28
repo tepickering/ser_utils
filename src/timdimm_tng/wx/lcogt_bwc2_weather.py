@@ -109,7 +109,8 @@ def get_weather():
 
         return d
 
-if __name__ == "__main__":
+
+def main():
     BWC2 = get_weather()
 
     print("")
@@ -122,3 +123,7 @@ if __name__ == "__main__":
     print("T - T(dew)       : ", BWC2['Temp'] - BWC2['DewTemp'])
     print("Cloud Cover      : ", BWC2['Cloud'])
     print("\n")
+
+
+if __name__ == "__main__":
+    main()

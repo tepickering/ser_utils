@@ -101,7 +101,8 @@ def get_weather():
 
 	return d
 
-if __name__ == "__main__":
+
+def main():
 	GFZ = get_weather()
 
 	if GFZ['Valid']:
@@ -118,3 +119,7 @@ if __name__ == "__main__":
 		print("\n")
 	else:
 		print('No connection to the GFZ site')
+
+
+if __name__ == "__main__":
+	main()

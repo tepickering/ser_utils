@@ -7,7 +7,7 @@ dependencies:
   - numpy>=1.22
   - scipy>=1.9
   - astropy>=5.1
-  - setuptools>=46.4
+  - setuptools
   - matplotlib>=3.4
   - ipython>=7.27
   - pytest>=6.2
@@ -17,8 +17,8 @@ dependencies:
   - pandas
   - ipympl
   - notebook
+  - beautifulsoup4
   - pip:
     - astroplan
     - photutils
     - xmltodict
-    - binutils

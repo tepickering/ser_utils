@@ -83,7 +83,8 @@ def get_weather():
 
         return d
 
-if __name__ == "__main__":
+
+def main():
     LCOGT = get_weather()
 
     print("")
@@ -97,3 +98,7 @@ if __name__ == "__main__":
     print("T - T(dew)       : ", LCOGT['Temp'] - LCOGT['DewTemp'])
     print("Pressure         : ", LCOGT['Bar_Press'])
     print("\n")
+
+
+if __name__ == "__main__":
+    main()
