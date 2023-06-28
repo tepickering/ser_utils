@@ -255,8 +255,6 @@ class OxWagon:
 
 # handle running this as a standalone script.
 def main():
-    o = OxWagon()
-
     parser = argparse.ArgumentParser(
         description='Utility for controlling the ox wagon enclosure'
     )
@@ -275,7 +273,16 @@ def main():
         help='Extra arguments for ox wagon commands'
     )
 
+    parser.add_argument(
+        '-p', '--port',
+        required=False,
+        default='/dev/ttyUSBtoPLC',
+        help='Serial port for ox wagon controller'
+    )
+
     args = parser.parse_args()
+
+    o = OxWagon(port=args.port)
 
     command = args.cmd.lower()
 
