@@ -5,6 +5,10 @@ from urllib.request import urlopen
 from urllib.error import URLError
 import datetime
 
+
+__all__ = ['parse_salt_xml']
+
+
 def parse_salt_xml():
     e = {}
     # read the xml page

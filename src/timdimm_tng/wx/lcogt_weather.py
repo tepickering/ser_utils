@@ -5,6 +5,9 @@ from urllib.error import URLError
 import datetime
 
 
+__all__ = ['get_weather']
+
+
 def open_page():
     """
     open the LCOGT simple weather page

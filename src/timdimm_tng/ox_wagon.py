@@ -11,6 +11,9 @@ import argparse
 from datetime import datetime
 
 
+__all__ = ['OxWagon']
+
+
 def hex2bin(str):
     """
     take a hexadecimal number as a string and convert it to a binary string

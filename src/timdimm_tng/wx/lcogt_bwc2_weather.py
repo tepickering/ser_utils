@@ -6,6 +6,9 @@ import datetime
 import time
 
 
+__all__ = ['get_weather']
+
+
 def open_page(sensor=0):
     """
     open the LCOGT page for the BW cloud monitor. There are three and the

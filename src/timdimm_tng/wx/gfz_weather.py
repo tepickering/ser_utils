@@ -7,6 +7,9 @@ import datetime
 from bs4 import BeautifulSoup
 
 
+__all__ = ['get_weather']
+
+
 def get_weather():
 	#****************************************************************************************
 	#Open up the GFZ weather pages and parse the html code from relevant weather info
