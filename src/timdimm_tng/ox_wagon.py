@@ -110,7 +110,7 @@ class OxWagon:
     ]
 
     # this may need to change for new computer
-    def __init__(self, port="/dev/ttyUSBtoPLC"):
+    def __init__(self, port="/dev/ttyUSB1"):
         """
         we use the pyserial package, https://pyserial.readthedocs.io/, to
         implement RS232 communication. beware, the port may change if the
@@ -118,6 +118,7 @@ class OxWagon:
         """
         self.ser = serial.Serial(
             port,
+            9600,
             bytesize=7,
             parity=serial.PARITY_EVEN,
             timeout=1
@@ -150,7 +151,7 @@ class OxWagon:
         self.sio.write(str(to_send))
         self.sio.flush()
 
-        resp = self.sio.readline().decode('utf-8')
+        resp = self.sio.readline()
         print(resp)
 
         return resp
@@ -164,7 +165,7 @@ class OxWagon:
         with open('/home/timdimm/ox.log', 'a') as fout:
             fout.write(f"Opening {str(now)}\n")
 
-        self.watch_delay=string.zfill(int(delay),4)
+        self.watch_delay=str(delay).zfill(4)
         self.command('OPEN')
 
     def monitor(self):
@@ -266,20 +267,19 @@ def main():
         'cmd',
         default='STATUS',
         choices=['OPEN', 'CLOSE', 'RESET', 'STATUS'],
-        required=True,
         help='Command to send to ox wagon controller'
     )
 
     parser.add_argument(
         'extra_args',
-        required=False,
+        nargs="*",
         help='Extra arguments for ox wagon commands'
     )
 
     parser.add_argument(
         '-p', '--port',
         required=False,
-        default='/dev/ttyUSBtoPLC',
+        default='/dev/ttyUSB1',
         help='Serial port for ox wagon controller'
     )
 
@@ -292,7 +292,7 @@ def main():
     if command == 'status':
         state = o.status()
         for k, v in state.items():
-            print("%30s : \t %s") % (k, v)
+            print("%30s : \t %s" % (k, v))
     else:
         extra_args = ", ".join(args.extra_args)
         eval("o.%s(%s)" % (command, extra_args))
