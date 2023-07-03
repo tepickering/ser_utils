@@ -5,7 +5,6 @@ the ox wagon enclosure.
 
 import serial
 import io
-import string
 import argparse
 
 from datetime import datetime
