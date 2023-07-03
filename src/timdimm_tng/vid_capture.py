@@ -47,7 +47,7 @@ def main():
         '-e', '--exposure',
         metavar="<exposure time>",
         help="Camera Exposure Time in seconds",
-        default=0.1
+        default=0.001
     )
 
     capture_group = parser.add_mutually_exclusive_group()
@@ -106,10 +106,10 @@ def main():
 
     cam = INDI_Camera(args.camera, host=args.host, port=args.port)
 
-    target = cam.get_prop("FITS_HEADER", "FITS_OBJECT")
+    # target = cam.get_prop("FITS_HEADER", "FITS_OBJECT")
 
     if args.filename is None:
-        args.filename = f"{Time.now().strftime('%Y-%m-%dZ%H-%M-%S')}_{target}"
+        args.filename = f"{Time.now().strftime('%Y-%m-%dZ%H-%M-%S')}"
 
     if args.mjpeg:
         cam.mjpeg_mode()
