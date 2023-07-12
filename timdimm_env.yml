@@ -18,7 +18,11 @@ dependencies:
   - ipympl
   - notebook
   - beautifulsoup4
+  - glib
+  - gobject-introspection
+  - pygobject
   - pip:
     - astroplan
     - photutils
     - xmltodict
+    - pydbus
