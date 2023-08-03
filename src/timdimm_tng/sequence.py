@@ -1,23 +1,53 @@
 import os
 import json
 import pkg_resources
-import shutil
+
+from collections import UserDict
+
+import xmltodict
 
 from pathlib import Path
 
 
-class Sequence:
+class Sequence(UserDict):
     """
     Wrap an INDI/Ekos imaging sequence
     """
-    def __init__(self):
-        template = pkg_resources.resource_filename(__name__, os.path.join("templates", "sequence_template.json"))
-        capture_script = shutil.which("vid_capture")
+    @classmethod
+    def from_json(
+            cls,
+            template_file=pkg_resources.resource_filename(
+                __name__,
+                os.path.join("templates", "timdimm_sequence_template.json")
+            )
+        ):
+        """
+        Instantiate from a JSON file
+        """
+        with open(template_file, 'r') as fp:
+            return cls(json.load(fp))
 
-        with open(template, 'r') as fp:
-            self.config = json.load(fp)
+    @classmethod
+    def from_xml(cls, seqfile="sequence.esq"):
+        """
+        Instantiate from an XML file
+        """
+        with open(seqfile, 'r') as fp:
+            return cls(xmltodict.parse(fp.read()))
 
-        self.config['SequenceQueue']['Job']['PostCaptureScript'] = capture_script
+    def to_xml(self, outfile="sequence.esq"):
+        """
+        Convert internal dict to XML and write to file
+        """
+        with open(outfile, 'w') as fp:
+            fp.write(xmltodict.unparse(self.data, pretty=True))
+
+    def to_json(self, outfile="sequence.json"):
+        """
+        Convert internal dict to JSON and write to file
+        """
+        with open(outfile, 'w') as fp:
+            json.dump(self.data, fp, indent=4)
 
 
 class Observation:
