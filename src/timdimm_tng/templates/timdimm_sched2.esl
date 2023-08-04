@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SchedulerList version='1.5'>
+<Profile>timdimm_sim</Profile>
+<Job>
+<Name>Fomalhaut</Name>
+<Priority>10</Priority>
+<Coordinates>
+<J2000RA>22.9608</J2000RA>
+<J2000DE>-29.6218</J2000DE>
+</Coordinates>
+<PositionAngle>-181</PositionAngle>
+<Sequence>/home/tim/timdimm_sim.esq</Sequence>
+<StartupCondition>
+<Condition>ASAP</Condition>
+</StartupCondition>
+<Constraints>
+<Constraint value='30'>MinimumAltitude</Constraint>
+<Constraint value='20'>MoonSeparation</Constraint>
+<Constraint>EnforceWeather</Constraint>
+<Constraint>EnforceTwilight</Constraint>
+</Constraints>
+<CompletionCondition>
+<Condition>Loop</Condition>
+</CompletionCondition>
+<Steps>
+<Step>Track</Step>
+<Step>Align</Step>
+</Steps>
+</Job>
+<Job>
+<Name>Peacock</Name>
+<Priority>10</Priority>
+<Coordinates>
+<J2000RA>20.4275</J2000RA>
+<J2000DE>-56.7349</J2000DE>
+</Coordinates>
+<PositionAngle>-181</PositionAngle>
+<Sequence>/home/tim/timdimm_sim.esq</Sequence>
+<StartupCondition>
+<Condition>ASAP</Condition>
+</StartupCondition>
+<Constraints>
+<Constraint value='30'>MinimumAltitude</Constraint>
+<Constraint value='20'>MoonSeparation</Constraint>
+<Constraint>EnforceWeather</Constraint>
+<Constraint>EnforceTwilight</Constraint>
+</Constraints>
+<CompletionCondition>
+<Condition>Loop</Condition>
+</CompletionCondition>
+<Steps>
+<Step>Track</Step>
+<Step>Align</Step>
+</Steps>
+</Job>
+<SchedulerAlgorithm value='1'/>
+<ErrorHandlingStrategy value='1'>
+<delay>0</delay>
+</ErrorHandlingStrategy>
+<StartupProcedure>
+<Procedure value='timdimm_startup'>StartupScript</Procedure>
+<Procedure>UnparkDome</Procedure>
+<Procedure>UnparkMount</Procedure>
+</StartupProcedure>
+<ShutdownProcedure>
+<Procedure>ParkMount</Procedure>
+<Procedure>ParkDome</Procedure>
+<Procedure value='timdimm_shutdown'>ShutdownScript</Procedure>
+</ShutdownProcedure>
+</SchedulerList>
