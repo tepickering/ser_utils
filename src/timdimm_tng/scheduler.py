@@ -67,10 +67,19 @@ class Observation(ScheduleBase):
     """
     Job entry in an INDI/Ekos Scheduler list
     """
-    def __init__(self, target="Target", ra=0.0, dec=0.0, priority=10, sequence=Path.home() / "sequence.esq"):
-        template = pkg_resources.resource_filename(__name__, os.path.join("templates", "sequence_list_template.json"))
-
-        self.from_json(filename=template)
+    def __init__(
+        self,
+        target="Target",
+        ra=0.0,
+        dec=0.0,
+        priority=10,
+        sequence=Path.home() / "sequence.esq",
+        template=pkg_resources.resource_filename(__name__, os.path.join("templates", "sequence_list_template.json"))
+    ):
+        if 'json' in Path(template).suffix.lower():
+            self.from_json(filename=template)
+        else:
+            self.from_xml(filename=template)
 
         # use the first entry in the scheduler list template as the boiler-plate to build from
         self.data = self.data['SchedulerList']['Job'][0]
@@ -88,10 +97,14 @@ class Schedule(ScheduleBase):
     Wrap an INDI/Ekos Scheduler list and provide ways to build them programmatically
     and write them to valid JSON/XML
     """
-    def __init__(self):
-        template = pkg_resources.resource_filename(__name__, os.path.join("templates", "sequence_list_template.json"))
-
-        self.from_json(filename=template)
+    def __init__(
+        self,
+        template=pkg_resources.resource_filename(__name__, os.path.join("templates", "sequence_list_template.json"))
+    ):
+        if 'json' in Path(template).suffix.lower():
+            self.from_json(filename=template)
+        else:
+            self.from_xml(filename=template)
 
         # zero out the list of jobs to initiate
         self.data['SchedulerList']['Job'] = []
