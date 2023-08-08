@@ -55,7 +55,7 @@ class Sequence(ScheduleBase):
     """
     def __init__(
         self,
-        template=pkg_resources.resource_filename(__name__, os.path.join("templates", "sequence_list_template.json"))
+        template=pkg_resources.resource_filename(__name__, os.path.join("templates", "timdimm_sequence.esq"))
     ):
         if 'json' in Path(template).suffix.lower():
             self.from_json(filename=template)
@@ -74,7 +74,7 @@ class Observation(ScheduleBase):
         dec=0.0,
         priority=10,
         sequence=Path.home() / "sequence.esq",
-        template=pkg_resources.resource_filename(__name__, os.path.join("templates", "sequence_list_template.json"))
+        template=pkg_resources.resource_filename(__name__, os.path.join("templates", "timdimm_schedule_template.esl"))
     ):
         if 'json' in Path(template).suffix.lower():
             self.from_json(filename=template)
@@ -99,7 +99,7 @@ class Schedule(ScheduleBase):
     """
     def __init__(
         self,
-        template=pkg_resources.resource_filename(__name__, os.path.join("templates", "sequence_list_template.json"))
+        template=pkg_resources.resource_filename(__name__, os.path.join("templates", "timdimm_schedule_template.esl"))
     ):
         if 'json' in Path(template).suffix.lower():
             self.from_json(filename=template)

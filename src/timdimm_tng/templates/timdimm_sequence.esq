@@ -29,10 +29,10 @@
 </Prefix>
 <Count>1</Count>
 <Delay>0</Delay>
-<PreCaptureScript>/usr/bin/true</PreCaptureScript>
-<PostCaptureScript>/usr/bin/true</PostCaptureScript>
-<PreJobScript>/usr/bin/true</PreJobScript>
-<PostJobScript>/usr/bin/true</PostJobScript>
+<PreCaptureScript>/home/tim/MMT/timdimm_tng/scripts/ekos/precapture.py</PreCaptureScript>
+<PostCaptureScript>/home/tim/MMT/timdimm_tng/scripts/ekos/postcapture.py</PostCaptureScript>
+<PreJobScript>/home/tim/MMT/timdimm_tng/scripts/ekos/prejob.py</PreJobScript>
+<PostJobScript>/home/tim/MMT/timdimm_tng/scripts/ekos/postjob.py</PostJobScript>
 <FITSDirectory>/home/tim/Pictures</FITSDirectory>
 <PlaceholderFormat>/%t/%T/%F/%t_%T_%F</PlaceholderFormat>
 <PlaceholderSuffix>3</PlaceholderSuffix>
