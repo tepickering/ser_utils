@@ -8,6 +8,7 @@ import xmltodict
 
 from pathlib import Path
 
+from astropy.table import Table
 
 class ScheduleBase(UserDict):
     """
@@ -114,3 +115,36 @@ class Schedule(ScheduleBase):
         Add an Observation instance to the schedule
         """
         self.data['SchedulerList']['Job'].append(observation)
+
+
+def mag_to_priority(mag):
+    """
+    Use a star's magnitude as a basis for calculating priority. Brighter stars have
+    higher priority since they can be observed thru more cloud cover. Range covered is from
+    -1.5 to 3.5. Sirius is brightest at -1.46, 3.5 is the faintest that can be observed usefully
+    with 1 ms exposures.
+    """
+    priority = int(4 * (mag + 1.5)) + 1
+    if priority > 20:
+        priority = 20
+    return priority
+
+
+def make_full_schedule(outfile="full_schedule.esl"):
+    sched = Schedule()
+    stars = Table.read(pkg_resources.resource_filename(__name__, "star_list.ecsv"))
+
+    for star in stars:
+        priority = mag_to_priority(star['Vmag'])
+        obs = Observation(
+            target=star['Name'],
+            ra=star['Coordinates'].ra.value,
+            dec=star['Coordinates'].dec.value,
+            priority=priority
+        )
+        sched.add_observation(dict(obs))
+
+    if outfile is not None:
+        sched.to_xml(outfile)
+
+    return sched
