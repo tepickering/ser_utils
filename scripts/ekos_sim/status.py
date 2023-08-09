@@ -8,7 +8,7 @@ import logging.handlers
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
 
-handler = logging.handlers.WatchedFileHandler(Path.home() / "timdimm.log")
+handler = logging.handlers.WatchedFileHandler(Path.home() / "ox_wagon.log")
 log.addHandler(handler)
 
 script, path = sys.argv
@@ -19,6 +19,6 @@ with open(Path.home() / "ox_wagon_status.txt", 'r') as coords:
         indistat.truncate()
         indistat.write(ox_wagon)
 
-log.info(f"Ox Wagon status: {ox_wagon}")
+log.info(f"Ox Wagon status: {ox_wagon.strip()}")
 
 sys.exit(0)

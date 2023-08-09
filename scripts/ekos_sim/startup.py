@@ -8,6 +8,9 @@ import logging.handlers
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
 
+handler = logging.handlers.WatchedFileHandler(Path.home() / "timdimm.log")
+log.addHandler(handler)
+
 log.info(f"Starting up timDIMM observing session...")
 
 sys.exit(0)

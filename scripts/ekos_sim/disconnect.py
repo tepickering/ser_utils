@@ -8,7 +8,7 @@ import logging.handlers
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
 
-handler = logging.handlers.WatchedFileHandler(Path.home() / "timdimm.log")
+handler = logging.handlers.WatchedFileHandler(Path.home() / "ox_wagon.log")
 log.addHandler(handler)
 
 log.info("Ox Wagon disconnected")

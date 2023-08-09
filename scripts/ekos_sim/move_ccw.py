@@ -8,6 +8,9 @@ import logging.handlers
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
 
+handler = logging.handlers.WatchedFileHandler(Path.home() / "ox_wagon.log")
+log.addHandler(handler)
+
 log.info(f"Ox Wagon receiving move CCW command...")
 
 sys.exit(0)
