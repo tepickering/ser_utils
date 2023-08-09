@@ -73,7 +73,7 @@ class Observation(ScheduleBase):
         ra=0.0,
         dec=0.0,
         priority=10,
-        sequence=Path.home() / "sequence.esq",
+        sequence=pkg_resources.resource_filename(__name__, os.path.join("templates", "timdimm_sequence.esq")),
         template=pkg_resources.resource_filename(__name__, os.path.join("templates", "timdimm_schedule_template.esl"))
     ):
         if 'json' in Path(template).suffix.lower():
@@ -85,7 +85,7 @@ class Observation(ScheduleBase):
         self.data = self.data['SchedulerList']['Job'][0]
 
         # configure from the arguments
-        self.data['Target'] = target
+        self.data['Name'] = target
         self.data['Priority'] = f"{priority}"  # XML can only be strings so we make sure they are
         self.data['Coordinates']['J2000RA'] = f"{ra}"
         self.data['Coordinates']['J2000DE'] = f"{dec}"
