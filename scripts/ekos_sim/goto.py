@@ -11,6 +11,8 @@ log.setLevel(logging.INFO)
 script, az = sys.argv
 
 handler = logging.handlers.WatchedFileHandler(Path.home() / "ox_wagon.log")
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+handler.setFormatter(formatter)
 log.addHandler(handler)
 
 log.info(f"Ox Wagon receiving slew command to {az}...")
