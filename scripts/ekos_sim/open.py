@@ -13,7 +13,6 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-
 with open(Path.home() / "ox_wagon_status.txt", 'r') as coords:
     str = coords.readline()
 

@@ -15,7 +15,7 @@ log.addHandler(handler)
 
 with open(Path.home() / "ox_wagon_status.txt", 'w') as coords:
     coords.truncate()
-    coords.write('1 0 0')
+    coords.write('1 0 0.0')
 
 log.info(f"Parking Ox Wagon...")
 
