@@ -13,11 +13,15 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-script, path = sys.argv
+
+with open(Path.home() / "ox_wagon_status.txt", 'r') as coords:
+    str = coords.readline()
+
+str = str[0] + ' 1 ' + str[4:]
 
 with open(Path.home() / "ox_wagon_status.txt", 'w') as coords:
     coords.truncate()
-    coords.write('0 1 0')
+    coords.write(str)
 
 log.info(f"Unparking and Opening Ox Wagon...")
 

@@ -15,9 +15,14 @@ log.addHandler(handler)
 
 script, path = sys.argv
 
+with open(Path.home() / "ox_wagon_status.txt", 'r') as coords:
+    str = coords.readline()
+
+str = str[0] + ' 0 ' + str[4:]
+
 with open(Path.home() / "ox_wagon_status.txt", 'w') as coords:
     coords.truncate()
-    coords.write('1 0 0')
+    coords.write(str)
 
 log.info(f"Closing and Parking Ox Wagon...")
 
