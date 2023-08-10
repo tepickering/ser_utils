@@ -23,6 +23,6 @@ with open(Path.home() / "ox_wagon_status.txt", 'w') as coords:
     coords.truncate()
     coords.write(str)
 
-log.info(f"Unparking and Opening Ox Wagon...")
+log.info(f"Opening Ox Wagon...")
 
 sys.exit(0)

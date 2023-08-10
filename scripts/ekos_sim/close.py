@@ -13,8 +13,6 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-script, path = sys.argv
-
 with open(Path.home() / "ox_wagon_status.txt", 'r') as coords:
     str = coords.readline()
 
@@ -24,6 +22,6 @@ with open(Path.home() / "ox_wagon_status.txt", 'w') as coords:
     coords.truncate()
     coords.write(str)
 
-log.info(f"Closing and Parking Ox Wagon...")
+log.info(f"Closing Ox Wagon...")
 
 sys.exit(0)
