@@ -7,7 +7,7 @@
 <RefocusEveryN enabled='false'>60</RefocusEveryN>
 <RefocusOnMeridianFlip enabled='false'/>
 <Job>
-<Exposure>0.01</Exposure>
+<Exposure>1</Exposure>
 <Format>Mono</Format>
 <Encoding>FITS</Encoding>
 <Binning>
