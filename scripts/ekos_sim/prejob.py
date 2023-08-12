@@ -33,6 +33,8 @@ mount_props = mount_interface.GetAll("org.kde.kstars.Ekos.Mount")
 capture_props = capture_interface.GetAll("org.kde.kstars.Ekos.Capture")
 
 az, el = float(mount_props['horizontalCoords'][0]), float(mount_props['horizontalCoords'][1])
+ra, dec = float(mount_props['equatorialCoords'][0]), float(mount_props['equatorialCoords'][1])
+ha = float(mount_props['hourAngle'])
 target = capture_props['targetName']
 
 log.info(f"Observing {target} at Az={az:.1f}°, El={el:.1f}°")
@@ -40,10 +42,13 @@ log.info(f"Observing {target} at Az={az:.1f}°, El={el:.1f}°")
 status = {
     'target': target,
     'az': az,
-    'el': el
+    'el': el,
+    'ra': ra,
+    'dec': dec,
+    'ha': ha
 }
 
 with open(Path.home() / "status.json", 'w') as fp:
-    fp.write(json.dumps(status))
+    fp.write(json.dumps(status, indent=4))
 
 sys.exit(0)
