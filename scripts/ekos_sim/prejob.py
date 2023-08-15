@@ -48,7 +48,7 @@ status = {
     'ha': ha
 }
 
-with open(Path.home() / "status.json", 'w') as fp:
+with open(Path.home() / "pointing_status.json", 'w') as fp:
     fp.write(json.dumps(status, indent=4))
 
 sys.exit(0)

@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 
 import sys
-
+from pathlib import Path
 import json
 
-status = {
-    'roof_status': {
-        'open_ok': 1,
-        'reasons': "Ready to roll"
-    }
-}
 
-print(json.dumps(status))
+with open(Path.home() / "roof_status.json", 'r') as fp:
+    status = json.load(fp)
+
+print(json.dumps(status, indent=4))
 
 sys.exit(0)
