@@ -8,7 +8,10 @@ import logging.handlers
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
 
-script, az = sys.argv
+handler = logging.handlers.WatchedFileHandler(Path.home() / "timdimm.log")
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+handler.setFormatter(formatter)
+log.addHandler(handler)
 
 log.info(f"Shutting down timDIMM observing session...")
 

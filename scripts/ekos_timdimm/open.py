@@ -8,15 +8,15 @@ import logging.handlers
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
 
-handler = logging.handlers.WatchedFileHandler(Path.home() / "timdimm.log")
+handler = logging.handlers.WatchedFileHandler(Path.home() / "ox_wagon.log")
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+handler.setFormatter(formatter)
 log.addHandler(handler)
-
-script, path = sys.argv
 
 with open(Path.home() / "ox_wagon_status.txt", 'w') as coords:
     coords.truncate()
-    coords.write('0 1 0')
+    coords.write('0 0 0.0')
 
-log.info(f"Unparking and Opening Ox Wagon...")
+log.info(f"Unparking Ox Wagon...")
 
 sys.exit(0)

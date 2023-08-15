@@ -8,11 +8,11 @@ import logging.handlers
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
 
-handler = logging.handlers.WatchedFileHandler(Path.home() / "ox_wagon.log")
+handler = logging.handlers.WatchedFileHandler(Path.home() / "timdimm.log")
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-log.info(f"Ox Wagon receiving move CCW command...")
+log.info(f"Running post-capture...")
 
 sys.exit(0)
