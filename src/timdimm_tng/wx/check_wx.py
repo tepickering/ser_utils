@@ -33,22 +33,33 @@ def get_current_conditions():
     humidity = []
     precip = []
     wind = []
-    for k, i in wx_dict.items():
+    cloud = []
+    for _, i in wx_dict.items():
         time_delt = Time.now() + 2 * u.hour - Time(i.get('TimeStamp_SAST'))
+        # only use data from the last 10 minutes
         if time_delt < 10 * u.min and i['Valid']:
             humidity.append(i['Rel_Hum'])
             precip.append(i['SkyCon'])
             wind.append(i['Wind_speed'])
+            if 'Cloud' in i:
+                cloud.append(i['Cloud'])
 
     # make sure we have at least one weather station that has reported within 10 minues
     if len(humidity) > 0:
-        # set humidity limit to 90%, precip to DRY for every sensor, and wind limit to 45 km/h
+        # set humidity limit to 90%, precip to DRY for every sensor,
+        # wind limit to 50 km/h, and cloud limit to -20 C
         humidity_check = all(rh < 90 for rh in humidity)
         precip_check = all(p == 'DRY' for p in precip)
-        wind_check = all(w < 45 for w in wind)
-        checks = [humidity_check, precip_check, wind_check]
+        wind_check = all(w < 50 for w in wind)
+        cloud_check = all(c < -20 for c in cloud)
+        checks = {
+            'humidity': humidity_check,
+            'precip': precip_check,
+            'wind': wind_check,
+            'cloud': cloud_check
+        }
     else:
         # if no weather station has reported within 10 minutes, then we have to close
-        checks = [False]
+        checks = None
 
     return wx_dict, checks
