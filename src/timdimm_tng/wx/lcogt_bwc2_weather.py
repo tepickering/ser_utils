@@ -72,7 +72,7 @@ def get_lcogt_bwc2_data(sensor=0):
 def get_weather():
     d = {}
 
-    valid, BW_datetime, data = get_lcogt_bwc2_data(2)
+    valid, BW_datetime, data = get_lcogt_bwc2_data(sensor=1)
 
     if valid is False:
         d['Valid'] = False
