@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 """
 When ekos is running with the dome scripting interface active, this script gets run every couple of seconds.
@@ -15,6 +15,8 @@ import dbus
 
 from astropy.time import Time
 import astropy.units as u
+
+from timdimm_tng.wx.check_wx import get_current_conditions, WX_LIMITS
 
 bus = dbus.SessionBus()
 
@@ -41,39 +43,36 @@ last_bad = Time(roof_status['last_bad'], format='isot')
 wx_message = ""
 open_ok = True
 
-# placeholder, query SAAO wx stations in operation
-wx_status = {
-    'rh': 95.0,
-    'temp': 5.0,
-    'wind': 25.0,
-    'precip': False,
-    'cloudy': False
-}
+wx_status, wx_checks = get_current_conditions()
 
-# humidity limit of 90%
-if wx_status['rh'] >= 90.0:
+if wx_checks is None:
     open_ok = False
-    wx_message += f"High RH = {wx_status['rh']: .1f}%; "
+    wx_message = "No weather data available within the last 10 minutes"
+else:
+    # humidity limit exceeded
+    if wx_checks['humidity']:
+        open_ok = False
+        wx_message += f"High RH >{WX_LIMITS['humidity']}%; "
 
-# temp limit of -5 C
-if wx_status['temp'] <= -5.0:
-    open_ok = False
-    wx_message += f"Too cold. T = {wx_status['temp']: .1f}; "
+    # below cold temp limit
+    if wx_checks['temp']:
+        open_ok = False
+        wx_message += f"Too cold, T < {WX_LIMITS['temp']}; "
 
-# wind limit of 50 kph
-if wx_status['wind'] >= 50.0:
-    open_ok = False
-    wx_message += f"Too windy, wind = {wx_status['wind']: .1f} kph; "
+    # wind limit of 50 kph
+    if wx_checks['wind']:
+        open_ok = False
+        wx_message += f"Too windy, wind > {WX_LIMITS['wind']} kph; "
 
-# LCO only good precip sensor and not always timely
-if wx_status['precip']:
-    open_ok = False
-    wx_message += "Precip detected; "
+    # LCO only good precip sensor and not always timely
+    if wx_status['precip']:
+        open_ok = False
+        wx_message += "Precip detected; "
 
-# LCO only cloud sensor and not always timely
-if wx_status['cloudy']:
-    open_ok = False
-    wx_message += "Too cloudy"
+    # LCO only cloud sensor and not always timely
+    if wx_status['cloudy']:
+        open_ok = False
+        wx_message += "Too cloudy"
 
 if not open_ok:
     last_bad = Time.now()
@@ -102,7 +101,5 @@ with open(Path.home() / "ox_wagon_status.txt", 'r') as coords:
     with open(path, 'w') as indistat:
         indistat.truncate()
         indistat.write(ox_wagon)
-
-# log.info(f"Ox Wagon status: {ox_wagon.strip()}")
 
 sys.exit(0)

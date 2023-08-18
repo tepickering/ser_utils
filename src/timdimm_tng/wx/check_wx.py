@@ -9,7 +9,16 @@ from timdimm_tng.wx.lcogt_bwc2_weather import get_weather as lcogt_bwc2_wx
 from timdimm_tng.wx.gfz_weather import get_weather as gfz_wx
 
 
-__all__ = ['get_current_conditions']
+__all__ = ['get_current_conditions', 'WX_LIMITS']
+
+
+# define operational weather limits for timdimm operation
+WX_LIMITS = {
+    'humidity': 90,
+    'wind': 50,
+    'temp': -5,
+    'cloud': -20
+}
 
 
 def get_current_conditions():
@@ -30,9 +39,11 @@ def get_current_conditions():
     # get the current weather conditions from the GFZ weather station
     wx_dict['GFZ'] = gfz_wx()
 
+
     humidity = []
     precip = []
     wind = []
+    temp = []
     cloud = []
     for _, i in wx_dict.items():
         time_delt = Time.now() + 2 * u.hour - Time(i.get('TimeStamp_SAST'))
@@ -41,6 +52,7 @@ def get_current_conditions():
             humidity.append(i['Rel_Hum'])
             precip.append(i['SkyCon'])
             wind.append(i['Wind_speed'])
+            temp.append(i['Temperature'])
             if 'Cloud' in i:
                 cloud.append(i['Cloud'])
 
@@ -48,18 +60,20 @@ def get_current_conditions():
     if len(humidity) > 0:
         # set humidity limit to 90%, precip to DRY for every sensor,
         # wind limit to 50 km/h, and cloud limit to -20 C
-        humidity_check = all(rh < 90 for rh in humidity)
+        humidity_check = all(rh < WX_LIMITS['humidity'] for rh in humidity)
         precip_check = all(p == 'DRY' for p in precip)
-        wind_check = all(w < 50 for w in wind)
-        cloud_check = all(c < -20 for c in cloud)
+        wind_check = all(w < WX_LIMITS['wind'] for w in wind)
+        cloud_check = all(c < WX_LIMITS['cloud'] for c in cloud)
+        temp_check = all(t > WX_LIMITS['temp'] for t in temp)
         checks = {
             'humidity': humidity_check,
             'precip': precip_check,
             'wind': wind_check,
+            'temp': temp_check,
             'cloud': cloud_check
         }
     else:
-        # if no weather station has reported within 10 minutes, then we have to close
+        # if no weather station has reported within 10 minutes, then we will have to close
         checks = None
 
     return wx_dict, checks
