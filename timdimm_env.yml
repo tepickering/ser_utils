@@ -18,11 +18,8 @@ dependencies:
   - ipympl
   - notebook
   - beautifulsoup4
-  - glib
-  - dbus
-  - gobject-introspection
-  - pygobject
   - pip:
+    - sdbus
     - astroplan
     - photutils
     - xmltodict
