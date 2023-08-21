@@ -1,119 +1,127 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Tuple
+from typing import List, Tuple
 
-from sdbus import (DbusDeprecatedFlag, DbusInterfaceCommonAsync,
-                   DbusNoReplyFlag, DbusPropertyConstFlag,
-                   DbusPropertyEmitsChangeFlag,
-                   DbusPropertyEmitsInvalidationFlag, DbusPropertyExplicitFlag,
-                   DbusUnprivilegedFlag, dbus_method_async,
-                   dbus_property_async, dbus_signal_async)
+from sdbus import (
+    DbusInterfaceCommon,
+    dbus_method,
+)
 
 
-class OrgKdeKstarsINDIInterface(
-    DbusInterfaceCommonAsync,
+class INDIInterface(
+    DbusInterfaceCommon,
     interface_name='org.kde.kstars.INDI',
 ):
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='ias',
         result_signature='b',
+        method_name='start'
     )
-    async def start(
+    def start(
         self,
         port: int,
         drivers: List[str],
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='s',
         result_signature='b',
+        method_name='stop'
     )
-    async def stop(
+    def stop(
         self,
         port: str,
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='si',
         result_signature='b',
+        method_name='connect'
     )
-    async def connect(
+    def connect(
         self,
         host: str,
         port: int,
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='si',
         result_signature='b',
+        method_name='disconnet'
     )
-    async def disconnect(
+    def disconnect(
         self,
         host: str,
         port: int,
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         result_signature='as',
+        method_name='getDevices'
     )
-    async def get_devices(
+    def get_devices(
         self,
     ) -> List[str]:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='s',
         result_signature='as',
+        method_name='getProperties'
     )
-    async def get_properties(
+    def get_properties(
         self,
         device: str,
     ) -> List[str]:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='ss',
         result_signature='s',
+        method_name='getPropertyState'
     )
-    async def get_property_state(
+    def get_property_state(
         self,
         device: str,
         property: str,
     ) -> str:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='i',
         result_signature='as',
+        method_name='getDevicesPaths'
     )
-    async def get_devices_paths(
+    def get_devices_paths(
         self,
         interface: int,
     ) -> List[str]:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='ss',
         result_signature='b',
+        method_name='sendProperty'
     )
-    async def send_property(
+    def send_property(
         self,
         device: str,
         property: str,
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='sss',
         result_signature='s',
+        method_name='getLight'
     )
-    async def get_light(
+    def get_light(
         self,
         device: str,
         property: str,
@@ -121,11 +129,12 @@ class OrgKdeKstarsINDIInterface(
     ) -> str:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='ssss',
         result_signature='b',
+        method_name='setSwitch'
     )
-    async def set_switch(
+    def set_switch(
         self,
         device: str,
         property: str,
@@ -134,11 +143,12 @@ class OrgKdeKstarsINDIInterface(
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='sss',
         result_signature='s',
+        method_name='getSwitch'
     )
-    async def get_switch(
+    def get_switch(
         self,
         device: str,
         property: str,
@@ -146,11 +156,12 @@ class OrgKdeKstarsINDIInterface(
     ) -> str:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='ssss',
         result_signature='b',
+        method_name='setText'
     )
-    async def set_text(
+    def set_text(
         self,
         device: str,
         property: str,
@@ -159,11 +170,12 @@ class OrgKdeKstarsINDIInterface(
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='sss',
         result_signature='s',
+        method_name='getText'
     )
-    async def get_text(
+    def get_text(
         self,
         device: str,
         property: str,
@@ -171,11 +183,12 @@ class OrgKdeKstarsINDIInterface(
     ) -> str:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='sssd',
         result_signature='b',
+        method_name='setNumber'
     )
-    async def set_number(
+    def set_number(
         self,
         device: str,
         property: str,
@@ -184,11 +197,12 @@ class OrgKdeKstarsINDIInterface(
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='sss',
         result_signature='d',
+        method_name='getNumber'
     )
-    async def get_number(
+    def get_number(
         self,
         device: str,
         property: str,
@@ -196,11 +210,12 @@ class OrgKdeKstarsINDIInterface(
     ) -> float:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='sss',
         result_signature='aysi',
+        method_name='getBLOBData'
     )
-    async def get_b_l_o_b_data(
+    def get_blob_data(
         self,
         device: str,
         property: str,
@@ -208,11 +223,12 @@ class OrgKdeKstarsINDIInterface(
     ) -> Tuple[bytes, str, int]:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='sss',
         result_signature='ssi',
+        method_name='getBLOBFile'
     )
-    async def get_b_l_o_b_file(
+    def get_blob_file(
         self,
         device: str,
         property: str,

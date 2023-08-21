@@ -1,358 +1,367 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Tuple
+from typing import List
 
-from sdbus import (DbusDeprecatedFlag, DbusInterfaceCommonAsync,
-                   DbusNoReplyFlag, DbusPropertyConstFlag,
-                   DbusPropertyEmitsChangeFlag,
-                   DbusPropertyEmitsInvalidationFlag, DbusPropertyExplicitFlag,
-                   DbusUnprivilegedFlag, dbus_method_async,
-                   dbus_property_async, dbus_signal_async)
+from sdbus import (
+    DbusInterfaceCommon,
+    dbus_method,
+    dbus_property,
+)
 
 
-class OrgKdeKstarsEkosCaptureInterface(
-    DbusInterfaceCommonAsync,
+class EkosCaptureInterface(
+    DbusInterfaceCommon,
     interface_name='org.kde.kstars.Ekos.Capture',
 ):
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='start'
     )
-    async def start(
+    def start(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='abort'
     )
-    async def abort(
+    def abort(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='suspend'
     )
-    async def suspend(
+    def suspend(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='stop'
     )
-    async def stop(
+    def stop(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='pause'
     )
-    async def pause(
+    def pause(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='toggleSequence'
     )
-    async def toggle_sequence(
+    def toggle_sequence(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='s',
+        method_name='restartCamera'
     )
-    async def restart_camera(
+    def restart_camera(
         self,
         name: str,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='b',
+        method_name='toggleVideo'
     )
-    async def toggle_video(
+    def toggle_video(
         self,
         enabled: bool,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='sb',
         result_signature='b',
+        method_name='loadSequenceQueue'
     )
-    async def load_sequence_queue(
+    def load_sequence_queue(
         self,
         file_u_r_l: str,
         ignore_target: bool,
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='s',
         result_signature='b',
+        method_name='saveSequenceQueue'
     )
-    async def save_sequence_queue(
+    def save_sequence_queue(
         self,
         path: str,
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='clearSequenceQueue'
     )
-    async def clear_sequence_queue(
+    def clear_sequence_queue(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         result_signature='s',
+        method_name='getSequenceQueueStatus'
     )
-    async def get_sequence_queue_status(
+    def get_sequence_queue_status(
         self,
     ) -> str:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='bd',
+        method_name='setMaximumGuidingDeviation'
     )
-    async def set_maximum_guiding_deviation(
+    def set_maximum_guiding_deviation(
         self,
         enable: bool,
         value: float,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='bd',
+        method_name='setInSequenceFocus'
     )
-    async def set_in_sequence_focus(
+    def set_in_sequence_focus(
         self,
         enable: bool,
         h_f_r: float,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         result_signature='i',
+        method_name='getJobCount'
     )
-    async def get_job_count(
+    def get_job_count(
         self,
     ) -> int:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         result_signature='i',
+        method_name='getPendingJobCount'
     )
-    async def get_pending_job_count(
+    def get_pending_job_count(
         self,
     ) -> int:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='i',
         result_signature='s',
+        method_name='getJobState'
     )
-    async def get_job_state(
+    def get_job_state(
         self,
         id: int,
     ) -> str:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='i',
         result_signature='s',
+        method_name='getJobFilterName'
     )
-    async def get_job_filter_name(
+    def get_job_filter_name(
         self,
         id: int,
     ) -> str:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='i',
         result_signature='i',
+        method_name='getJobImageProgress'
     )
-    async def get_job_image_progress(
+    def get_job_image_progress(
         self,
         id: int,
     ) -> int:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='i',
         result_signature='i',
+        method_name='getJobImageCount'
     )
-    async def get_job_image_count(
+    def get_job_image_count(
         self,
         id: int,
     ) -> int:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='i',
         result_signature='d',
+        method_name='getJobExposureProgress'
     )
-    async def get_job_exposure_progress(
+    def get_job_exposure_progress(
         self,
         id: int,
     ) -> float:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='i',
         result_signature='d',
+        method_name='getJobExposureDuration'
     )
-    async def get_job_exposure_duration(
+    def get_job_exposure_duration(
         self,
         id: int,
     ) -> float:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='i',
         result_signature='i',
+        method_name='getJobFrameType'
     )
-    async def get_job_frame_type(
+    def get_job_frame_type(
         self,
         id: int,
     ) -> int:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         result_signature='d',
+        method_name='getProgressPercentage'
     )
-    async def get_progress_percentage(
+    def get_progress_percentage(
         self,
     ) -> float:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         result_signature='i',
+        method_name='getActiveJobID'
     )
-    async def get_active_job_i_d(
+    def get_active_job_id(
         self,
     ) -> int:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         result_signature='i',
+        method_name='getActiveJobRemainingTime'
     )
-    async def get_active_job_remaining_time(
+    def get_active_job_remaining_time(
         self,
     ) -> int:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         result_signature='i',
+        method_name='getOverallRemainingTime'
     )
-    async def get_overall_remaining_time(
+    def get_overall_remaining_time(
         self,
     ) -> int:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='clearAutoFocusHFR'
     )
-    async def clear_auto_focus_h_f_r(
+    def clear_auto_focus_h_f_r(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='ignoreSequenceHistory'
     )
-    async def ignore_sequence_history(
+    def ignore_sequence_history(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='si',
+        method_name='setCapturedFramesMap'
     )
-    async def set_captured_frames_map(
+    def set_captured_frames_map(
         self,
         signature: str,
         count: int,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='s',
+        property_name='targetName'
     )
     def target_name(self) -> str:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='s',
+        property_name='observerName'
     )
     def observer_name(self) -> str:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='s',
+        property_name='opticalTrain'
     )
     def optical_train(self) -> str:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='s',
+        property_name='camera'
     )
     def camera(self) -> str:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='s',
+        property_name='filterWheel'
     )
     def filter_wheel(self) -> str:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='s',
+        property_name='filter'
     )
     def filter(self) -> str:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='b',
+        property_name='coolerControl'
     )
     def cooler_control(self) -> bool:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='as',
+        property_name='logText'
     )
     def log_text(self) -> List[str]:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='i',
+        property_name='status'
     )
     def status(self) -> int:
         raise NotImplementedError
-
-    @dbus_signal_async(
-        signal_signature='s',
-    )
-    def new_log(self) -> str:
-        raise NotImplementedError
-
-    @dbus_signal_async(
-    )
-    def meridian_flip_started(self) -> None:
-        raise NotImplementedError
-
-    @dbus_signal_async(
-        signal_signature='(i)',
-    )
-    def new_status(self) -> Tuple[int]:
-        raise NotImplementedError
-
-    @dbus_signal_async(
-        signal_signature='a{sv}',
-    )
-    def capture_complete(self) -> Dict[str, Tuple[str, Any]]:
-        raise NotImplementedError
-
-    @dbus_signal_async(
-    )
-    def ready(self) -> None:
-        raise NotImplementedError
-
