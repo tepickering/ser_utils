@@ -1,95 +1,94 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Tuple
+from typing import List
 
-from sdbus import (DbusDeprecatedFlag, DbusInterfaceCommonAsync,
-                   DbusNoReplyFlag, DbusPropertyConstFlag,
-                   DbusPropertyEmitsChangeFlag,
-                   DbusPropertyEmitsInvalidationFlag, DbusPropertyExplicitFlag,
-                   DbusUnprivilegedFlag, dbus_method_async,
-                   dbus_property_async, dbus_signal_async)
+from sdbus import (
+    DbusInterfaceCommon,
+    dbus_method,
+    dbus_property
+)
 
 
-class OrgKdeKstarsEkosSchedulerInterface(
-    DbusInterfaceCommonAsync,
+SCHEDULER_SERVICE = "org.kde.kstars"
+SCHEDULER_PATH = "/KStars/Ekos/Scheduler"
+
+
+class EkosSchedulerInterface(
+    DbusInterfaceCommon,
     interface_name='org.kde.kstars.Ekos.Scheduler',
 ):
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='start'
     )
-    async def start(
+    def start(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='stop'
     )
-    async def stop(
+    def stop(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='removeAllJobs'
     )
-    async def remove_all_jobs(
+    def remove_all_jobs(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='s',
         result_signature='b',
+        method_name="loadScheduler"
     )
-    async def load_scheduler(
+    def load_scheduler(
         self,
         file_u_r_l: str,
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
         input_signature='s',
+        method_name='setSequence'
     )
-    async def set_sequence(
+    def set_sequence(
         self,
         sequence_file_u_r_l: str,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_method_async(
+    @dbus_method(
+        method_name='resetAllJobs'
     )
-    async def reset_all_jobs(
+    def reset_all_jobs(
         self,
     ) -> None:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='s',
+        property_name='profile'
     )
     def profile(self) -> str:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='as',
+        property_name='logText'
     )
     def log_text(self) -> List[str]:
         raise NotImplementedError
 
-    @dbus_property_async(
+    @dbus_property(
         property_signature='i',
+        property_name='status'
     )
     def status(self) -> int:
         raise NotImplementedError
-
-    @dbus_signal_async(
-        signal_signature='(i)',
-    )
-    def new_status(self) -> Tuple[int]:
-        raise NotImplementedError
-
-    @dbus_signal_async(
-        signal_signature='s',
-    )
-    def new_log(self) -> str:
-        raise NotImplementedError
-
