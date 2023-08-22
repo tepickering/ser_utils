@@ -78,14 +78,16 @@ if wx_status['cloudy']:
 if not open_ok:
     last_bad = Time.now()
 
+safe_period = 5 * u.min
+
 last_bad_diff = (Time.now() - last_bad)
-if open_ok and last_bad_diff > 30 * u.min:
+if open_ok and last_bad_diff > safe_period:
     wx_message = "Safe to open"
     scheduler_status = int(properties['status'])
     if scheduler_status == 0:
         log.info("Safe to open, but scheduler stopped. Restarting...")
         sched_iface.start()
-elif open_ok and last_bad_diff <= 30 * u.min:
+elif open_ok and last_bad_diff <= safe_period:
     open_ok = False
     wx_message = f"Only safe for the last {last_bad_diff.to(u.min): .1f}"
 
