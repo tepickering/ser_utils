@@ -14,6 +14,13 @@ class EkosCaptureInterface(
     DbusInterfaceCommon,
     interface_name='org.kde.kstars.Ekos.Capture',
 ):
+    def __init__(self, *args, **kwargs):
+        super(EkosCaptureInterface, self).__init__(
+            service_name="org.kde.kstars",
+            object_path="/KStars/Ekos/Capture",
+            *args,
+            **kwargs
+        )
 
     @dbus_method(
         method_name='start'

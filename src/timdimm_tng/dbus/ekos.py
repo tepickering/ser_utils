@@ -15,6 +15,14 @@ class EkosInterface(
     interface_name='org.kde.kstars.Ekos',
 ):
 
+    def __init__(self, *args, **kwargs):
+        super(EkosInterface, self).__init__(
+            service_name="org.kde.kstars",
+            object_path="/KStars/Ekos",
+            *args,
+            **kwargs
+        )
+
     @dbus_method(
         method_name='connectDevices'
     )

@@ -10,14 +10,17 @@ from sdbus import (
 )
 
 
-SCHEDULER_SERVICE = "org.kde.kstars"
-SCHEDULER_PATH = "/KStars/Ekos/Scheduler"
-
-
 class EkosSchedulerInterface(
     DbusInterfaceCommon,
     interface_name='org.kde.kstars.Ekos.Scheduler',
 ):
+    def __init__(self, *args, **kwargs):
+        super(EkosSchedulerInterface, self).__init__(
+            service_name="org.kde.kstars",
+            object_path="/KStars/Ekos/Scheduler",
+            *args,
+            **kwargs
+        )
 
     @dbus_method(
         method_name='start'

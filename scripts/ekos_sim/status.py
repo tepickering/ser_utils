@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 """
 When ekos is running with the dome scripting interface active, this script gets run every couple of seconds.
@@ -11,12 +11,22 @@ from pathlib import Path
 import logging
 import logging.handlers
 
-import dbus
+import sdbus
 
 from astropy.time import Time
 import astropy.units as u
 
-bus = dbus.SessionBus()
+from timdimm_tng.dbus.scheduler import EkosSchedulerInterface
+from timdimm_tng.dbus.mount import EkosMountInterface
+from timdimm_tng.dbus.indi import INDIInterface
+from timdimm_tng.dbus.ekos import EkosInterface
+
+bus = sdbus.sd_bus_open_user()
+
+scheduler = EkosSchedulerInterface(bus=bus)
+mount = EkosMountInterface(bus=bus)
+indi = INDIInterface(bus=bus)
+ekos = EkosInterface(bus=bus)
 
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
@@ -25,12 +35,6 @@ handler = logging.handlers.WatchedFileHandler(Path.home() / "ox_wagon.log")
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 log.addHandler(handler)
-
-# set up dbus access to the ekos scheduler
-remote_obj = bus.get_object("org.kde.kstars", "/KStars/Ekos/Scheduler")
-sched_iface = dbus.Interface(remote_obj, 'org.kde.kstars.Ekos.Scheduler')
-prop_iface = dbus.Interface(remote_obj, dbus_interface='org.freedesktop.DBus.Properties')
-properties = prop_iface.GetAll("org.kde.kstars.Ekos.Scheduler")
 
 script, path = sys.argv
 
@@ -83,10 +87,9 @@ safe_period = 5 * u.min
 last_bad_diff = (Time.now() - last_bad)
 if open_ok and last_bad_diff > safe_period:
     wx_message = "Safe to open"
-    scheduler_status = int(properties['status'])
-    if scheduler_status == 0:
+    if scheduler.status == 0:
         log.info("Safe to open, but scheduler stopped. Restarting...")
-        sched_iface.start()
+        scheduler.start()
 elif open_ok and last_bad_diff <= safe_period:
     open_ok = False
     wx_message = f"Only safe for the last {last_bad_diff.to(u.min): .1f}"

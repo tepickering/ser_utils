@@ -14,6 +14,13 @@ class EkosMountInterface(
     DbusInterfaceCommon,
     interface_name='org.kde.kstars.Ekos.Mount',
 ):
+    def __init__(self, *args, **kwargs):
+        super(EkosMountInterface, self).__init__(
+            service_name="org.kde.kstars",
+            object_path="/KStars/Ekos/Mount",
+            *args,
+            **kwargs
+        )
 
     @dbus_method(
         input_signature='dd',

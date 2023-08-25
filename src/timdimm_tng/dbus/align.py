@@ -14,6 +14,13 @@ class EkosAlignInterface(
     DbusInterfaceCommon,
     interface_name='org.kde.kstars.Ekos.Align',
 ):
+    def __init__(self, *args, **kwargs):
+        super(EkosAlignInterface, self).__init__(
+            service_name="org.kde.kstars",
+            object_path="/KStars/Ekos/Align",
+            *args,
+            **kwargs
+        )
 
     @dbus_method(
         method_name='abort'
