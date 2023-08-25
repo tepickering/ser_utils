@@ -16,17 +16,17 @@ import sdbus
 from astropy.time import Time
 import astropy.units as u
 
-from timdimm_tng.dbus.scheduler import EkosSchedulerInterface
-from timdimm_tng.dbus.mount import EkosMountInterface
-from timdimm_tng.dbus.indi import INDIInterface
-from timdimm_tng.dbus.ekos import EkosInterface
+from timdimm_tng.dbus.scheduler import Scheduler
+from timdimm_tng.dbus.mount import Mount
+from timdimm_tng.dbus.indi import INDI
+from timdimm_tng.dbus.ekos import Ekos
 
 bus = sdbus.sd_bus_open_user()
 
-scheduler = EkosSchedulerInterface(bus=bus)
-mount = EkosMountInterface(bus=bus)
-indi = INDIInterface(bus=bus)
-ekos = EkosInterface(bus=bus)
+scheduler = Scheduler(bus=bus)
+mount = Mount(bus=bus)
+indi = INDI(bus=bus)
+ekos = Ekos(bus=bus)
 
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)

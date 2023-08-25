@@ -10,12 +10,12 @@ from sdbus import (
 )
 
 
-class EkosAlignInterface(
+class Align(
     DbusInterfaceCommon,
     interface_name='org.kde.kstars.Ekos.Align',
 ):
     def __init__(self, *args, **kwargs):
-        super(EkosAlignInterface, self).__init__(
+        super(Align, self).__init__(
             service_name="org.kde.kstars",
             object_path="/KStars/Ekos/Align",
             *args,

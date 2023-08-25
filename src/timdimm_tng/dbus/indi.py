@@ -9,12 +9,12 @@ from sdbus import (
 )
 
 
-class INDIInterface(
+class INDI(
     DbusInterfaceCommon,
     interface_name='org.kde.kstars.INDI',
 ):
     def __init__(self, *args, **kwargs):
-        super(INDIInterface, self).__init__(
+        super(INDI, self).__init__(
             service_name="org.kde.kstars",
             object_path="/KStars/INDI",
             *args,

@@ -10,12 +10,12 @@ from sdbus import (
 )
 
 
-class EkosMountInterface(
+class Mount(
     DbusInterfaceCommon,
     interface_name='org.kde.kstars.Ekos.Mount',
 ):
     def __init__(self, *args, **kwargs):
-        super(EkosMountInterface, self).__init__(
+        super(Mount, self).__init__(
             service_name="org.kde.kstars",
             object_path="/KStars/Ekos/Mount",
             *args,

@@ -10,13 +10,13 @@ from sdbus import (
 )
 
 
-class EkosInterface(
+class Ekos(
     DbusInterfaceCommon,
     interface_name='org.kde.kstars.Ekos',
 ):
 
     def __init__(self, *args, **kwargs):
-        super(EkosInterface, self).__init__(
+        super(Ekos, self).__init__(
             service_name="org.kde.kstars",
             object_path="/KStars/Ekos",
             *args,

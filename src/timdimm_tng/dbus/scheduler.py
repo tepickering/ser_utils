@@ -10,12 +10,12 @@ from sdbus import (
 )
 
 
-class EkosSchedulerInterface(
+class Scheduler(
     DbusInterfaceCommon,
     interface_name='org.kde.kstars.Ekos.Scheduler',
 ):
     def __init__(self, *args, **kwargs):
-        super(EkosSchedulerInterface, self).__init__(
+        super(Scheduler, self).__init__(
             service_name="org.kde.kstars",
             object_path="/KStars/Ekos/Scheduler",
             *args,
