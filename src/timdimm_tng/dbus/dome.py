@@ -17,7 +17,7 @@ class Dome(
     def __init__(self, *args, **kwargs):
         super(Dome, self).__init__(
             service_name="org.kde.kstars",
-            object_path="/KStars/INDI/Dome/1",
+            object_path="/KStars/INDI/Dome/3",
             *args,
             **kwargs
         )

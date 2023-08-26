@@ -14,12 +14,16 @@ import logging.handlers
 import sdbus
 
 from astropy.time import Time
+from astropy.coordinates import get_sun, AltAz
 import astropy.units as u
+
+from timdimm_tng.locations import SAAO
 
 from timdimm_tng.dbus.scheduler import Scheduler
 from timdimm_tng.dbus.mount import Mount
 from timdimm_tng.dbus.indi import INDI
 from timdimm_tng.dbus.ekos import Ekos
+from timdimm_tng.dbus.dome import Dome
 
 bus = sdbus.sd_bus_open_user()
 
@@ -27,6 +31,7 @@ scheduler = Scheduler(bus=bus)
 mount = Mount(bus=bus)
 indi = INDI(bus=bus)
 ekos = Ekos(bus=bus)
+dome = Dome(bus=bus)
 
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
@@ -44,6 +49,14 @@ with open(Path.home() / "roof_status.json", 'r') as fp:
 last_bad = Time(roof_status['last_bad'], format='isot')
 wx_message = ""
 open_ok = True
+
+sun_coord = get_sun(Time.now())
+sun_azel = sun_coord.transform_to(AltAz(obstime=Time.now(), location=SAAO))
+
+# sun is up
+if sun_azel.alt > -1 * u.deg:
+    open_ok = False
+    wx_message += f"Sun is up: {sun_azel.alt: .1f} above the horizon; "
 
 # placeholder, query SAAO wx stations in operation
 wx_status = {
@@ -86,13 +99,25 @@ safe_period = 5 * u.min
 
 last_bad_diff = (Time.now() - last_bad)
 if open_ok and last_bad_diff > safe_period:
-    wx_message = "Safe to open"
-    if scheduler.status == 0:
-        log.info("Safe to open, but scheduler stopped. Restarting...")
+    wx_message = "Safe conditions"
+    log.info("Safe to be open")
+    if not scheduler.status:
+        log.info("Scheduler stopped. Restarting...")
+        scheduler.reset_all_jobs()
         scheduler.start()
 elif open_ok and last_bad_diff <= safe_period:
     open_ok = False
     wx_message = f"Only safe for the last {last_bad_diff.to(u.min): .1f}"
+
+# if we're still not clear to be open, make sure we're parked and closed
+if not open_ok:
+    if scheduler.status:
+        log.info("Not ok to open, but scheduler running. Stopping...")
+        scheduler.stop()
+    if not dome.is_parked():
+        log.info("Not ok to open, but Ox Wagon open. Closing and parking telescope...")
+        dome.park()
+        mount.park()
 
 # update and write out roof status
 roof_status['last_bad'] = last_bad.isot
