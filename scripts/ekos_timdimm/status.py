@@ -11,14 +11,27 @@ from pathlib import Path
 import logging
 import logging.handlers
 
-import dbus
+import sdbus
 
 from astropy.time import Time
+from astropy.coordinates import get_sun, AltAz
 import astropy.units as u
 
-from timdimm_tng.wx.check_wx import get_current_conditions, WX_LIMITS
+from timdimm_tng.locations import SAAO
 
-bus = dbus.SessionBus()
+from timdimm_tng.dbus.scheduler import Scheduler
+from timdimm_tng.dbus.mount import Mount
+from timdimm_tng.dbus.indi import INDI
+from timdimm_tng.dbus.ekos import Ekos
+from timdimm_tng.dbus.dome import Dome
+
+bus = sdbus.sd_bus_open_user()
+
+scheduler = Scheduler(bus=bus)
+mount = Mount(bus=bus)
+indi = INDI(bus=bus)
+ekos = Ekos(bus=bus)
+dome = Dome(bus=bus)
 
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
@@ -27,12 +40,6 @@ handler = logging.handlers.WatchedFileHandler(Path.home() / "ox_wagon.log")
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 log.addHandler(handler)
-
-# set up dbus access to the ekos scheduler
-remote_obj = bus.get_object("org.kde.kstars", "/KStars/Ekos/Scheduler")
-sched_iface = dbus.Interface(remote_obj, 'org.kde.kstars.Ekos.Scheduler')
-prop_iface = dbus.Interface(remote_obj, dbus_interface='org.freedesktop.DBus.Properties')
-properties = prop_iface.GetAll("org.kde.kstars.Ekos.Scheduler")
 
 script, path = sys.argv
 
@@ -43,50 +50,74 @@ last_bad = Time(roof_status['last_bad'], format='isot')
 wx_message = ""
 open_ok = True
 
-wx_status, wx_checks = get_current_conditions()
+sun_coord = get_sun(Time.now())
+sun_azel = sun_coord.transform_to(AltAz(obstime=Time.now(), location=SAAO))
 
-if wx_checks is None:
+# sun is up
+if sun_azel.alt > -1 * u.deg:
     open_ok = False
-    wx_message = "No weather data available within the last 10 minutes"
-else:
-    # humidity limit exceeded
-    if wx_checks['humidity']:
-        open_ok = False
-        wx_message += f"High RH >{WX_LIMITS['humidity']}%; "
+    wx_message += f"Sun is up: {sun_azel.alt: .1f} above the horizon; "
 
-    # below cold temp limit
-    if wx_checks['temp']:
-        open_ok = False
-        wx_message += f"Too cold, T < {WX_LIMITS['temp']}; "
+# placeholder, query SAAO wx stations in operation
+wx_status = {
+    'rh': 95.0,
+    'temp': 5.0,
+    'wind': 25.0,
+    'precip': False,
+    'cloudy': False
+}
 
-    # wind limit of 50 kph
-    if wx_checks['wind']:
-        open_ok = False
-        wx_message += f"Too windy, wind > {WX_LIMITS['wind']} kph; "
+# humidity limit of 90%
+if wx_status['rh'] >= 90.0:
+    open_ok = False
+    wx_message += f"High RH = {wx_status['rh']: .1f}%; "
 
-    # LCO only good precip sensor and not always timely
-    if wx_status['precip']:
-        open_ok = False
-        wx_message += "Precip detected; "
+# temp limit of -5 C
+if wx_status['temp'] <= -5.0:
+    open_ok = False
+    wx_message += f"Too cold. T = {wx_status['temp']: .1f}; "
 
-    # LCO only cloud sensor and not always timely
-    if wx_status['cloudy']:
-        open_ok = False
-        wx_message += "Too cloudy"
+# wind limit of 50 kph
+if wx_status['wind'] >= 50.0:
+    open_ok = False
+    wx_message += f"Too windy, wind = {wx_status['wind']: .1f} kph; "
+
+# LCO only good precip sensor and not always timely
+if wx_status['precip']:
+    open_ok = False
+    wx_message += "Precip detected; "
+
+# LCO only cloud sensor and not always timely
+if wx_status['cloudy']:
+    open_ok = False
+    wx_message += "Too cloudy"
 
 if not open_ok:
     last_bad = Time.now()
 
+safe_period = 5 * u.min
+
 last_bad_diff = (Time.now() - last_bad)
-if open_ok and last_bad_diff > 30 * u.min:
-    wx_message = "Safe to open"
-    scheduler_status = int(properties['status'])
-    if scheduler_status == 0:
-        log.info("Safe to open, but scheduler stopped. Restarting...")
-        sched_iface.start()
-elif open_ok and last_bad_diff <= 30 * u.min:
+if open_ok and last_bad_diff > safe_period:
+    wx_message = "Safe conditions"
+    log.info("Safe to be open")
+    if not scheduler.status:
+        log.info("Scheduler stopped. Restarting...")
+        scheduler.reset_all_jobs()
+        scheduler.start()
+elif open_ok and last_bad_diff <= safe_period:
     open_ok = False
     wx_message = f"Only safe for the last {last_bad_diff.to(u.min): .1f}"
+
+# if we're still not clear to be open, make sure we're parked and closed
+if not open_ok:
+    if scheduler.status:
+        log.info("Not ok to open, but scheduler running. Stopping...")
+        scheduler.stop()
+    if not dome.is_parked():
+        log.info("Not ok to open, but Ox Wagon open. Closing and parking telescope...")
+        dome.park()
+        mount.park()
 
 # update and write out roof status
 roof_status['last_bad'] = last_bad.isot
@@ -101,5 +132,7 @@ with open(Path.home() / "ox_wagon_status.txt", 'r') as coords:
     with open(path, 'w') as indistat:
         indistat.truncate()
         indistat.write(ox_wagon)
+
+# log.info(f"Ox Wagon status: {ox_wagon.strip()}")
 
 sys.exit(0)
