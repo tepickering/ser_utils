@@ -9,7 +9,7 @@
 			<J2000DE>-52.695661384</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -35,7 +35,7 @@
 			<J2000DE>-57.236752806</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -61,7 +61,7 @@
 			<J2000DE>-29.622237033</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -87,7 +87,7 @@
 			<J2000DE>-59.688771996</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -113,7 +113,7 @@
 			<J2000DE>-37.103823551</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -139,7 +139,7 @@
 			<J2000DE>-69.717207597</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -165,7 +165,7 @@
 			<J2000DE>-46.96097438</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -191,7 +191,7 @@
 			<J2000DE>-26.39319957889</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -217,7 +217,7 @@
 			<J2000DE>-34.38461649</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -243,7 +243,7 @@
 			<J2000DE>-42.997841</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -269,7 +269,7 @@
 			<J2000DE>-69.02771185</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -295,7 +295,7 @@
 			<J2000DE>-56.73508973</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -321,7 +321,7 @@
 			<J2000DE>-26.296724115</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -347,7 +347,7 @@
 			<J2000DE>-36.369831</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -373,7 +373,7 @@
 			<J2000DE>-48.959871515</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -399,7 +399,7 @@
 			<J2000DE>-43.432590909</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -425,7 +425,7 @@
 			<J2000DE>-59.27523202917</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -451,7 +451,7 @@
 			<J2000DE>-34.29323159306</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -477,7 +477,7 @@
 			<J2000DE>-47.38819874611</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -503,7 +503,7 @@
 			<J2000DE>-53.466391146</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -529,7 +529,7 @@
 			<J2000DE>-42.15782521722</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -555,7 +555,7 @@
 			<J2000DE>-42.305987194</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -581,7 +581,7 @@
 			<J2000DE>-39.029983076</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -607,7 +607,7 @@
 			<J2000DE>-29.303105508</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -633,7 +633,7 @@
 			<J2000DE>-55.01066713417</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -659,7 +659,7 @@
 			<J2000DE>-47.288374511</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -685,7 +685,7 @@
 			<J2000DE>-50.72242739278</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -711,7 +711,7 @@
 			<J2000DE>-34.07410972</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -737,7 +737,7 @@
 			<J2000DE>-23.39676021620222</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -763,7 +763,7 @@
 			<J2000DE>-43.133963849</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -789,7 +789,7 @@
 			<J2000DE>-69.13556478861</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -815,7 +815,7 @@
 			<J2000DE>-37.29581347528</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -841,7 +841,7 @@
 			<J2000DE>-47.511578</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -867,7 +867,7 @@
 			<J2000DE>-37.097471154</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -893,7 +893,7 @@
 			<J2000DE>-29.82810226</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -919,7 +919,7 @@
 			<J2000DE>-36.712304581225</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -945,7 +945,7 @@
 			<J2000DE>-64.394472</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -971,7 +971,7 @@
 			<J2000DE>-77.25424612</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -997,7 +997,7 @@
 			<J2000DE>-58.74892407683834</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1023,7 +1023,7 @@
 			<J2000DE>-25.4216985</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1049,7 +1049,7 @@
 			<J2000DE>-24.30432442944</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1075,7 +1075,7 @@
 			<J2000DE>-28.2160170875</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1101,7 +1101,7 @@
 			<J2000DE>-55.52988168777777</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1127,7 +1127,7 @@
 			<J2000DE>-63.43072654</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1153,7 +1153,7 @@
 			<J2000DE>-61.56982215319751</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1179,7 +1179,7 @@
 			<J2000DE>-60.25962954474834</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1205,7 +1205,7 @@
 			<J2000DE>-25.59279207667</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1231,7 +1231,7 @@
 			<J2000DE>-26.114107945</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1257,7 +1257,7 @@
 			<J2000DE>-68.67954667374444</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1283,7 +1283,7 @@
 			<J2000DE>-21.02361398194</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1309,7 +1309,7 @@
 			<J2000DE>-50.61453869751139</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1335,7 +1335,7 @@
 			<J2000DE>-49.87614501139</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1361,7 +1361,7 @@
 			<J2000DE>-30.42408984944</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1387,7 +1387,7 @@
 			<J2000DE>-23.171514006915</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1413,7 +1413,7 @@
 			<J2000DE>-37.36487221701779</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1439,7 +1439,7 @@
 			<J2000DE>-23.83329231</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1465,7 +1465,7 @@
 			<J2000DE>-30.06336673389</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1491,7 +1491,7 @@
 			<J2000DE>-40.12699704</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1517,7 +1517,7 @@
 			<J2000DE>-44.47111811384001</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -1543,7 +1543,7 @@
 			<J2000DE>-44.72771344381</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence_sim.esq</Sequence>
+		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/timdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>

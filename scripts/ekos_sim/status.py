@@ -60,7 +60,7 @@ if sun_azel.alt > -1 * u.deg:
 
 # placeholder, query SAAO wx stations in operation
 wx_status = {
-    'rh': 95.0,
+    'rh': 45.0,
     'temp': 5.0,
     'wind': 25.0,
     'precip': False,

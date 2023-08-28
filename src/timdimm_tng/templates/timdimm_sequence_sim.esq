@@ -7,7 +7,7 @@
 <RefocusEveryN enabled='false'>60</RefocusEveryN>
 <RefocusOnMeridianFlip enabled='false'/>
 <Job>
-<Exposure>0.001</Exposure>
+<Exposure>1</Exposure>
 <Format>Mono</Format>
 <Encoding>FITS</Encoding>
 <Binning>
@@ -17,8 +17,8 @@
 <Frame>
 <X>0</X>
 <Y>0</Y>
-<W>1608</W>
-<H>1104</H>
+<W>1280</W>
+<H>1024</H>
 </Frame>
 <Temperature force='false'>0</Temperature>
 <Type>Light</Type>
