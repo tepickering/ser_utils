@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 
-from typing import Tuple
+import xmltodict
 
 from sdbus import (
     DbusInterfaceCommon,
@@ -14,10 +14,10 @@ class Dome(
     DbusInterfaceCommon,
     interface_name='org.kde.kstars.INDI.Dome',
 ):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, object_path="/KStars/INDI/Dome/1", *args, **kwargs):
         super(Dome, self).__init__(
             service_name="org.kde.kstars",
-            object_path="/KStars/INDI/Dome/1",
+            object_path=object_path,
             *args,
             **kwargs
         )
@@ -188,3 +188,17 @@ class Dome(
     )
     def park_status(self) -> int:
         raise NotImplementedError
+
+
+def get_dome(bus):
+    """
+    Because the INDI dome scripting interface can support multiple domes, the /KStars/INDI/Dome
+    path only gets the top node of available dome interfaces. We will only have one dome interface
+    so we introspect this top-level mode to get what number is assigned to the current dome (not
+    always the same or predictable). With that in hand, create a Dome class pointing to that path and
+    return it.
+    """
+    dome_node_tree = Dome(object_path="/KStars/INDI/Dome", bus=bus)
+    dome_node = xmltodict.parse(dome_node_tree.dbus_introspect())['node']['node']['@name']
+    dome_path = f"/KStars/INDI/Dome/{dome_node}"
+    return Dome(object_path=dome_path, bus=bus)

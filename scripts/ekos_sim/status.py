@@ -23,7 +23,7 @@ from timdimm_tng.dbus.scheduler import Scheduler
 from timdimm_tng.dbus.mount import Mount
 from timdimm_tng.dbus.indi import INDI
 from timdimm_tng.dbus.ekos import Ekos
-from timdimm_tng.dbus.dome import Dome
+from timdimm_tng.dbus.dome import get_dome
 
 bus = sdbus.sd_bus_open_user()
 
@@ -31,7 +31,7 @@ scheduler = Scheduler(bus=bus)
 mount = Mount(bus=bus)
 indi = INDI(bus=bus)
 ekos = Ekos(bus=bus)
-dome = Dome(bus=bus)
+dome = get_dome(bus=bus)
 
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
@@ -60,7 +60,7 @@ if sun_azel.alt > -1 * u.deg:
 
 # placeholder, query SAAO wx stations in operation
 wx_status = {
-    'rh': 45.0,
+    'rh': 65.0,
     'temp': 5.0,
     'wind': 25.0,
     'precip': False,
