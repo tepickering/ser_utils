@@ -286,9 +286,9 @@ def main():
 
     o = OxWagon(port=args.port)
 
-    command = args.cmd.lower()
+    command = args.cmd.upper()
 
-    if command == 'status':
+    if command == 'STATUS':
         state = o.status()
         for k, v in state.items():
             print("%30s : \t %s" % (k, v))
