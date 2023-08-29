@@ -264,8 +264,9 @@ def main():
 
     parser.add_argument(
         'cmd',
-        default='STATUS',
-        choices=['OPEN', 'CLOSE', 'RESET', 'STATUS'],
+        default='status',
+        choices=['open', 'close', 'reset', 'status'],
+        type=str.lower,
         help='Command to send to ox wagon controller'
     )
 
@@ -286,9 +287,9 @@ def main():
 
     o = OxWagon(port=args.port)
 
-    command = args.cmd.upper()
+    command = args.cmd.lower()
 
-    if command == 'STATUS':
+    if command == 'status':
         state = o.status()
         for k, v in state.items():
             print("%30s : \t %s" % (k, v))
