@@ -109,7 +109,7 @@ class OxWagon:
     ]
 
     # this may need to change for new computer
-    def __init__(self, port="/dev/ttyUSB1"):
+    def __init__(self, port="/dev/ttyUSB0"):
         """
         we use the pyserial package, https://pyserial.readthedocs.io/, to
         implement RS232 communication. beware, the port may change if the
@@ -279,7 +279,7 @@ def main():
     parser.add_argument(
         '-p', '--port',
         required=False,
-        default='/dev/ttyUSB1',
+        default='/dev/ttyUSB0',
         help='Serial port for ox wagon controller'
     )
 
