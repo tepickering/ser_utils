@@ -13,6 +13,6 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-log.info(f"Ox Wagon receiving move CCW command...")
+log.info("Ox Wagon receiving move CCW command...")
 
 sys.exit(0)

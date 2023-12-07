@@ -129,7 +129,7 @@ class OxWagon:
         self.sio.flush()
         self.status()
 
-    def command(self, cmd):
+    def command(self, cmd, debug=False):
         """
         take a hexadecimal string, build a command out of it by tacking
         on the delay parameters, and calculating the checksum.
@@ -140,7 +140,9 @@ class OxWagon:
                   self.watch_delay + self.pwr_delay
         else:
             return False
-        print(cmd)
+
+        if debug:
+            print(cmd)
 
         # use ox wagon compatible checksum
         sum = checksum(cmd + "0000")
@@ -151,7 +153,9 @@ class OxWagon:
         self.sio.flush()
 
         resp = self.sio.readline()
-        print(resp)
+
+        if debug:
+            print(resp)
 
         return resp
 
@@ -295,4 +299,4 @@ def main():
             print("%30s : \t %s" % (k, v))
     else:
         extra_args = ", ".join(args.extra_args)
-        eval("o.%s(%s)" % (command, extra_args))
+        eval("o.%s(%s, debug=True)" % (command, extra_args))

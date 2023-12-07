@@ -5,6 +5,9 @@ from pathlib import Path
 import logging
 import logging.handlers
 
+from timdimm_tng.ox_wagon import OxWagon
+
+
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
 
@@ -13,6 +16,10 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-log.info(f"Starting up timDIMM observing session...")
+dome = OxWagon()
+
+dome.open()
+
+log.info("Starting up timDIMM observing session...")
 
 sys.exit(0)

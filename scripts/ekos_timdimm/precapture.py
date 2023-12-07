@@ -13,6 +13,6 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-log.info(f"Running pre-capture...")
+log.info("Running pre-capture...")
 
 sys.exit(0)

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 import json
 import sys
@@ -6,10 +6,19 @@ from pathlib import Path
 import logging
 import logging.handlers
 
-import dbus
+import sdbus
 
-from pathlib import Path
+import numpy as np
 
+from astropy import units as u
+
+from timdimm_tng.dbus.capture import Capture
+from timdimm_tng.dbus.mount import Mount
+
+bus = sdbus.sd_bus_open_user()
+
+mount = Mount(bus=bus)
+capture = Capture(bus=bus)
 
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
@@ -19,33 +28,24 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-log.info(f"Running pre-job...")
+log.info("Running pre-job...")
 
-bus = dbus.SessionBus()
-
-mount = bus.get_object("org.kde.kstars", "/KStars/Ekos/Mount")
-mount_interface = dbus.Interface(mount, 'org.freedesktop.DBus.Properties')
-
-capture = bus.get_object("org.kde.kstars", "/KStars/Ekos/Capture")
-capture_interface = dbus.Interface(capture, 'org.freedesktop.DBus.Properties')
-
-mount_props = mount_interface.GetAll("org.kde.kstars.Ekos.Mount")
-capture_props = capture_interface.GetAll("org.kde.kstars.Ekos.Capture")
-
-az, el = float(mount_props['horizontalCoords'][0]), float(mount_props['horizontalCoords'][1])
-ra, dec = float(mount_props['equatorialCoords'][0]), float(mount_props['equatorialCoords'][1])
-ha = float(mount_props['hourAngle'])
-target = capture_props['targetName']
+az, el = float(mount.horizontal_coords[0]), float(mount.horizontal_coords[1])
+ra, dec = float(mount.equatorial_coords[0]), float(mount.equatorial_coords[1])
+ha = float(mount.hour_angle)
+target = capture.target_name
+airmass = 1. / np.sin(el * u.degree)
 
 log.info(f"Observing {target} at Az={az:.1f}°, El={el:.1f}°")
 
 status = {
     'target': target,
-    'az': az,
-    'el': el,
-    'ra': ra,
-    'dec': dec,
-    'ha': ha
+    'az': az * u.degree,
+    'el': el * u.degree,
+    'ra': ra * u.hourangle,
+    'dec': dec * u.degree,
+    'ha': ha * u.hourangle,
+    'airmass': airmass
 }
 
 with open(Path.home() / "pointing_status.json", 'w') as fp:

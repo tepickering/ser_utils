@@ -5,6 +5,9 @@ from pathlib import Path
 import logging
 import logging.handlers
 
+from timdimm_tng.ox_wagon import OxWagon
+
+
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
 
@@ -13,6 +16,9 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-log.info(f"Aborting Ox Wagon...")
+dome = OxWagon()
+dome.close()
+
+log.info("Aborting schedule and closing Ox Wagon...")
 
 sys.exit(0)
