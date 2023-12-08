@@ -129,7 +129,7 @@ class OxWagon:
         self.sio.flush()
         self.status()
 
-    def command(self, cmd, debug=False):
+    def command(self, cmd, debug=True):
         """
         take a hexadecimal string, build a command out of it by tacking
         on the delay parameters, and calculating the checksum.
