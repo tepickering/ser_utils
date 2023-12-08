@@ -299,4 +299,5 @@ def main():
             print("%30s : \t %s" % (k, v))
     else:
         extra_args = ", ".join(args.extra_args)
-        eval("o.%s(%s, debug=True)" % (command, extra_args))
+        extra_args = f"{extra_args}, debug=True"
+        eval("o.%s(%s)" % (command, extra_args))
