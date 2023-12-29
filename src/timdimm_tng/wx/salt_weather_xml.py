@@ -96,6 +96,8 @@ def parse_salt_xml():
 
     e['TimeStamp_SAST'] = datetime.datetime(Year, Month, Day, Hours, Minutes, Seconds)
 
+    e['shutter_open']= bool(int(d['sdc_shutter_status__shutter_open_limit']))
+
     if e['Rain'] == 0:
         e['SkyCon'] = 'DRY'
     elif e['Rain'] == 1:
@@ -118,7 +120,8 @@ def main():
         print("Temperature      : ", SALT['Temp'])
         print("Relative Humidity: ", SALT['Rel_Hum'], "%")
         print("T - T(dew)       : ", float(SALT['Temp']) - float(SALT['DewTemp']))
-        print("Barometric Press : ", SALT['Bar_Press'])
+        print("Barometric Pres. : ", SALT['Bar_Press'])
+        print("Open?            : ", SALT['shutter_open'])
         print("\n")
 
     else:
