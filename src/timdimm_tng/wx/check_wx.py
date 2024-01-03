@@ -74,7 +74,8 @@ def get_current_conditions():
             'wind': wind_check,
             'temp': temp_check,
             'cloud': cloud_check,
-            'monet': wx_dict['MONET']['Open']
+            'monet': wx_dict['MONET']['Open'],
+            'salt': wx_dict['SALT']['Open']
         }
     else:
         # if no weather station has reported within 10 minutes, then we will have to close
