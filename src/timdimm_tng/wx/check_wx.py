@@ -88,12 +88,12 @@ def main():
 
     print("Weather Checks:")
     for k, v in checks.items():
-        print(f"\t{k:15s}: {v}")
+        print(f"\t{k:20s}: {v}")
 
     for k, v in wx_dict.items():
         print(k)
         for k1, v1 in v.items():
-            print(f"\t{k1:35s}: {v1}")
+            print(f"\t{k1:20s}: {v1}")
 
 
 if __name__ == "__main__":

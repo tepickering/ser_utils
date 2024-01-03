@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import math
 from xml.dom import minidom
 from urllib.request import urlopen
 from urllib.error import URLError
@@ -92,7 +93,7 @@ def parse_salt_xml():
     TempTime = e['DateTime'].split('_')[1]
     Hours = int(TempTime.split(':')[0])
     Minutes = int(TempTime.split(':')[1])
-    Seconds = int(round(float(TempTime.split(':')[2])))
+    Seconds = int(math.floor(float(TempTime.split(':')[2])))
 
     e['TimeStamp_SAST'] = datetime.datetime(Year, Month, Day, Hours, Minutes, Seconds)
 
