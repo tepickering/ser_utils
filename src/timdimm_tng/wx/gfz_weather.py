@@ -2,9 +2,10 @@
 
 from urllib.request import urlopen
 from urllib.error import URLError
-import math
 import datetime
 from bs4 import BeautifulSoup
+
+from timdimm_tng.wx.utils import dewpoint
 
 
 __all__ = ['get_weather']
@@ -91,15 +92,12 @@ def get_weather():
 	else:
 		d['SkyCon'] = "RAIN"
 
-	varA = 17.271
-	varB = 237.7
 	Temp = float(Temp)
 	Rel_Hum = float(Rel_Hum)
-	gamma = ((varA*Temp) / (varB + Temp)) + math.log(Rel_Hum / 100.0)
-	DewTemp = (varB*gamma)/(varA - gamma)
+
 	d['Temp'] = Temp
 	d['Rel_Hum'] = Rel_Hum
-	d['DewTemp'] = DewTemp
+	d['DewTemp'] = dewpoint(Temp, Rel_Hum)
 	d['Valid'] = True
 
 	return d

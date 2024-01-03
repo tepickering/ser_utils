@@ -5,8 +5,9 @@ from astropy.time import Time
 
 from timdimm_tng.wx.salt_weather_xml import parse_salt_xml as salt_wx
 from timdimm_tng.wx.lcogt_weather import get_weather as lcogt_wx
-from timdimm_tng.wx.lcogt_bwc2_weather import get_weather as lcogt_bwc2_wx
+#from timdimm_tng.wx.lcogt_bwc2_weather import get_weather as lcogt_bwc2_wx
 from timdimm_tng.wx.gfz_weather import get_weather as gfz_wx
+from timdimm_tng.wx.monet_weather import parse_monet as monet_wx
 
 
 __all__ = ['get_current_conditions', 'WX_LIMITS']
@@ -34,11 +35,13 @@ def get_current_conditions():
     wx_dict['LCO'] = lcogt_wx()
 
     # get the current weather conditions from the LCOGT Boltwood weather station
-    wx_dict['LCO_boltwood'] = lcogt_bwc2_wx()
+    # wx_dict['LCO_boltwood'] = lcogt_bwc2_wx()
 
     # get the current weather conditions from the GFZ weather station
     wx_dict['GFZ'] = gfz_wx()
 
+    # get the current weather conditions from the MONET weather station
+    wx_dict['MONET'] = monet_wx()
 
     humidity = []
     precip = []
@@ -52,7 +55,7 @@ def get_current_conditions():
             humidity.append(i['Rel_Hum'])
             precip.append(i['SkyCon'])
             wind.append(i['Wind_speed'])
-            temp.append(i['Temperature'])
+            temp.append(i['Temp'])
             if 'Cloud' in i:
                 cloud.append(i['Cloud'])
 
@@ -70,10 +73,28 @@ def get_current_conditions():
             'precip': precip_check,
             'wind': wind_check,
             'temp': temp_check,
-            'cloud': cloud_check
+            'cloud': cloud_check,
+            'monet': wx_dict['MONET']['Open']
         }
     else:
         # if no weather station has reported within 10 minutes, then we will have to close
         checks = None
 
     return wx_dict, checks
+
+
+def main():
+    wx_dict, checks = get_current_conditions()
+
+    print("Weather Checks:")
+    for k, v in checks.items():
+        print(f"\t{k:15s}: {v}")
+
+    for k, v in wx_dict.items():
+        print(k)
+        for k1, v1 in v.items():
+            print(f"\t{k1:35s}: {v1}")
+
+
+if __name__ == "__main__":
+    main()
