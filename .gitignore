@@ -133,3 +133,4 @@ tcs.xml
 timdimm_prop*.txt
 status.json
 *~
+*.json
