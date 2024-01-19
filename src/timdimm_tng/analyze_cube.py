@@ -96,8 +96,8 @@ def seeing(
         Distance between aperture centers
     aperture_diameter : ~astropy.units.Quantity (default 76.2 mm)
         Diameter of DIMM apertures
-    wavelength : ~astropy.units.Quantity (default: 0.5 um)
-        Effective wavelength of observation
+    wavelength : ~astropy.units.Quantity (default: 0.64 um)
+        Effective wavelength of observation (default for ZWO ASI432MM)
     pixel_scale : ~astropy.units.Quantity (default: 0.742 arcsec/pixel)
         Angle subtended by each pixel (default is for 9 um pixels and 2500 mm focal length)
     """
@@ -139,7 +139,7 @@ def timdimm_seeing(sigma):
 
 def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contrast=0.05, brightest=3, std=None):
     """
-    Use photutils.DAOStarFinder() to find and centroid star images from each DIIMM aperture.
+    Use photutils.DAOStarFinder() to find and centroid star images from each DIMM aperture.
 
     Parameters
     ----------
@@ -155,6 +155,8 @@ def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contras
         Radius of plotted apertures in pixels
     contrast : float (default: 0.05)
         ZScale contrast factor
+    brightest : int (default: 3)
+        Number of brightest stars to use for aperture positions
     std : float or None (default: None)
         Standard deviation of image statistics, calculate if None
     """
@@ -235,31 +237,40 @@ def dimm_calc(data, aps):
         return None
 
 
-def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, dimm_calc=dimm_calc, plot=False):
+def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2, plot=False):
     """
     Analyze an SER format data cube of DIMM observations and calculate the seeing from the
-    differential motion along the longitudinal axis of each baseline. This is currently hard-coded
-    to the 3-aperture mask used at the MMTO.
+    differential motion along the longitudinal axis of each baseline.
 
     Arguments
     ---------
     filename : str or ~pathlib.Path
         Filename of the SER data cube to analyze
-    init_ave : int
-        Number of frames at the beginning of the cube to average to do initial aperture location
+    airmass : float (default: 1.0)
+        Airmass of the seeing observation
+    seeing : function (default: timdimm_seeing)
+        Function to use for seeing calculation
+    napertures : int (default: 2)
+        Number of apertures in the DIMM mask
+    plot : bool (default: False)
+        Toggle plotting of the aperture positions
     """
     cube = load_ser_file(Path(filename))
 
     nframes = cube['data'].shape[0]
 
-    apertures, fig = find_apertures(cube['data'][0], plot=plot)
+    apertures, fig = find_apertures(cube['data'][0], brightest=napertures, plot=plot)
 
     baselines = []
     positions = []
     nbad = 0
 
     for i in range(nframes):
-        dimm_meas = dimm_calc(cube['data'][i, :, :], apertures)
+        if napertures == 2:
+            dimm_meas = dimm_calc(cube['data'][i, :, :], apertures)
+        else:
+            dimm_meas = hdimm_calc(cube['data'][i, :, :], apertures)
+
         if dimm_meas is not None:
             apertures, ap_distances = dimm_meas[0], dimm_meas[1]
             baselines.append(ap_distances)
