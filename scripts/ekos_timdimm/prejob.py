@@ -40,11 +40,11 @@ log.info(f"Observing {target} at Az={az:.1f}°, El={el:.1f}°")
 
 status = {
     'target': target,
-    'az': az * u.degree,
-    'el': el * u.degree,
-    'ra': ra * u.hourangle,
-    'dec': dec * u.degree,
-    'ha': ha * u.hourangle,
+    'az': az, # * u.degree,
+    'el': el, # * u.degree,
+    'ra': ra, # * u.hourangle,
+    'dec': dec, # * u.degree,
+    'ha': ha, # * u.hourangle,
     'airmass': airmass
 }
 
