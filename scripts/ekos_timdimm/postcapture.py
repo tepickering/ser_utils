@@ -8,7 +8,8 @@ import logging.handlers
 
 import numpy as np
 
-from astropy.time import Time
+from astropy.time import Time, TimezoneInfo
+import astropy.units as u
 from photutils.aperture import ApertureStats
 
 from timdimm_tng.indi import INDI_Camera
@@ -60,6 +61,11 @@ seeing_data = analyze_dimm_cube("/home/timdimm/seeing.ser", airmass=pointing_sta
 with open(Path.home() / "seeing.csv", 'a') as fp:
     z = pointing_status['airmass']
     azimuth = pointing_status['az']
-    fp.write(f"{Time.now().isot}, {seeing_data['seeing']:.2f}, {z:.3f}, {azimuth:.1f}\n")
+    fp.write(f"{Time.now().isot}, {seeing_data['seeing'].value:.2f}, {z:.3f}, {azimuth:.1f}\n")
+
+with open("seeing.txt", 'w') as f:
+    print(f"{seeing_data['seeing'].value:.2f}", file=f)
+    tobs = seeing_data['frame_times'][-1].to_datetime(timezone=TimezoneInfo(2 * u.hour))
+    print(tobs, file=f)
 
 sys.exit(0)
