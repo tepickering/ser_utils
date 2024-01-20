@@ -27,10 +27,16 @@ with open(Path.home() / "ox_wagon_status.txt", 'w') as coords:
     coords.truncate()
     coords.write(str)
 
+log.info("Resetting Ox Wagon...")
+
+resp = dome.reset()
+
+log.info(f"Ox Wagon reset response: {resp}")
+
 log.info("Opening Ox Wagon...")
 
 resp = dome.open()
 
-log.info(resp)
+log.info(f"Ox Wagon open response: {resp}")
 
 sys.exit(0)
