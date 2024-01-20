@@ -110,7 +110,9 @@ def seeing(
     if direction not in k:
         raise ValueError(f"Valid motion directions are {' and '.join(k.keys())}")
 
-    seeing = 0.98 * ((aperture_diameter / wavelength).decompose().value ** 0.2) * ((variance / k[direction]) ** 0.6) * u.radian
+    seeing = 0.98 * \
+        ((aperture_diameter / wavelength).decompose().value ** 0.2) * \
+        ((variance / k[direction]) ** 0.6) * u.radian
     return seeing.to(u.arcsec)
 
 
@@ -137,7 +139,16 @@ def timdimm_seeing(sigma):
     )
 
 
-def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contrast=0.05, brightest=3, std=None):
+def find_apertures(
+    data,
+    fwhm=7.0,
+    threshold=7.0,
+    plot=False,
+    ap_size=5,
+    contrast=0.05,
+    brightest=3,
+    std=None
+):
     """
     Use photutils.DAOStarFinder() to find and centroid star images from each DIMM aperture.
 
@@ -151,7 +162,7 @@ def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contras
         DAOfind threshold in units of the standard deviation of the image
     plot: bool (default: False)
         Toggle plotting of the reference image and overlayed apertures
-    ap_radius : float (default: 5)
+    ap_size : float (default: 5)
         Radius of plotted apertures in pixels
     contrast : float (default: 0.05)
         ZScale contrast factor
@@ -163,7 +174,14 @@ def find_apertures(data, fwhm=7.0, threshold=7.0, plot=False, ap_size=5, contras
     if std is None:
         mean, median, std = stats.sigma_clipped_stats(data, sigma=3.0, maxiters=5)
 
-    daofind = photutils.DAOStarFinder(fwhm=fwhm, threshold=threshold*std, sharphi=0.95, brightest=brightest)
+    daofind = photutils.DAOStarFinder(
+        fwhm=fwhm,
+        threshold=threshold*std,
+        sharphi=0.95,
+        brightest=brightest,
+        exclude_border=True,
+        min_separation=10
+    )
     stars = daofind(data)
 
     if stars is None:
@@ -227,14 +245,26 @@ def dimm_calc(data, aps):
     """
     ap_stats = photutils.ApertureStats(data, aps)
     ap_pos = ap_stats.centroid
-    if not np.isnan(ap_pos).any():
+    if np.isfinite(ap_pos).all():
         new_aps = photutils.CircularAperture(ap_pos, aps.r)
-        baseline = ap_pos[1] - ap_pos[0]
-        dist_baseline = np.sqrt(np.dot(baseline.T, baseline))
-        return new_aps, [dist_baseline]
     else:
-        print("Bad centroid")
+        new_aps, _ = find_apertures(
+            data,
+            brightest=2,
+            ap_size=aps.r,
+            plot=False
+        )
+        ap_stats = photutils.ApertureStats(data, new_aps)
+        ap_pos = ap_stats.centroid
+
+    if not np.isfinite(ap_pos).all() or len(ap_pos) < 2:
+        print(f"Bad centroiding: {ap_pos}")
         return None
+
+    baseline = ap_pos[1] - ap_pos[0]
+    dist_baseline = np.sqrt(np.dot(baseline.T, baseline))
+    return new_aps, [dist_baseline]
+
 
 
 def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2, plot=False):
@@ -259,17 +289,31 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2
 
     nframes = cube['data'].shape[0]
 
-    apertures, fig = find_apertures(cube['data'][0], brightest=napertures, plot=plot)
+    if napertures == 2:
+        ap_size = 7
+    else:
+        ap_size = 5
+
+    apertures, fig = find_apertures(
+        np.mean(cube['data'][:10], axis=0),
+        brightest=napertures,
+        ap_size=ap_size,
+        plot=plot
+    )
 
     baselines = []
     positions = []
     nbad = 0
 
+    frame_means = np.mean(cube['data'], axis=(1,2))
+
     for i in range(nframes):
+        frame = cube['data'][i, :, :] - frame_means[i]
+
         if napertures == 2:
-            dimm_meas = dimm_calc(cube['data'][i, :, :], apertures)
+            dimm_meas = dimm_calc(frame, apertures)
         else:
-            dimm_meas = hdimm_calc(cube['data'][i, :, :], apertures)
+            dimm_meas = hdimm_calc(frame, apertures)
 
         if dimm_meas is not None:
             apertures, ap_distances = dimm_meas[0], dimm_meas[1]
@@ -355,7 +399,8 @@ def process_fass_image(image, background_box_size=15, width_cut=0.1):
 
 def init_fass_cube(image_cube, n_frames=500):
     """
-    Average first n_frames of the image cube to determine the pupil size and initial pupil center position.
+    Average first n_frames of the image cube to determine the
+    pupil size and initial pupil center position.
 
     Parameters
     ----------
@@ -445,7 +490,13 @@ def _process_slice_func(
     output_cube[index, :, :] = unwrapped.astype(np.float32)
 
 
-def _rectify_slice(index, tform=None, input_key=None, input_dtype=np.float32, input_shape=(1000, 100, 100)):
+def _rectify_slice(
+    index,
+    tform=None,
+    input_key=None,
+    input_dtype=np.float32,
+    input_shape=(1000, 100, 100)
+):
     input_shm = shared_memory.SharedMemory(name=input_key)
     input_cube = np.ndarray(input_shape, dtype=input_dtype, buffer=input_shm.buf)
     imslice = input_cube[index, :, :]
