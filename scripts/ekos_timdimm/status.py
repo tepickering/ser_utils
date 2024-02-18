@@ -25,6 +25,9 @@ from timdimm_tng.dbus.indi import INDI
 from timdimm_tng.dbus.ekos import Ekos
 from timdimm_tng.dbus.dome import Dome
 
+from timdimm_tng.wx.check_wx import get_current_conditions
+
+
 bus = sdbus.sd_bus_open_user()
 
 scheduler = Scheduler(bus=bus)
@@ -48,69 +51,41 @@ with open(Path.home() / "roof_status.json", 'r') as fp:
 
 last_bad = Time(roof_status['last_bad'], format='isot')
 wx_message = ""
-open_ok = True
+open_ok = False
 
 sun_coord = get_sun(Time.now())
 sun_azel = sun_coord.transform_to(AltAz(obstime=Time.now(), location=SAAO))
 
 # sun is up
-if sun_azel.alt > -1 * u.deg:
+if sun_azel.alt > -12 * u.deg:
     open_ok = False
-    wx_message += f"Sun is up: {sun_azel.alt: .1f} above the horizon; "
+    if sun_azel.alt > 0 * u.deg:
+        wx_message += f"Sun is up: {sun_azel.alt: .1f} above the horizon; "
+    else:
+        wx_message += f"Nautical twilight: sun is at {sun_azel.alt: .1f}; "
 
-# placeholder, query SAAO wx stations in operation
-wx_status = {
-    'rh': 95.0,
-    'temp': 5.0,
-    'wind': 25.0,
-    'precip': False,
-    'cloudy': False
-}
+# check weather and if SALT or MONET think it's safe to open
+wx, safety_checks = get_current_conditions()
 
-# humidity limit of 90%
-if wx_status['rh'] >= 90.0:
-    open_ok = False
-    wx_message += f"High RH = {wx_status['rh']: .1f}%; "
+if safety_checks['monet']:
+    open_ok = True
+    log.info("MONET safety check passed. Safe to open.")
+    wx_message += "MONET says it's ok to open; "
 
-# temp limit of -5 C
-if wx_status['temp'] <= -5.0:
-    open_ok = False
-    wx_message += f"Too cold. T = {wx_status['temp']: .1f}; "
+if safety_checks['salt']:
+    open_ok = True
+    log.info("SALT safety check passed. Safe to open.")
+    wx_message += "SALT says it's ok to open; "
 
-# wind limit of 50 kph
-if wx_status['wind'] >= 50.0:
-    open_ok = False
-    wx_message += f"Too windy, wind = {wx_status['wind']: .1f} kph; "
-
-# LCO only good precip sensor and not always timely
-if wx_status['precip']:
-    open_ok = False
-    wx_message += "Precip detected; "
-
-# LCO only cloud sensor and not always timely
-if wx_status['cloudy']:
-    open_ok = False
-    wx_message += "Too cloudy"
-
-if not open_ok:
-    last_bad = Time.now()
-
-safe_period = 5 * u.min
-
-last_bad_diff = (Time.now() - last_bad)
-if open_ok and last_bad_diff > safe_period:
-    wx_message = "Safe conditions"
+if open_ok:
+    wx_message = "Safe conditions according to either SALT or MONET"
     log.info("Safe to be open")
     if not scheduler.status:
         log.info("Scheduler stopped. Restarting...")
         scheduler.reset_all_jobs()
         scheduler.start()
-elif open_ok and last_bad_diff <= safe_period:
-    open_ok = False
-    wx_message = f"Only safe for the last {last_bad_diff.to(u.min): .1f}"
-
-# if we're still not clear to be open, make sure we're parked and closed
-if not open_ok:
+else:
+    # if we're still not clear to be open, make sure we're parked and closed
     if scheduler.status:
         log.info("Not ok to open, but scheduler running. Stopping...")
         scheduler.stop()
