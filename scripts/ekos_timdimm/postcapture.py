@@ -58,12 +58,21 @@ cam.record_duration(15, savedir="/home/timdimm", filename="seeing.ser")
 
 seeing_data = analyze_dimm_cube("/home/timdimm/seeing.ser", airmass=pointing_status['airmass'])
 
-with open(Path.home() / "seeing.csv", 'a') as fp:
+csv_file = Path.home() / "seeing.csv"
+if not csv_file.exists():
+    with open(csv_file, 'w') as fp:
+        fp.write("time, target, seeing, airmass, azimuth, exptime\n")
+
+with open(csv_file, 'a') as fp:
     z = pointing_status['airmass']
     azimuth = pointing_status['az']
-    fp.write(f"{Time.now().isot}, {seeing_data['seeing'].value:.2f}, {z:.3f}, {azimuth:.1f}\n")
+    target = pointing_status['target']
+    seeing = seeing_data['seeing'].value
+    fp.write(
+        f"{Time.now().isot}, {target}, {seeing:.2f}, {z:.3f}, {azimuth:.1f}, {exptime}\n"
+    )
 
-with open("seeing.txt", 'w') as f:
+with open(Path.home() / "seeing.txt", 'w') as f:
     print(f"{seeing_data['seeing'].value:.2f}", file=f)
     tobs = seeing_data['frame_times'][-1].to_datetime(timezone=TimezoneInfo(2 * u.hour))
     print(tobs, file=f)
