@@ -59,7 +59,7 @@ class INDI_Device:
 
         return value
 
-    def set_prop(self, property, key, value):
+    def set_prop(self, property, key, value=None):
         """
         Use indi_setprop to set an INDI property
 
@@ -76,7 +76,10 @@ class INDI_Device:
         """
         cmd = ['indi_setprop', '-h', self.host, '-p', self.port]
 
-        indi_str = f"{self.devname}.{property}.{key}={value}"
+        if value is not None:
+            indi_str = f"{self.devname}.{property}.{key}={value}"
+        else:
+            indi_str = f"{self.devname}.{property}.{key}"
 
         cmd.append(indi_str)
 
