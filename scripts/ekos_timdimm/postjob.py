@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 import logging
 import logging.handlers
-import time
 
 log = logging.getLogger("timDIMM")
 log.setLevel(logging.INFO)
@@ -15,6 +14,5 @@ handler.setFormatter(formatter)
 log.addHandler(handler)
 
 log.info("Running post-job...")
-time.sleep(30)
 
 sys.exit(0)
