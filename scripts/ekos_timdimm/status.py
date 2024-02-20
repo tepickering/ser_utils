@@ -19,6 +19,7 @@ import astropy.units as u
 
 from timdimm_tng.locations import SAAO
 
+from timdimm_tng.ox_wagon import OxWagon
 from timdimm_tng.dbus.scheduler import Scheduler
 from timdimm_tng.dbus.mount import Mount
 from timdimm_tng.dbus.indi import INDI
@@ -85,9 +86,10 @@ if safety_checks['salt']:
 if open_ok:
     wx_message = "Safe conditions according to either SALT or MONET"
     log.info("Safe to be open")
+    o = OxWagon()
+    o.open()
     if not scheduler.status:
         log.info("Scheduler stopped. Restarting...")
-        dome.unpark()
         scheduler.reset_all_jobs()
         scheduler.load_scheduler(str(Path.home() / "timdimm_tng" / "timdimm_schedule.esl"))
         scheduler.start()
