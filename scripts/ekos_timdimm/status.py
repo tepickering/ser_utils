@@ -46,10 +46,14 @@ log.addHandler(handler)
 
 script, path = sys.argv
 
-with open(Path.home() / "roof_status.json", 'r') as fp:
-    roof_status = json.load(fp)
+roof_status = Path.home() / "roof_status.json"
 
-last_bad = Time(roof_status['last_bad'], format='isot')
+if roof_status.exists():
+    with open(roof_status, 'r') as fp:
+        roof_status = json.load(fp)
+else:
+    roof_status = {}
+
 wx_message = ""
 open_ok = False
 
@@ -74,7 +78,7 @@ if safety_checks['monet']:
 
 if safety_checks['salt']:
     open_ok = True
-    log.info("SALT safety check passed. Safe to open.")
+    log
     wx_message += "SALT says it's ok to open; "
 
 if open_ok:
@@ -95,7 +99,6 @@ else:
         mount.park()
 
 # update and write out roof status
-roof_status['last_bad'] = last_bad.isot
 roof_status['roof_status']['open_ok'] = open_ok
 roof_status['roof_status']['reasons'] = wx_message
 
