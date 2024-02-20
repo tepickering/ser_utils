@@ -53,6 +53,7 @@ if roof_status.exists():
         roof_status = json.load(fp)
 else:
     roof_status = {}
+    roof_status['roof_status'] = {}
 
 wx_message = ""
 open_ok = False
