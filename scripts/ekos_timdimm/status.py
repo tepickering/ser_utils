@@ -88,7 +88,7 @@ if open_ok:
     if not scheduler.status:
         log.info("Scheduler stopped. Restarting...")
         scheduler.reset_all_jobs()
-        scheduler.load_scheduler(Path.home() / "timdimm_tng" / "timdimm_schedule.esl")
+        scheduler.load_scheduler(str(Path.home() / "timdimm_tng" / "timdimm_schedule.esl"))
         scheduler.start()
 else:
     # if we're still not clear to be open, make sure we're parked and closed
