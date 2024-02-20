@@ -32,7 +32,7 @@ def get_current_conditions():
     wx_dict['SALT'] = salt_wx()
 
     # get the current weather conditions from the LCOGT weather station
-    wx_dict['LCO'] = lcogt_wx()
+    # wx_dict['LCO'] = lcogt_wx()
 
     # get the current weather conditions from the LCOGT Boltwood weather station
     # wx_dict['LCO_boltwood'] = lcogt_bwc2_wx()
