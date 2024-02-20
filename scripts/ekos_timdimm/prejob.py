@@ -45,7 +45,7 @@ status = {
     'ra': ra, # * u.hourangle,
     'dec': dec, # * u.degree,
     'ha': ha, # * u.hourangle,
-    'airmass': airmass
+    'airmass': float(airmass)
 }
 
 with open(Path.home() / "pointing_status.json", 'w') as fp:
