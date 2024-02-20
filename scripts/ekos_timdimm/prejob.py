@@ -39,7 +39,7 @@ airmass = 1. / np.sin(el * u.degree)
 log.info(f"Observing {target} at Az={az:.1f}°, El={el:.1f}°")
 
 status = {
-    'target': target,
+    'target': str(target),
     'az': az, # * u.degree,
     'el': el, # * u.degree,
     'ra': ra, # * u.hourangle,
