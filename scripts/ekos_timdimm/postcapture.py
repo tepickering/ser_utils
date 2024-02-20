@@ -2,6 +2,8 @@
 
 import sys
 import json
+import time
+
 from pathlib import Path
 import logging
 import logging.handlers
@@ -39,6 +41,7 @@ cam.ser_mode()
 cam.stream_exposure(0.001)
 cam.set_stream_ROI(0, 0, 1608, 1104)
 cam.record_frames(10, savedir="/home/timdimm", filename="find_boxes.ser")
+time.sleep(1)
 aperture_data = load_ser_file("/home/timdimm/find_boxes.ser")
 aperture_image = np.sum(aperture_data['data'], axis=0)
 aps = find_apertures(aperture_image, brightest=2)
@@ -55,7 +58,7 @@ else:
 cam.stream_exposure(exptime)
 cam.set_stream_ROI(int(x - 200), int(y - 200), 400, 400)
 cam.record_duration(15, savedir="/home/timdimm", filename="seeing.ser")
-
+time.sleep(1)
 seeing_data = analyze_dimm_cube("/home/timdimm/seeing.ser", airmass=pointing_status['airmass'])
 
 csv_file = Path.home() / "seeing.csv"
