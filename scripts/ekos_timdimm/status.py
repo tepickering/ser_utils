@@ -87,6 +87,7 @@ if open_ok:
     log.info("Safe to be open")
     if not scheduler.status:
         log.info("Scheduler stopped. Restarting...")
+        dome.unpark()
         scheduler.reset_all_jobs()
         scheduler.load_scheduler(str(Path.home() / "timdimm_tng" / "timdimm_schedule.esl"))
         scheduler.start()
