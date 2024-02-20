@@ -223,3 +223,23 @@ class INDI_Camera(INDI_Device):
         self.set_prop("CCD_STREAM_FRAME", "Y", int(y))
         self.set_prop("CCD_STREAM_FRAME", "WIDTH", int(width))
         self.set_prop("CCD_STREAM_FRAME", "HEIGHT", int(height))
+
+    def set_ROI(self, x, y, width, height):
+        """
+        Configure Region of Interest (ROI) on the detector
+
+        Arguments
+        ---------
+        x : int
+            X position of the ROI
+        y : int
+            Y position of the ROI
+        width : int
+            Width of the ROI
+        height : int
+            Height of the ROI
+        """
+        self.set_prop("CCD_FRAME", "X", int(x))
+        self.set_prop("CCD_FRAME", "Y", int(y))
+        self.set_prop("CCD_FRAME", "WIDTH", int(width))
+        self.set_prop("CCD_FRAME", "HEIGHT", int(height))
