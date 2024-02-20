@@ -169,14 +169,12 @@ class INDI_Camera(INDI_Device):
         Configure camera to save files in SER format
         """
         self.set_prop("CCD_STREAM_RECORDER", "SER", "On")
-        self.set_prop("CCD_STREAM_RECORDER", "OGV", "Off")
 
     def ogv_mode(self):
         """
         Configure camera to save files in OGV format
         """
         self.set_prop("CCD_STREAM_RECORDER", "SER", "Off")
-        self.set_prop("CCD_STREAM_RECORDER", "OGV", "On")
 
     def mjpeg_mode(self):
         """
@@ -239,7 +237,7 @@ class INDI_Camera(INDI_Device):
         height : int
             Height of the ROI
         """
-        self.set_prop("CCD_FRAME", "X", int(x))
-        self.set_prop("CCD_FRAME", "Y", int(y))
-        self.set_prop("CCD_FRAME", "WIDTH", int(width))
-        self.set_prop("CCD_FRAME", "HEIGHT", int(height))
+        self.set_prop(
+            "CCD_FRAME",
+            f"X={int(x)};Y={int(y)};WIDTH={int(width)};HEIGHT={int(height)}"
+        )
