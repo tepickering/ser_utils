@@ -2,6 +2,8 @@
 
 import sys
 from pathlib import Path
+import time
+
 import logging
 import logging.handlers
 
@@ -13,6 +15,7 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-log.info("Running post-job...")
+log.info("Running post-job; sleeping 30 sec...")
+time.sleep(30)
 
 sys.exit(0)
