@@ -58,7 +58,7 @@ else:
 cam.stream_exposure(exptime)
 cam.set_stream_ROI(int(x - 200), int(y - 200), 400, 400)
 cam.record_duration(15, savedir="/home/timdimm", filename="seeing.ser")
-time.sleep(5)
+time.sleep(17)
 seeing_data = analyze_dimm_cube("/home/timdimm/seeing.ser", airmass=pointing_status['airmass'])
 
 csv_file = Path.home() / "seeing.csv"
