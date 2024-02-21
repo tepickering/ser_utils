@@ -116,6 +116,8 @@ else:
         dome.park()
         mount.park()
 
+    log.info("foobar")
+
 # update and write out roof status
 roof_status['roof_status']['open_ok'] = open_ok
 roof_status['roof_status']['reasons'] = wx_message
@@ -129,6 +131,6 @@ with open(Path.home() / "ox_wagon_status.txt", 'r') as coords:
         indistat.truncate()
         indistat.write(ox_wagon)
 
-# log.info(f"Ox Wagon status: {ox_wagon.strip()}")
+log.info(f"Ox Wagon status: {ox_wagon.strip()}")
 
 sys.exit(0)
