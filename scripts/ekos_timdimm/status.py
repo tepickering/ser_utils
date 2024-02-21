@@ -120,6 +120,7 @@ else:
             mount.park()
     except Exception as e:
         log.info(f"Can't park mount: {e}")
+        log.info(f"Parked status: {mount.park_status}")
 
 # update and write out roof status
 roof_status['roof_status']['open_ok'] = open_ok

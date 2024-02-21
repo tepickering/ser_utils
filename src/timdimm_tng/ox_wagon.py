@@ -134,6 +134,10 @@ class OxWagon:
         take a hexadecimal string, build a command out of it by tacking
         on the delay parameters, and calculating the checksum.
         """
+        now=datetime.now()
+        with open('/home/timdimm/ox.log', 'a') as fout:
+            fout.write(f"Running {cmd} at {str(now)}\n")
+
         cmd_header = ':01101064000408'
         if cmd in self.commands:
             cmd = cmd_header + self.commands[cmd] + \
@@ -156,10 +160,6 @@ class OxWagon:
 
         if debug:
             print(resp)
-
-        now=datetime.now()
-        with open('/home/timdimm/ox.log', 'a') as fout:
-            fout.write(f"Running {cmd} at {str(now)}\n")
 
         return resp
 
