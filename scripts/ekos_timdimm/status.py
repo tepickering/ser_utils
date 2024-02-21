@@ -79,9 +79,11 @@ if safety_checks['salt']:
 if sun_azel.alt > -12 * u.deg:
     open_ok = False
     if sun_azel.alt > 0 * u.deg:
-        wx_message += f"Sun is up: {sun_azel.alt: .1f} above the horizon; "
+        msg = f"Sun is up: {sun_azel.alt: .1f} above the horizon; "
+        wx_message += msg
     else:
-        wx_message += f"Nautical twilight: sun is at {sun_azel.alt: .1f}; "
+        msg = f"Nautical twilight: sun is at {sun_azel.alt: .1f}; "
+        wx_message += msg
 
 if open_ok:
     wx_message = "Safe conditions according to either SALT or MONET"
