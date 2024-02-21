@@ -107,14 +107,20 @@ else:
     o.command('CLOSE', debug=False)
 
     # if we're still not clear to be open, make sure we're parked and closed
-    if scheduler.status:
-        log.info("Not ok to open, but scheduler running. Stopping...")
-        scheduler.stop()
+    try:
+        if scheduler.status:
+            log.info("Not ok to open, but scheduler running. Stopping...")
+            scheduler.stop()
+    except Exception as e:
+        log.info(f"Can't query scheduler status: {e}")
 
-    if not dome.is_parked():
-        log.info("Not ok to open, but Ox Wagon open. Closing and parking telescope...")
-        dome.park()
-        mount.park()
+    try:
+        if not dome.is_parked():
+            log.info("Not ok to open, but Ox Wagon open. Closing and parking telescope...")
+            dome.park()
+            mount.park()
+    except Exception as e:
+        log.info(f"Can't park dome or mount: {e}")
 
     log.info("foobar")
 
