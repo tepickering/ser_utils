@@ -90,7 +90,7 @@ if sun_azel.alt > -12 * u.deg:
 if open_ok:
     wx_message = "Safe conditions according to either SALT or MONET"
     log.info("Safe to be open")
-    if not (dome.is_parked() or dome.is_moving()):
+    if not dome.is_parked():
         log.info("Dome not parked or moving. Sending open command...")
         o = OxWagon()
         o.open()
@@ -100,6 +100,7 @@ if open_ok:
         scheduler.load_scheduler(str(Path.home() / "timdimm_tng" / "timdimm_schedule.esl"))
         scheduler.start()
 else:
+    log.info("Unsave conditions. Not ok to be open...")
     # if we're still not clear to be open, make sure we're parked and closed
     if scheduler.status:
         log.info("Not ok to open, but scheduler running. Stopping...")
