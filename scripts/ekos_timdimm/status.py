@@ -110,10 +110,9 @@ else:
         dome.park()
         mount.park()
 
-    if dome.is_parked():
-        log.info("Dome parked make sure oxwagon close command is sent...")
-        o = OxWagon()
-        o.close()
+    log.info("Make sure oxwagon close command is sent...")
+    o = OxWagon()
+    o.close()
 
 # update and write out roof status
 roof_status['roof_status']['open_ok'] = open_ok
