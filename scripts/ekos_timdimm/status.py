@@ -91,7 +91,7 @@ if open_ok:
     wx_message = "Safe conditions according to either SALT or MONET"
     log.info("Safe to be open")
     try:
-        log.info("Dome not parked or moving. Sending open command...")
+        log.info("Sending ox wagon open command to keep it open...")
         o = OxWagon()
         o.command('OPEN', debug=False)
     except Exception as e:
