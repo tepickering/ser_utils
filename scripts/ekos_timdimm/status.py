@@ -115,7 +115,7 @@ else:
         log.info(f"Can't query scheduler status: {e}")
 
     try:
-        if not mount.is_parked():
+        if mount.park_status != 1:
             log.info("Not ok to open, but mount not parked. Parking telescope...")
             mount.park()
     except Exception as e:
