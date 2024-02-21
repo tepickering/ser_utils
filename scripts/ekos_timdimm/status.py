@@ -100,7 +100,12 @@ if open_ok:
         scheduler.load_scheduler(str(Path.home() / "timdimm_tng" / "timdimm_schedule.esl"))
         scheduler.start()
 else:
-    log.info("Unsave conditions. Not ok to be open...")
+    log.info("Unsafe conditions. Not ok to be open...")
+
+    log.info("Make sure oxwagon close command is sent...")
+    o = OxWagon()
+    o.close()
+
     # if we're still not clear to be open, make sure we're parked and closed
     if scheduler.status:
         log.info("Not ok to open, but scheduler running. Stopping...")
@@ -110,10 +115,6 @@ else:
         log.info("Not ok to open, but Ox Wagon open. Closing and parking telescope...")
         dome.park()
         mount.park()
-
-    log.info("Make sure oxwagon close command is sent...")
-    o = OxWagon()
-    o.close()
 
 # update and write out roof status
 roof_status['roof_status']['open_ok'] = open_ok
