@@ -93,7 +93,7 @@ if open_ok:
     if not dome.is_parked():
         log.info("Dome not parked or moving. Sending open command...")
         o = OxWagon()
-        o.open()
+        o.command('OPEN', debug=False)
     if not scheduler.status:
         log.info("Scheduler stopped. Restarting...")
         scheduler.reset_all_jobs()
@@ -104,7 +104,7 @@ else:
 
     log.info("Make sure oxwagon close command is sent...")
     o = OxWagon()
-    o.close()
+    o.command('CLOSE', debug=False)
 
     # if we're still not clear to be open, make sure we're parked and closed
     if scheduler.status:
