@@ -86,8 +86,10 @@ if safety_checks['salt']:
 if open_ok:
     wx_message = "Safe conditions according to either SALT or MONET"
     log.info("Safe to be open")
-    o = OxWagon()
-    o.open()
+    if not (dome.is_parked() or dome.is_moving()):
+        log.info("Dome not parked or moving. Sending open command...")
+        o = OxWagon()
+        o.open()
     if not scheduler.status:
         log.info("Scheduler stopped. Restarting...")
         scheduler.reset_all_jobs()
