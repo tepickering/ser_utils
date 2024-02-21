@@ -62,14 +62,6 @@ open_ok = False
 sun_coord = get_sun(Time.now())
 sun_azel = sun_coord.transform_to(AltAz(obstime=Time.now(), location=SAAO))
 
-# sun is up
-if sun_azel.alt > -12 * u.deg:
-    open_ok = False
-    if sun_azel.alt > 0 * u.deg:
-        wx_message += f"Sun is up: {sun_azel.alt: .1f} above the horizon; "
-    else:
-        wx_message += f"Nautical twilight: sun is at {sun_azel.alt: .1f}; "
-
 # check weather and if SALT or MONET think it's safe to open
 wx, safety_checks = get_current_conditions()
 
@@ -82,6 +74,14 @@ if safety_checks['salt']:
     open_ok = True
     log
     wx_message += "SALT says it's ok to open; "
+
+# sun is up
+if sun_azel.alt > -12 * u.deg:
+    open_ok = False
+    if sun_azel.alt > 0 * u.deg:
+        wx_message += f"Sun is up: {sun_azel.alt: .1f} above the horizon; "
+    else:
+        wx_message += f"Nautical twilight: sun is at {sun_azel.alt: .1f}; "
 
 if open_ok:
     wx_message = "Safe conditions according to either SALT or MONET"
