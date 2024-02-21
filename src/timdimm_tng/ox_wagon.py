@@ -157,6 +157,10 @@ class OxWagon:
         if debug:
             print(resp)
 
+        now=datetime.now()
+        with open('/home/timdimm/ox.log', 'a') as fout:
+            fout.write(f"Running {cmd} at {str(now)}\n")
+
         return resp
 
     def open(self, delay=3600):
@@ -164,9 +168,6 @@ class OxWagon:
         use pre-defined command to open the ox wagon completely
         """
         print(f"Opening for {delay} seconds")
-        now=datetime.now()
-        with open('/home/timdimm/ox.log', 'a') as fout:
-            fout.write(f"Opening {str(now)}\n")
 
         self.watch_delay=str(delay).zfill(4)
         self.command('OPEN')

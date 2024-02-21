@@ -115,14 +115,11 @@ else:
         log.info(f"Can't query scheduler status: {e}")
 
     try:
-        if not dome.is_parked():
-            log.info("Not ok to open, but Ox Wagon open. Closing and parking telescope...")
-            dome.park()
+        if not mount.is_parked():
+            log.info("Not ok to open, but mount not parked. Parking telescope...")
             mount.park()
     except Exception as e:
-        log.info(f"Can't park dome or mount: {e}")
-
-    log.info("foobar")
+        log.info(f"Can't park mount: {e}")
 
 # update and write out roof status
 roof_status['roof_status']['open_ok'] = open_ok
