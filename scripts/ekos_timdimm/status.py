@@ -90,10 +90,13 @@ if sun_azel.alt > -12 * u.deg:
 if open_ok:
     wx_message = "Safe conditions according to either SALT or MONET"
     log.info("Safe to be open")
-    if not dome.is_parked():
-        log.info("Dome not parked or moving. Sending open command...")
-        o = OxWagon()
-        o.command('OPEN', debug=False)
+    try:
+        if not dome.is_parked():
+            log.info("Dome not parked or moving. Sending open command...")
+            o = OxWagon()
+            o.command('OPEN', debug=False)
+    except Exception as e:
+        log.info(f"Can't query dome status: {e}")
     if not scheduler.status:
         log.info("Scheduler stopped. Restarting...")
         scheduler.reset_all_jobs()
