@@ -19,6 +19,7 @@ log.addHandler(handler)
 
 dome = OxWagon()
 
+dome.reset()
 dome.open()
 
 log.info("Unparking Ox Wagon...")

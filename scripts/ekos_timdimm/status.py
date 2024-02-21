@@ -91,12 +91,11 @@ if open_ok:
     wx_message = "Safe conditions according to either SALT or MONET"
     log.info("Safe to be open")
     try:
-        if not dome.is_parked():
-            log.info("Dome not parked or moving. Sending open command...")
-            o = OxWagon()
-            o.command('OPEN', debug=False)
+        log.info("Dome not parked or moving. Sending open command...")
+        o = OxWagon()
+        o.command('OPEN', debug=False)
     except Exception as e:
-        log.info(f"Can't query dome status: {e}")
+        log.info(f"Can't access ox wagon: {e}")
     if not scheduler.status:
         log.info("Scheduler stopped. Restarting...")
         scheduler.reset_all_jobs()
@@ -105,9 +104,12 @@ if open_ok:
 else:
     log.info("Unsafe conditions. Not ok to be open...")
 
-    log.info("Make sure oxwagon close command is sent...")
-    o = OxWagon()
-    o.command('CLOSE', debug=False)
+    try:
+        log.info("Make sure oxwagon close command is sent...")
+        o = OxWagon()
+        o.command('CLOSE', debug=False)
+    except Exception as e:
+        log.info(f"Can't access ox wagon: {e}")
 
     # if we're still not clear to be open, make sure we're parked and closed
     try:
