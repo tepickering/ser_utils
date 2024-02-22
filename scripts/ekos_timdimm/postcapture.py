@@ -66,7 +66,7 @@ seeing_data = analyze_dimm_cube("/home/timdimm/seeing.ser", airmass=pointing_sta
 csv_file = Path.home() / "seeing.csv"
 if not csv_file.exists():
     with open(csv_file, 'w') as fp:
-        fp.write("time, target, seeing, airmass, azimuth, exptime\n")
+        fp.write("time,target,seeing,airmass,azimuth,exptime\n")
 
 with open(csv_file, 'a') as fp:
     z = pointing_status['airmass']
