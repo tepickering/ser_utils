@@ -74,7 +74,7 @@ with open(csv_file, 'a') as fp:
     target = pointing_status['target']
     seeing = seeing_data['seeing'].value
     fp.write(
-        f"{Time.now().isot}, {target}, {seeing:.2f}, {z:.3f}, {azimuth:.1f}, {exptime}\n"
+        f"{Time.now().isot},{target},{seeing:.2f},{z:.3f},{azimuth:.1f},{exptime}\n"
     )
 
 with open(Path.home() / "seeing.txt", 'w') as f:
