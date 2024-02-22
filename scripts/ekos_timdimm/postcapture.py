@@ -3,6 +3,7 @@
 import sys
 import json
 import time
+import os
 
 from pathlib import Path
 import logging
@@ -81,5 +82,7 @@ with open(Path.home() / "seeing.txt", 'w') as f:
     print(f"{seeing_data['seeing'].value:.2f}", file=f)
     tobs = seeing_data['frame_times'][-1].to_datetime(timezone=TimezoneInfo(2 * u.hour)).isoformat()
     print(tobs, file=f)
+
+os.system("scp /home/timdimm/seeing.txt massdimm@seeing.suth.saao.ac.za:~/timDIMM/. >& /dev/null")
 
 sys.exit(0)
