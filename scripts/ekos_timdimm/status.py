@@ -7,6 +7,8 @@ As such, this is a good place to do overall monitoring of conditions.
 
 import sys
 import json
+import time
+
 from pathlib import Path
 import logging
 import logging.handlers
@@ -93,6 +95,8 @@ if open_ok:
     try:
         log.info("Sending ox wagon open command to keep it open...")
         o = OxWagon()
+        o.command('RESET', debug=False)
+        time.sleep(2)
         o.command('OPEN', debug=False)
     except Exception as e:
         log.info(f"Can't access ox wagon: {e}")
@@ -107,6 +111,8 @@ else:
     try:
         log.info("Make sure oxwagon close command is sent...")
         o = OxWagon()
+        o.command('RESET', debug=False)
+        time.sleep(2)
         o.command('CLOSE', debug=False)
     except Exception as e:
         log.info(f"Can't access ox wagon: {e}")
