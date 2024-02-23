@@ -111,8 +111,6 @@ else:
     try:
         log.info("Make sure oxwagon close command is sent...")
         o = OxWagon()
-        o.command('RESET', debug=False)
-        time.sleep(2)
         o.command('CLOSE', debug=False)
     except Exception as e:
         log.info(f"Can't access ox wagon: {e}")
