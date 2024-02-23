@@ -6,6 +6,7 @@ the ox wagon enclosure.
 import serial
 import io
 import argparse
+import time
 
 from datetime import datetime
 
@@ -109,19 +110,29 @@ class OxWagon:
     ]
 
     # this may need to change for new computer
-    def __init__(self, port="/dev/ttyUSB0"):
+    def __init__(self, port="/dev/ttyUSB0", retry_limit=10):
         """
         we use the pyserial package, https://pyserial.readthedocs.io/, to
         implement RS232 communication. beware, the port may change if the
         USB-RS232 cable is ever movedto a different port
         """
-        self.ser = serial.Serial(
-            port,
-            9600,
-            bytesize=7,
-            parity=serial.PARITY_EVEN,
-            timeout=1
-        )
+        retries = 0
+        while retries < retry_limit:
+            try:
+                self.ser = serial.Serial(
+                    port,
+                    9600,
+                    bytesize=7,
+                    parity=serial.PARITY_EVEN,
+                    timeout=1,
+                    exclusive=True
+                )
+                break
+            except Exception as e:
+                retries += 1
+                time.sleep(0.5)
+                if retries >= retry_limit:
+                    raise e
 
         # use this trick to make sure the CR-LF conversions are
         # handled correctly
