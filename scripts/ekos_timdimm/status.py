@@ -77,15 +77,15 @@ if safety_checks['salt']:
     log.info("SALT safety check passed. Safe to open.")
     wx_message += "SALT says it's ok to open; "
 
-# sun is up
-if sun_azel.alt > -12 * u.deg:
+# set the safety limit to civil twilight, -6 degrees.
+if sun_azel.alt > -6 * u.deg:
     open_ok = False
     if sun_azel.alt > 0 * u.deg:
         msg = f"Sun is up: {sun_azel.alt: .1f} above the horizon; "
         log.info(msg)
         wx_message += msg
     else:
-        msg = f"Nautical twilight: sun is at {sun_azel.alt: .1f}; "
+        msg = f"Early twilight: sun is at {sun_azel.alt: .1f}; "
         log.info(msg)
         wx_message += msg
 
