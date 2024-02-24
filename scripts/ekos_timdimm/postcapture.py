@@ -64,25 +64,29 @@ cam.record_duration(15, savedir="/home/timdimm", filename="seeing.ser")
 time.sleep(17)
 seeing_data = analyze_dimm_cube("/home/timdimm/seeing.ser", airmass=pointing_status['airmass'])
 
-csv_file = Path.home() / "seeing.csv"
-if not csv_file.exists():
-    with open(csv_file, 'w') as fp:
-        fp.write("time,target,seeing,airmass,azimuth,exptime\n")
+if np.isfinite(seeing_data['seeing'].value):
+    log.info(f"Seeing: {seeing_data['seeing']:.2f}; N bad: {seeing_data['N_bad']}")
+    csv_file = Path.home() / "seeing.csv"
+    if not csv_file.exists():
+        with open(csv_file, 'w') as fp:
+            fp.write("time,target,seeing,airmass,azimuth,exptime\n")
 
-with open(csv_file, 'a') as fp:
-    z = pointing_status['airmass']
-    azimuth = pointing_status['az']
-    target = pointing_status['target']
-    seeing = seeing_data['seeing'].value
-    fp.write(
-        f"{Time.now().isot},{target},{seeing:.2f},{z:.3f},{azimuth:.1f},{exptime}\n"
-    )
+    with open(csv_file, 'a') as fp:
+        z = pointing_status['airmass']
+        azimuth = pointing_status['az']
+        target = pointing_status['target']
+        seeing = seeing_data['seeing'].value
+        fp.write(
+            f"{Time.now().isot},{target},{seeing:.2f},{z:.3f},{azimuth:.1f},{exptime}\n"
+        )
 
-with open(Path.home() / "seeing.txt", 'w') as f:
-    print(f"{seeing_data['seeing'].value:.2f}", file=f)
-    tobs = seeing_data['frame_times'][-1].to_datetime(timezone=TimezoneInfo(2 * u.hour)).isoformat()
-    print(tobs, file=f)
+    with open(Path.home() / "seeing.txt", 'w') as f:
+        print(f"{seeing_data['seeing'].value:.2f}", file=f)
+        tobs = seeing_data['frame_times'][-1].to_datetime(timezone=TimezoneInfo(2 * u.hour)).isoformat()
+        print(tobs, file=f)
 
-os.system("scp -q /home/timdimm/seeing.txt massdimm@seeing.suth.saao.ac.za:~/timDIMM/.")
+    os.system("scp -q /home/timdimm/seeing.txt massdimm@seeing.suth.saao.ac.za:~/timDIMM/.")
+else:
+    log.warning("Analysis of seeing data failed.")
 
 sys.exit(0)
