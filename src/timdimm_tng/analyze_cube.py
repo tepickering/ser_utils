@@ -251,7 +251,7 @@ def dimm_calc(data, aps):
         new_aps, _ = find_apertures(
             data,
             brightest=2,
-            threshold=5,
+            threshold=7,
             ap_size=aps.r,
             plot=False
         )
@@ -291,7 +291,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2
     nframes = cube['data'].shape[0]
 
     if napertures == 2:
-        ap_size = 9
+        ap_size = 21
     else:
         ap_size = 5
 
@@ -328,7 +328,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2
 
     seeing_vals = []
     for baseline in baselines:
-        _, _, baseline_std = stats.sigma_clipped_stats(baseline, sigma=7, maxiters=10)
+        _, _, baseline_std = stats.sigma_clipped_stats(baseline, sigma=10, maxiters=10)
         seeing_vals.append(seeing(baseline_std))
 
     ave_seeing = u.Quantity(seeing_vals).mean() / airmass**0.6
