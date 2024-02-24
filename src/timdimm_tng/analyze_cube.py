@@ -245,12 +245,13 @@ def dimm_calc(data, aps):
     """
     ap_stats = photutils.ApertureStats(data, aps)
     ap_pos = ap_stats.centroid
-    if np.isfinite(ap_pos).all():
+    if np.isfinite(ap_pos).all() and len(ap_pos) == 2:
         new_aps = photutils.CircularAperture(ap_pos, aps.r)
     else:
         new_aps, _ = find_apertures(
             data,
             brightest=2,
+            threshold=5,
             ap_size=aps.r,
             plot=False
         )
@@ -258,7 +259,7 @@ def dimm_calc(data, aps):
         ap_pos = ap_stats.centroid
 
     if not np.isfinite(ap_pos).all() or len(ap_pos) < 2:
-        print(f"Bad centroiding: {ap_pos}")
+        # print(f"Bad centroiding: {ap_pos}")
         return None
 
     baseline = ap_pos[1] - ap_pos[0]
@@ -290,12 +291,12 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2
     nframes = cube['data'].shape[0]
 
     if napertures == 2:
-        ap_size = 7
+        ap_size = 9
     else:
         ap_size = 5
 
     apertures, fig = find_apertures(
-        np.mean(cube['data'][:10], axis=0),
+        np.mean(cube['data'][:1], axis=0),
         brightest=napertures,
         ap_size=ap_size,
         plot=plot
@@ -327,7 +328,8 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2
 
     seeing_vals = []
     for baseline in baselines:
-        seeing_vals.append(seeing(baseline.std()))
+        _, _, baseline_std = stats.sigma_clipped_stats(baseline, sigma=10, maxiters=5)
+        seeing_vals.append(seeing(baseline_std))
 
     ave_seeing = u.Quantity(seeing_vals).mean() / airmass**0.6
 
