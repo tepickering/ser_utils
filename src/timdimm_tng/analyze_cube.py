@@ -328,7 +328,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2
 
     seeing_vals = []
     for baseline in baselines:
-        _, _, baseline_std = stats.sigma_clipped_stats(baseline, sigma=10, maxiters=5)
+        _, _, baseline_std = stats.sigma_clipped_stats(baseline, sigma=7, maxiters=10)
         seeing_vals.append(seeing(baseline_std))
 
     ave_seeing = u.Quantity(seeing_vals).mean() / airmass**0.6
