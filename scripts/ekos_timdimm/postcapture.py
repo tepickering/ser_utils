@@ -42,9 +42,9 @@ cam.ser_mode()
 # it can get into, apparently. when in the state, the record_frames/record_duration
 # methods will generate INDI warnings saying "recording device is busy". toggling
 # video stream in kstars cleared it and these INDI commands perform the same function.
-cam.set_prop("CCD_VIDEO_STREAM.STREAM_ON", value="On")
+cam.set_prop("CCD_VIDEO_STREAM.STREAM_ON", "On")
 time.sleep(2)
-cam.set_prop("CCD_VIDEO_STREAM.STREAM_OFF", value="On")
+cam.set_prop("CCD_VIDEO_STREAM.STREAM_OFF", "On")
 time.sleep(1)
 
 # grab a short full-frame cube
