@@ -38,6 +38,15 @@ with open(Path.home() / "pointing_status.json", 'r') as fp:
 cam = INDI_Camera("ZWO ASI432MM")
 cam.ser_mode()
 
+# need to toggle video stream on and off to get camera out of a "stuck" state
+# it can get into, apparently. when in the state, the record_frames/record_duration
+# methods will generate INDI warnings saying "recording device is busy". toggling
+# video stream in kstars cleared it and these INDI commands perform the same function.
+cam.set_prop("CCD_VIDEO_STREAM.STREAM_ON", value="On")
+time.sleep(2)
+cam.set_prop("CCD_VIDEO_STREAM.STREAM_OFF", value="On")
+time.sleep(1)
+
 # grab a short full-frame cube
 cam.stream_exposure(0.001)
 cam.set_ROI(0, 0, 1608, 1104)
