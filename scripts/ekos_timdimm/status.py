@@ -77,9 +77,9 @@ if safety_checks['salt']:
     log.info("SALT safety check passed. Safe to open.")
     wx_message += "SALT says it's ok to open; "
 
-# set the safety limit to between civil and nautical twilight, -9 degrees.
+# set the safety limit to nautical twilight, -12 degrees.
 # needs to be dark enough for autoguiding to be happy.
-if sun_azel.alt > -9 * u.deg:
+if sun_azel.alt > -12 * u.deg:
     open_ok = False
     if sun_azel.alt > 0 * u.deg:
         msg = f"Sun is up: {sun_azel.alt: .1f} above the horizon; "
