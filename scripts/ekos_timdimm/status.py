@@ -106,6 +106,8 @@ if open_ok:
         scheduler.reset_all_jobs()
         scheduler.load_scheduler(str(Path.home() / "timdimm_tng" / "timdimm_schedule.esl"))
         scheduler.start()
+        # make sure meridian flips are enabled within ekos
+        mount.set_meridian_flip_values(activate=True, hours=0.1)
 else:
     log.info("Unsafe conditions. Not ok to be open...")
 
