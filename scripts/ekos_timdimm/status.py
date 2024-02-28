@@ -106,7 +106,11 @@ if open_ok:
         scheduler.reset_all_jobs()
         scheduler.load_scheduler(str(Path.home() / "timdimm_tng" / "timdimm_schedule.esl"))
         scheduler.start()
-        # make sure meridian flips are enabled within ekos
+        # make sure meridian flips are enabled within ekos. the dbus api says "hours"
+        # for this argument, but it's labeled as "deg" in the ekos interface. unsure
+        # which is correct, but this is less than what's configured within the mount's
+        # firmware which is all that matters so that ekos triggers the flip before the
+        # mount does.
         mount.set_meridian_flip_values(activate=True, hours=0.1)
 else:
     log.info("Unsafe conditions. Not ok to be open...")
