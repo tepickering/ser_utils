@@ -54,7 +54,8 @@ def get_current_conditions():
         if time_delt < 10 * u.min and i['Valid']:
             humidity.append(i['Rel_Hum'])
             precip.append(i['SkyCon'])
-            wind.append(i['Wind_speed'])
+            if 'Wind_speed' in i:
+                wind.append(i['Wind_speed'])
             temp.append(i['Temp'])
             if 'Cloud' in i:
                 cloud.append(i['Cloud'])

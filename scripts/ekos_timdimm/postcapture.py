@@ -59,9 +59,9 @@ ap_stats = ApertureStats(aperture_image, aps[0])
 x, y = np.mean(ap_stats.centroid, axis=0)
 
 # center apertures in a 400x400 ROI and grab a 15 second cube
-if ap_stats.max.max() > 8000:
+if ap_stats.max.min() > 8000:
     exptime = 0.0002
-elif ap_stats.max.max() > 4000:
+elif ap_stats.max.min() > 4000:
     exptime = 0.0005
 else:
     exptime = 0.001
