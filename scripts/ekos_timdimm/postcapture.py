@@ -63,6 +63,8 @@ if ap_stats.max.min() > 8000:
     exptime = 0.0002
 elif ap_stats.max.min() > 4000:
     exptime = 0.0005
+elif ap_stats.max.min() < 500:
+    exptime = 0.002
 else:
     exptime = 0.001
 cam.stream_exposure(exptime)
