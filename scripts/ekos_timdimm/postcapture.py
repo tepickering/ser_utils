@@ -56,6 +56,11 @@ aperture_data = load_ser_file("/home/timdimm/find_boxes.ser")
 aperture_image = np.mean(aperture_data['data'], axis=0)
 aps = find_apertures(aperture_image, brightest=2)
 ap_stats = ApertureStats(aperture_image, aps[0])
+centroids = ap_stats.centroid
+if len(centroids) != 2:
+    log.warning("Failed to find two apertures.")
+    sys.exit(0)
+
 x, y = np.mean(ap_stats.centroid, axis=0)
 
 # center apertures in a 400x400 ROI and grab a 15 second cube
