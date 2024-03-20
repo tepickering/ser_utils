@@ -90,6 +90,12 @@ if sun_azel.alt > -12 * u.deg:
         log.info(msg)
         wx_message += msg
 
+stopfile = Path.home() / "STOP"
+if stopfile.exists():
+    open_ok = False
+    log.info("Manual stop forced")
+    wx_message += "Manual stop forced"
+
 if open_ok:
     wx_message = "Safe conditions according to either SALT or MONET"
     log.info("Safe to be open")
