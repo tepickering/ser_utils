@@ -102,7 +102,9 @@ if np.isfinite(seeing_data['seeing'].value):
         print(tobs, file=f)
 
     os.system("scp -q /home/timdimm/seeing.txt massdimm@seeing.suth.saao.ac.za:~/timDIMM/.")
+    os.system("mv ~/seeing.ser ~/last_good_seeing.ser")
 else:
     log.warning("Analysis of seeing data failed.")
+    os.system("mv ~/seeing.ser ~/last_bad_seeing.ser")
 
 sys.exit(0)
