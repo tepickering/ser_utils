@@ -228,7 +228,7 @@ def hdimm_calc(data, aps):
     d_base2 = np.sqrt(np.dot(base2.T, base2))
     d_base3 = np.sqrt(np.dot(base3.T, base3))
 
-    return new_aps, [d_base1, d_base2, d_base3]
+    return new_aps, [d_base1, d_base2, d_base3], ap_stats.sum
 
 
 def dimm_calc(data, aps):
@@ -264,7 +264,7 @@ def dimm_calc(data, aps):
 
     baseline = ap_pos[1] - ap_pos[0]
     dist_baseline = np.sqrt(np.dot(baseline.T, baseline))
-    return new_aps, [dist_baseline]
+    return new_aps, [dist_baseline], ap_stats.sum
 
 
 
@@ -304,12 +304,13 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2
 
     baselines = []
     positions = []
+    fluxes = []
     nbad = 0
 
-    frame_means = np.mean(cube['data'], axis=(1,2))
+    frame_meds = np.median(cube['data'], axis=(1, 2))
 
     for i in range(nframes):
-        frame = cube['data'][i, :, :] - frame_means[i]
+        frame = cube['data'][i, :, :] - frame_meds[i]
 
         if napertures == 2:
             dimm_meas = dimm_calc(frame, apertures)
@@ -317,9 +318,10 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2
             dimm_meas = hdimm_calc(frame, apertures)
 
         if dimm_meas is not None:
-            apertures, ap_distances = dimm_meas[0], dimm_meas[1]
+            apertures, ap_distances, ap_fluxes = dimm_meas
             baselines.append(ap_distances)
             positions.append(apertures.positions.mean(axis=0))
+            fluxes.append(ap_fluxes)
         else:
             nbad += 1
 
@@ -328,7 +330,8 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2
 
     seeing_vals = []
     for baseline in baselines:
-        _, _, baseline_std = stats.sigma_clipped_stats(baseline, sigma=10, maxiters=10)
+        #_, _, baseline_std = stats.sigma_clipped_stats(baseline, sigma=10, maxiters=10)
+        baseline_std = np.std(baseline)
         seeing_vals.append(seeing(baseline_std))
 
     ave_seeing = u.Quantity(seeing_vals).mean() / airmass**0.6
@@ -338,6 +341,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2
         "raw_seeing": seeing_vals,
         "baseline_lengths": baselines,
         "aperture_positions": positions,
+        "aperture_fluxes": fluxes,
         "frame_times": cube['frame_times'],
         "N_bad": nbad,
         "aperture_plot": fig
