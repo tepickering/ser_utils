@@ -260,7 +260,7 @@ def dimm_calc(data, aps):
         ap_stats = photutils.ApertureStats(data, new_aps)
         ap_pos = ap_stats.centroid
 
-    if not np.isfinite(ap_pos).all() or len(ap_pos) < 2:
+    if not np.isfinite(ap_pos).all() or len(ap_pos) != 2 or np.any(ap_stats.sum < 0):
         # print(f"Bad centroiding: {ap_pos}")
         return None
 
