@@ -102,7 +102,8 @@ def seeing(
         Angle subtended by each pixel (default is for 9 um pixels and 2500 mm focal length)
     """
     b = (baseline / aperture_diameter).decompose().value
-    variance = sigma * (pixel_scale.to(u.radian).value) ** 2.0
+    sigma = sigma * pixel_scale.to(u.radian).value  # convert stddev to radians
+    variance = sigma ** 2.0
     k = {}
     k['longitudinal'] = 0.364 * (1.0 - 0.532 * b ** (-1.0 / 3.0) - 0.024 * b ** (-7.0 / 3.0))
     k['transverse'] = 0.364 * (1.0 - 0.798 * b ** (-1.0 / 3.0) + 0.018 * b ** (-7.0 / 3.0))
@@ -182,6 +183,7 @@ def find_apertures(
         exclude_border=True,
         min_separation=10
     )
+    data = data - median
     stars = daofind(data)
 
     if stars is None:
@@ -245,7 +247,7 @@ def dimm_calc(data, aps):
     """
     ap_stats = photutils.ApertureStats(data, aps)
     ap_pos = ap_stats.centroid
-    if np.isfinite(ap_pos).all() and len(ap_pos) == 2:
+    if np.isfinite(ap_pos).all() and len(ap_pos) == 2 and np.all(ap_stats.sum > 0):
         new_aps = photutils.CircularAperture(ap_pos, aps.r)
     else:
         new_aps, _ = find_apertures(
@@ -267,8 +269,7 @@ def dimm_calc(data, aps):
     return new_aps, [dist_baseline], ap_stats.sum
 
 
-
-def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2, plot=False):
+def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertures=2, plot=False):
     """
     Analyze an SER format data cube of DIMM observations and calculate the seeing from the
     differential motion along the longitudinal axis of each baseline.
@@ -332,7 +333,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing=timdimm_seeing, napertures=2
     for baseline in baselines:
         #_, _, baseline_std = stats.sigma_clipped_stats(baseline, sigma=10, maxiters=10)
         baseline_std = np.std(baseline)
-        seeing_vals.append(seeing(baseline_std))
+        seeing_vals.append(seeing_func(baseline_std))
 
     ave_seeing = u.Quantity(seeing_vals).mean() / airmass**0.6
 
