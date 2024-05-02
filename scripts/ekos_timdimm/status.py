@@ -117,6 +117,7 @@ if open_ok:
         # which is correct, but this is less than what's configured within the mount's
         # firmware which is all that matters so that ekos triggers the flip before the
         # mount does.
+        mount.set_meridian_flip_values(activate=False, hours=0.1)  # need to toggle when doing this manually
         mount.set_meridian_flip_values(activate=True, hours=0.1)
 else:
     log.info("Unsafe conditions. Not ok to be open...")
