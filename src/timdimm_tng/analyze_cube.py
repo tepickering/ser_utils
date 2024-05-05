@@ -295,7 +295,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
     nframes = cube['data'].shape[0]
 
     if napertures == 2:
-        ap_size = 11
+        ap_size = 13
     else:
         ap_size = 5
 
@@ -328,6 +328,9 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
             fluxes.append(ap_fluxes)
         else:
             nbad += 1
+
+        if nbad > 100:
+            raise Exception("Hit 100 bad frame limit.")
 
     baselines = np.array(baselines).transpose()
     positions = np.array(positions).transpose()

@@ -83,6 +83,7 @@ try:
     seeing_data = analyze_dimm_cube("/home/timdimm/seeing.ser", airmass=pointing_status['airmass'])
 except Exception as e:
     log.error(f"Seeing analysis failed: {e}")
+    os.system("mv ~/seeing.ser ~/last_bad_seeing.ser")
 
 if np.isfinite(seeing_data['seeing'].value) and seeing_data['seeing'].value < 10.0:
     log.info(f"Seeing: {seeing_data['seeing']:.2f}; N bad: {seeing_data['N_bad']}")
