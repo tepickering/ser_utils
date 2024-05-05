@@ -142,7 +142,7 @@ def timdimm_seeing(sigma):
 
 def find_apertures(
     data,
-    fwhm=9.0,
+    fwhm=7.0,
     threshold=7.0,
     plot=False,
     ap_size=5,
@@ -254,7 +254,6 @@ def dimm_calc(data, aps):
             new_aps, _ = find_apertures(
                 data,
                 brightest=2,
-                fwhm=9,
                 threshold=9,
                 ap_size=aps.r+2,
                 plot=False
