@@ -106,6 +106,7 @@ if np.isfinite(seeing_data['seeing'].value) and seeing_data['seeing'] < 10.0:
         os.system("mv ~/seeing.ser ~/last_good_seeing.ser")
     else:
         log.warning("Too many bad frames in seeing data.")
+        os.system("mv ~/seeing.ser ~/last_bad_seeing.ser")
 
 else:
     log.warning("Analysis of seeing data failed.")
