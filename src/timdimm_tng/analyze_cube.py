@@ -295,7 +295,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
     nframes = cube['data'].shape[0]
 
     if napertures == 2:
-        ap_size = 13
+        ap_size = 11
     else:
         ap_size = 5
 
