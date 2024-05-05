@@ -255,7 +255,7 @@ def dimm_calc(data, aps):
                 data,
                 brightest=2,
                 threshold=9,
-                ap_size=aps.r+2,
+                ap_size=aps.r,
                 plot=False
             )
             ap_stats = photutils.ApertureStats(data, new_aps)
