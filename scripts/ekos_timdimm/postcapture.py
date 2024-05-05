@@ -80,9 +80,9 @@ cam.record_duration(15, savedir="/home/timdimm", filename="seeing.ser")
 time.sleep(17)
 seeing_data = analyze_dimm_cube("/home/timdimm/seeing.ser", airmass=pointing_status['airmass'])
 
-if np.isfinite(seeing_data['seeing'].value):
+if np.isfinite(seeing_data['seeing'].value) and seeing_data['seeing'] < 10.0:
     log.info(f"Seeing: {seeing_data['seeing']:.2f}; N bad: {seeing_data['N_bad']}")
-    if seeing_data['N_bad'] == 0:
+    if seeing_data['N_bad'] < 20:
         csv_file = Path.home() / "seeing.csv"
         if not csv_file.exists():
             with open(csv_file, 'w') as fp:
