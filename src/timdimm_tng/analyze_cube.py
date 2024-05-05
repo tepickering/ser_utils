@@ -253,7 +253,7 @@ def dimm_calc(data, aps):
         new_aps, _ = find_apertures(
             data,
             brightest=2,
-            threshold=7,
+            threshold=9,
             ap_size=aps.r,
             plot=False
         )
