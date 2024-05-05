@@ -250,15 +250,19 @@ def dimm_calc(data, aps):
     if np.isfinite(ap_pos).all() and len(ap_pos) == 2 and np.all(ap_stats.sum > 0):
         new_aps = photutils.CircularAperture(ap_pos, aps.r)
     else:
-        new_aps, _ = find_apertures(
-            data,
-            brightest=2,
-            threshold=9,
-            ap_size=aps.r+2,
-            plot=False
-        )
-        ap_stats = photutils.ApertureStats(data, new_aps)
-        ap_pos = ap_stats.centroid
+        try:
+            new_aps, _ = find_apertures(
+                data,
+                brightest=2,
+                fwhm=9,
+                threshold=9,
+                ap_size=aps.r+2,
+                plot=False
+            )
+            ap_stats = photutils.ApertureStats(data, new_aps)
+            ap_pos = ap_stats.centroid
+        except Exception as _:
+            return None
 
     if not np.isfinite(ap_pos).all() or len(ap_pos) != 2 or np.any(ap_stats.sum < 0):
         # print(f"Bad centroiding: {ap_pos}")
