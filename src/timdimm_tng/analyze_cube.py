@@ -229,7 +229,7 @@ def hdimm_calc(data, aps):
             new_aps, _ = find_apertures(
                 data,
                 brightest=3,
-                threshold=9,
+                threshold=5,
                 fwhm=9,
                 ap_size=aps.r,
                 plot=False
