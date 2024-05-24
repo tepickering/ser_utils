@@ -5,7 +5,6 @@ the specifications for unpacking SER files are given at: http://www.grischa-hahn
 from struct import unpack
 from pathlib import Path
 from enum import Enum
-import mmap
 
 import numpy as np
 
@@ -67,9 +66,7 @@ def load_ser_file(filename):
     Comments are transcribed from that documentation.
     """
     p = Path(filename)
-    with open(p, 'r+b') as f:
-        fp = mmap.mmap(f.fileno(), 0)
-
+    with open(p, 'r+b') as fp:
         output = {}
         output['filename'] = str(filename)
 
