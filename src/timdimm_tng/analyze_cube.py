@@ -142,7 +142,7 @@ def timdimm_seeing(sigma):
 
 def find_apertures(
     data,
-    fwhm=7.0,
+    fwhm=9.0,
     threshold=5.0,
     plot=False,
     ap_size=5,
@@ -157,7 +157,7 @@ def find_apertures(
     ----------
     data : FITS filename or 2D ~numpy.ndarray
         Reference image to determine aperture positions
-    fwhm : float (default: 7.0)
+    fwhm : float (default: 9.0)
         FWHM in pixels of DAOfind convolution kernel
     threshold : float (default: 5.0)
         DAOfind threshold in units of the standard deviation of the image
@@ -319,10 +319,10 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
         if napertures == 2:
             ap_size = 11
         else:
-            ap_size = 7
+            ap_size = 9
 
     apertures, fig = find_apertures(
-        np.mean(cube['data'][:10], axis=0),
+        np.mean(cube['data'][:1], axis=0),
         brightest=napertures,
         ap_size=ap_size,
         plot=plot
