@@ -230,6 +230,7 @@ def hdimm_calc(data, aps):
                 data,
                 brightest=3,
                 threshold=9,
+                fwhm=9,
                 ap_size=aps.r,
                 plot=False
             )
