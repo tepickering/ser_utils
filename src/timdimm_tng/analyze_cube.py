@@ -360,9 +360,9 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
     for baseline in baselines:
         _, _, baseline_std = stats.sigma_clipped_stats(baseline, sigma=10, maxiters=10)
         #baseline_std = np.std(baseline)
-        seeing_vals.append(seeing_func(baseline_std))
+        seeing_vals.append(seeing_func(baseline_std) / airmass**0.6)
 
-    ave_seeing = u.Quantity(seeing_vals).mean() / airmass**0.6
+    ave_seeing = u.Quantity(seeing_vals).mean()
 
     return {
         "seeing": ave_seeing,
@@ -679,6 +679,41 @@ def timdimm_analyze():
         print(f"{results['seeing'].value:.2f}", file=f)
         tobs = results['frame_times'][-1].to_datetime(timezone=TimezoneInfo(2 * u.hour))
         print(tobs, file=f)
+
+    results['aperture_plot'].savefig("apertures.png")
+
+    return 0
+
+
+def hdimm_analyze():
+    """
+    Set up command-line interface to analyze 3-aperture HDIMM datacubes
+    """
+    parser = argparse.ArgumentParser(description='Utility for analyzing HDIMM data cubes')
+
+    parser.add_argument(
+        '-f', '--filename',
+        metavar="<filename>",
+        help="Filename of SER data cube to analyze"
+    )
+
+    parser.add_argument(
+        '-a', '--airmass',
+        metavar="<airmass>",
+        help="Airmass of observation",
+        type=float,
+        default=1.0
+    )
+
+    args = parser.parse_args()
+
+    results = analyze_dimm_cube(args.filename, airmass=args.airmass, seeing_func=seeing, napertures=3, plot=True)
+
+    print(f"Average Seeing: {results['seeing']:.2f}")
+    print(f"    Baseline 1: {results['raw_seeing'][0]:.2f}")
+    print(f"    Baseline 2: {results['raw_seeing'][1]:.2f}")
+    print(f"    Baseline 3: {results['raw_seeing'][2]:.2f}")
+    print(f"         N bad: {results['N_bad']}")
 
     results['aperture_plot'].savefig("apertures.png")
 
