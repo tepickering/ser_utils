@@ -200,8 +200,8 @@ def find_apertures(
             data,
             ax,
             origin='lower',
-            interval=visualization.ZScaleInterval(contrast=contrast),
-            stretch=visualization.LinearStretch()
+            #interval=visualization.ZScaleInterval(contrast=contrast),
+            stretch=visualization.LogStretch()
         )
         fig.colorbar(im)
         apertures.plot(color='red', lw=1.5, alpha=0.5, axes=ax)
@@ -222,7 +222,25 @@ def hdimm_calc(data, aps):
     """
     ap_stats = ApertureStats(data, aps)
     ap_pos = ap_stats.centroid
-    new_aps = CircularAperture(ap_pos, aps.r)
+    if np.isfinite(ap_pos).all() and len(ap_pos) == 3 and np.all(ap_stats.sum > 0):
+        new_aps = CircularAperture(ap_pos, aps.r)
+    else:
+        try:
+            new_aps, _ = find_apertures(
+                data,
+                brightest=3,
+                threshold=9,
+                ap_size=aps.r,
+                plot=False
+            )
+            ap_stats = photutils.ApertureStats(data, new_aps)
+            ap_pos = ap_stats.centroid
+        except Exception as _:
+            return None
+
+    if not np.isfinite(ap_pos).all() or len(ap_pos) != 3 or np.any(ap_stats.sum < 0):
+        # print(f"Bad centroiding: {ap_pos}")
+        return None
     base1 = ap_pos[1] - ap_pos[0]
     base2 = ap_pos[2] - ap_pos[0]
     base3 = ap_pos[2] - ap_pos[1]
@@ -272,7 +290,7 @@ def dimm_calc(data, aps):
     return new_aps, [dist_baseline], ap_stats.sum
 
 
-def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertures=2, plot=False):
+def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertures=2, ap_size=None, plot=False):
     """
     Analyze an SER format data cube of DIMM observations and calculate the seeing from the
     differential motion along the longitudinal axis of each baseline.
@@ -287,6 +305,8 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
         Function to use for seeing calculation
     napertures : int (default: 2)
         Number of apertures in the DIMM mask
+    ap_size : int (default: None)
+        Override the default ap_size for dimm (11) or hdimm (7)
     plot : bool (default: False)
         Toggle plotting of the aperture positions
     """
@@ -294,13 +314,14 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
 
     nframes = cube['data'].shape[0]
 
-    if napertures == 2:
-        ap_size = 11
-    else:
-        ap_size = 5
+    if ap_size is None:
+        if napertures == 2:
+            ap_size = 11
+        else:
+            ap_size = 7
 
     apertures, fig = find_apertures(
-        np.mean(cube['data'][:1], axis=0),
+        np.mean(cube['data'][:2], axis=0),
         brightest=napertures,
         ap_size=ap_size,
         plot=plot
