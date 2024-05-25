@@ -14,6 +14,7 @@ from skimage import measure
 
 import matplotlib.pyplot as plt
 
+import astropy
 import astropy.units as u
 from astropy import stats, visualization
 from astropy.modeling import models, fitting
@@ -142,11 +143,9 @@ def timdimm_seeing(sigma):
 
 def find_apertures(
     data,
-    fwhm=9.0,
     threshold=5.0,
     plot=False,
-    ap_size=5,
-    contrast=0.05,
+    ap_size=7,
     brightest=3,
     std=None
 ):
@@ -157,16 +156,12 @@ def find_apertures(
     ----------
     data : FITS filename or 2D ~numpy.ndarray
         Reference image to determine aperture positions
-    fwhm : float (default: 9.0)
-        FWHM in pixels of DAOfind convolution kernel
-    threshold : float (default: 5.0)
+    threshold : float (default: 15.0)
         DAOfind threshold in units of the standard deviation of the image
     plot: bool (default: False)
         Toggle plotting of the reference image and overlayed apertures
-    ap_size : float (default: 5)
+    ap_size : float (default: 7)
         Radius of plotted apertures in pixels
-    contrast : float (default: 0.05)
-        ZScale contrast factor
     brightest : int (default: 3)
         Number of brightest stars to use for aperture positions
     std : float or None (default: None)
@@ -175,16 +170,16 @@ def find_apertures(
     if std is None:
         mean, median, std = stats.sigma_clipped_stats(data, sigma=3.0, maxiters=5)
 
-    daofind = photutils.DAOStarFinder(
-        fwhm=fwhm,
-        threshold=threshold*std,
-        sharphi=0.95,
-        brightest=brightest,
-        exclude_border=True,
-        min_separation=10
-    )
-    data = data - median
-    stars = daofind(data)
+    data = data - mean
+    threshold = threshold * std
+    kernel = photutils.segmentation.make_2dgaussian_kernel(3, size=3)
+    convolved_data = astropy.convolution.convolve(data, kernel)
+    finder = photutils.segmentation.SourceFinder(npixels=15, progress_bar=False)
+    segment_map = finder(convolved_data, threshold)
+    t = photutils.segmentation.SourceCatalog(data, segment_map, convolved_data=convolved_data).to_table()
+    t.sort('max_value')
+    stars = t[-brightest:]
+    stars.sort('xcentroid')
 
     if stars is None:
         raise Exception("No stars detected in image")
@@ -200,7 +195,6 @@ def find_apertures(
             data,
             ax,
             origin='lower',
-            #interval=visualization.ZScaleInterval(contrast=contrast),
             stretch=visualization.LogStretch()
         )
         fig.colorbar(im)
@@ -220,34 +214,44 @@ def hdimm_calc(data, aps):
     aps : ~photutils.CircularAperture
         Aperture positions
     """
+    overlapped = False
     ap_stats = ApertureStats(data, aps)
     ap_pos = ap_stats.centroid
-    if np.isfinite(ap_pos).all() and len(ap_pos) == 3 and np.all(ap_stats.sum > 0):
-        new_aps = CircularAperture(ap_pos, aps.r)
-    else:
-        try:
-            new_aps, _ = find_apertures(
-                data,
-                brightest=3,
-                threshold=5,
-                fwhm=9,
-                ap_size=aps.r,
-                plot=False
-            )
-            ap_stats = photutils.ApertureStats(data, new_aps)
-            ap_pos = ap_stats.centroid
-        except Exception as _:
-            return None
-
-    if not np.isfinite(ap_pos).all() or len(ap_pos) != 3 or np.any(ap_stats.sum < 0):
-        # print(f"Bad centroiding: {ap_pos}")
-        return None
     base1 = ap_pos[1] - ap_pos[0]
     base2 = ap_pos[2] - ap_pos[0]
     base3 = ap_pos[2] - ap_pos[1]
     d_base1 = np.sqrt(np.dot(base1.T, base1))
     d_base2 = np.sqrt(np.dot(base2.T, base2))
     d_base3 = np.sqrt(np.dot(base3.T, base3))
+
+    for b in d_base1, d_base2, d_base3:
+        if b < 0.5 * aps.r:
+            overlapped = True
+
+    if np.isfinite(ap_pos).all() and len(ap_pos) == 3 and np.all(ap_stats.sum > 0) and not overlapped:
+        new_aps = CircularAperture(ap_pos, aps.r)
+    else:
+        try:
+            new_aps, _ = find_apertures(
+                data,
+                brightest=3,
+                ap_size=aps.r,
+                plot=False
+            )
+            ap_stats = photutils.ApertureStats(data, new_aps)
+            ap_pos = ap_stats.centroid
+            base1 = ap_pos[1] - ap_pos[0]
+            base2 = ap_pos[2] - ap_pos[0]
+            base3 = ap_pos[2] - ap_pos[1]
+            d_base1 = np.sqrt(np.dot(base1.T, base1))
+            d_base2 = np.sqrt(np.dot(base2.T, base2))
+            d_base3 = np.sqrt(np.dot(base3.T, base3))
+        except Exception as _:
+            return None
+
+    if not np.isfinite(ap_pos).all() or len(ap_pos) != 3 or np.any(ap_stats.sum < 0):
+        # print(f"Bad centroiding: {ap_pos}")
+        return None
 
     return new_aps, [d_base1, d_base2, d_base3], ap_stats.sum
 
@@ -273,7 +277,6 @@ def dimm_calc(data, aps):
             new_aps, _ = find_apertures(
                 data,
                 brightest=2,
-                threshold=9,
                 ap_size=aps.r,
                 plot=False
             )
