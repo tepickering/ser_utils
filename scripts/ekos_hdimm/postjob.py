@@ -15,7 +15,7 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-log.info("Running post-job; sleeping 10 sec...")
-time.sleep(10)
+log.info("Running post-job; sleeping 30 sec...")
+time.sleep(30)
 
 sys.exit(0)
