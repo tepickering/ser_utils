@@ -35,7 +35,7 @@ with open(Path.home() / "pointing_status.json", 'r') as fp:
     pointing_status = json.load(fp)
 
 # open and configure the camera
-cam = INDI_Camera("ZWO ASI432MM")
+cam = INDI_Camera("ZWO CCD ASI432MM")
 cam.ser_mode()
 
 # need to toggle video stream on and off to get camera out of a "stuck" state
