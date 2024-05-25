@@ -30,11 +30,14 @@ log.addHandler(handler)
 
 log.info("Running pre-job...")
 
-az, el = float(mount.horizontal_coords[0]), float(mount.horizontal_coords[1])
-ra, dec = float(mount.equatorial_coords[0]), float(mount.equatorial_coords[1])
-ha = float(mount.hour_angle)
-target = capture.target_name
-airmass = 1. / np.sin(el * u.degree)
+try:
+    az, el = float(mount.horizontal_coords[0]), float(mount.horizontal_coords[1])
+    ra, dec = float(mount.equatorial_coords[0]), float(mount.equatorial_coords[1])
+    ha = float(mount.hour_angle)
+    target = capture.target_name
+    airmass = 1. / np.sin(el * u.degree)
+except Exception as e:
+    log.error(f"Failed loading mount info: {e}")
 
 log.info(f"Observing {target} at Az={az:.1f}°, El={el:.1f}°")
 
