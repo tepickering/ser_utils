@@ -9,7 +9,7 @@
 			<J2000DE>38.78361111111111</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -36,7 +36,7 @@
 			<J2000DE>19.1825</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -63,7 +63,7 @@
 			<J2000DE>45.99805555555556</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -90,7 +90,7 @@
 			<J2000DE>5.2250000000000005</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -117,7 +117,7 @@
 			<J2000DE>8.868333333333334</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -144,7 +144,7 @@
 			<J2000DE>16.509166666666665</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -171,7 +171,7 @@
 			<J2000DE>28.02611111111111</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -198,7 +198,7 @@
 			<J2000DE>45.280277777777776</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -225,7 +225,7 @@
 			<J2000DE>11.967222222222222</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -252,7 +252,7 @@
 			<J2000DE>6.349722222222222</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -279,7 +279,7 @@
 			<J2000DE>-1.2019444444444445</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -306,7 +306,7 @@
 			<J2000DE>55.959722222222226</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -333,7 +333,7 @@
 			<J2000DE>49.861111111111114</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -360,7 +360,7 @@
 			<J2000DE>49.31333333333333</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -387,7 +387,7 @@
 			<J2000DE>44.9475</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -414,7 +414,7 @@
 			<J2000DE>16.399166666666666</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
@@ -441,7 +441,7 @@
 			<J2000DE>-8.658611111111112</J2000DE>
 		</Coordinates>
 		<PositionAngle></PositionAngle>
-		<Sequence>/home/tim/MMT/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
+		<Sequence>/home/astronaut/timdimm_tng/src/timdimm_tng/templates/hdimm_sequence.esq</Sequence>
 		<StartupCondition>
 			<Condition>ASAP</Condition>
 		</StartupCondition>
