@@ -3577,6 +3577,6 @@
 	<ShutdownProcedure>
 		<Procedure>ParkMount</Procedure>
 		<Procedure>ParkDome</Procedure>
-		<Procedure value="/home/astronaut/timdimm_tng/_hdimm/shutdown.py">ShutdownScript</Procedure>
+		<Procedure value="/home/astronaut/timdimm_tng/scripts/ekos_hdimm/shutdown.py">ShutdownScript</Procedure>
 	</ShutdownProcedure>
 </SchedulerList>
