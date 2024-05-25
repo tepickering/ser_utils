@@ -170,22 +170,23 @@ def make_hdimm_schedule(outfile="hdimm_schedule.esl"):
     # so we sort by brightness so it'll always stick with the brightest star available.
     stars.sort(keys='Vmag')
     for star in stars:
-        priority = mag_to_priority(star['Vmag'])
-        obs = Observation(
-            target=star['Name'],
-            ra=star['Coordinates'].ra.to(u.hourangle).value,
-            dec=star['Coordinates'].dec.value,
-            priority=priority,
-            sequence=pkg_resources.resource_filename(
-                __name__,
-                os.path.join("templates", "hdimm_sequence.esq")
-            ),
-            template=pkg_resources.resource_filename(
-                __name__,
-                os.path.join("templates", "hdimm_schedule_template.esl")
+        if star['Coordinates'].dec.value > -10 and star['Vmag'] < 2.0:
+            priority = mag_to_priority(star['Vmag'])
+            obs = Observation(
+                target=star['Name'],
+                ra=star['Coordinates'].ra.to(u.hourangle).value,
+                dec=star['Coordinates'].dec.value,
+                priority=priority,
+                sequence=pkg_resources.resource_filename(
+                    __name__,
+                    os.path.join("templates", "hdimm_sequence.esq")
+                ),
+                template=pkg_resources.resource_filename(
+                    __name__,
+                    os.path.join("templates", "hdimm_schedule_template.esl")
+                )
             )
-        )
-        sched.add_observation(dict(obs))
+            sched.add_observation(dict(obs))
 
     if outfile is not None:
         sched.to_xml(outfile)
