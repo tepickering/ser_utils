@@ -29,10 +29,10 @@
 </Prefix>
 <Count>1</Count>
 <Delay>0</Delay>
-<PreCaptureScript>/home/astronaut/timdimm_tng/ekos_hdimm/precapture.py</PreCaptureScript>
-<PostCaptureScript>/home/astronaut/timdimm_tng/ekos_hdimm/postcapture.py</PostCaptureScript>
-<PreJobScript>/home/astronaut/timdimm_tng/ekos_hdimm/prejob.py</PreJobScript>
-<PostJobScript>/home/astronaut/timdimm_tng/ekos_hdimm/postjob.py</PostJobScript>
+<PreCaptureScript>/home/astronaut/timdimm_tng/scripts/ekos_hdimm/precapture.py</PreCaptureScript>
+<PostCaptureScript>/home/astronaut/timdimm_tng/scripts/ekos_hdimm/postcapture.py</PostCaptureScript>
+<PreJobScript>/home/astronaut/timdimm_tng/scripts/ekos_hdimm/prejob.py</PreJobScript>
+<PostJobScript>/home/astronaut/timdimm_tng/scripts/ekos_hdimm/postjob.py</PostJobScript>
 <FITSDirectory>/home/astronaut/Pictures</FITSDirectory>
 <PlaceholderFormat>/%t/%T/%F/%t_%T_%F</PlaceholderFormat>
 <PlaceholderSuffix>3</PlaceholderSuffix>
