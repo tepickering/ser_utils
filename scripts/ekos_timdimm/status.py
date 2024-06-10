@@ -65,17 +65,22 @@ sun_coord = get_sun(Time.now())
 sun_azel = sun_coord.transform_to(AltAz(obstime=Time.now(), location=SAAO))
 
 # check weather and if SALT or MONET think it's safe to open
-wx, safety_checks = get_current_conditions()
+try:
+    wx, safety_checks = get_current_conditions()
 
-if safety_checks['monet']:
-    open_ok = True
-    log.info("MONET safety check passed. Safe to open.")
-    wx_message += "MONET says it's ok to open; "
+    if safety_checks['monet']:
+        open_ok = True
+        log.info("MONET safety check passed. Safe to open.")
+        wx_message += "MONET says it's ok to open; "
 
-if safety_checks['salt']:
-    open_ok = True
-    log.info("SALT safety check passed. Safe to open.")
-    wx_message += "SALT says it's ok to open; "
+    if safety_checks['salt']:
+        open_ok = True
+        log.info("SALT safety check passed. Safe to open.")
+        wx_message += "SALT says it's ok to open; "
+
+except Exception as e:
+    log.error(f"Can't get current conditions: {e}")
+    open_ok = False
 
 # set the safety limit to nautical twilight, -12 degrees.
 # needs to be dark enough for autoguiding to be happy.
