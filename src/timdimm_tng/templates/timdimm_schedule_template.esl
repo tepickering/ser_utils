@@ -60,7 +60,6 @@
 <StartupProcedure>
 <Procedure value='/home/tim/MMT/timdimm_tng/scripts/ekos/startup.py'>StartupScript</Procedure>
 <Procedure>UnparkDome</Procedure>
-<Procedure>UnparkMount</Procedure>
 </StartupProcedure>
 <ShutdownProcedure>
 <Procedure>ParkMount</Procedure>
