@@ -104,7 +104,9 @@ if np.isfinite(seeing_data['seeing'].value) and seeing_data['seeing'].value < 10
 
         with open(Path.home() / "seeing.txt", 'w') as f:
             print(f"{seeing_data['seeing'].value:.2f}", file=f)
-            tobs = seeing_data['frame_times'][-1].to_datetime(timezone=TimezoneInfo(2 * u.hour)).isoformat()
+            tobs = seeing_data['frame_times'][-1].to_datetime(
+                timezone=TimezoneInfo(2 * u.hour)
+            ).isoformat(timespec='seconds')
             print(tobs, file=f)
 
         os.system("scp -q /home/timdimm/seeing.txt massdimm@seeing.suth.saao.ac.za:~/timDIMM/.")
