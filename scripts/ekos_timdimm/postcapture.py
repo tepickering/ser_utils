@@ -76,8 +76,9 @@ cam.stream_exposure(exptime)
 left = max(0, int(x - 200))
 top = max(0, int(y - 200))
 cam.set_ROI(left, top, 400, 400)
+time.sleep(1)
 cam.record_duration(15, savedir="/home/timdimm", filename="seeing.ser")
-time.sleep(20)
+time.sleep(17)
 
 try:
     seeing_data = analyze_dimm_cube("/home/timdimm/seeing.ser", airmass=pointing_status['airmass'])
