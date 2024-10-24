@@ -20,7 +20,7 @@ from astropy import stats, visualization
 from astropy.modeling import models, fitting
 from astropy.time import TimezoneInfo
 
-import photutils
+from photutils.segmentation import SourceFinder, make_2dgaussian_kernel, SourceCatalog
 from photutils.aperture import ApertureStats, CircularAperture
 
 from timdimm_tng.ser import load_ser_file
@@ -150,7 +150,7 @@ def find_apertures(
     std=None
 ):
     """
-    Use photutils.DAOStarFinder() to find and centroid star images from each DIMM aperture.
+    Use DAOStarFinder() to find and centroid star images from each DIMM aperture.
 
     Parameters
     ----------
@@ -172,11 +172,11 @@ def find_apertures(
 
     data = data - mean
     threshold = threshold * std
-    kernel = photutils.segmentation.make_2dgaussian_kernel(3, size=3)
+    kernel = make_2dgaussian_kernel(3, size=3)
     convolved_data = astropy.convolution.convolve(data, kernel)
-    finder = photutils.segmentation.SourceFinder(npixels=15, progress_bar=False)
+    finder = SourceFinder(npixels=15, progress_bar=False)
     segment_map = finder(convolved_data, threshold)
-    t = photutils.segmentation.SourceCatalog(data, segment_map, convolved_data=convolved_data).to_table()
+    t = SourceCatalog(data, segment_map, convolved_data=convolved_data).to_table()
     t.sort('max_value')
     stars = t[-brightest:]
     stars.sort('xcentroid')
@@ -211,7 +211,7 @@ def hdimm_calc(data, aps):
     data : 2D numpy.ndarray image
         Image frame to perform centroids on
 
-    aps : ~photutils.CircularAperture
+    aps : ~photutils.aperture.CircularAperture
         Aperture positions
     """
     overlapped = False
@@ -238,7 +238,7 @@ def hdimm_calc(data, aps):
                 ap_size=aps.r,
                 plot=False
             )
-            ap_stats = photutils.ApertureStats(data, new_aps)
+            ap_stats = ApertureStats(data, new_aps)
             ap_pos = ap_stats.centroid
             base1 = ap_pos[1] - ap_pos[0]
             base2 = ap_pos[2] - ap_pos[0]
@@ -265,13 +265,13 @@ def dimm_calc(data, aps):
     data : 2D numpy.ndarray image
         Image frame to perform centroids on
 
-    aps : ~photutils.CircularAperture
+    aps : ~photutils.aperture.CircularAperture
         Aperture positions
     """
-    ap_stats = photutils.ApertureStats(data, aps)
+    ap_stats = ApertureStats(data, aps)
     ap_pos = ap_stats.centroid
     if np.isfinite(ap_pos).all() and len(ap_pos) == 2 and np.all(ap_stats.sum > 0):
-        new_aps = photutils.CircularAperture(ap_pos, aps.r)
+        new_aps = CircularAperture(ap_pos, aps.r)
     else:
         try:
             new_aps, _ = find_apertures(
@@ -280,7 +280,7 @@ def dimm_calc(data, aps):
                 ap_size=aps.r,
                 plot=False
             )
-            ap_stats = photutils.ApertureStats(data, new_aps)
+            ap_stats = ApertureStats(data, new_aps)
             ap_pos = ap_stats.centroid
         except Exception as _:
             return None
@@ -310,7 +310,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
     napertures : int (default: 2)
         Number of apertures in the DIMM mask
     ap_size : int (default: None)
-        Override the default ap_size for dimm (11) or hdimm (7)
+        Override the default ap_size for dimm (11) or hdimm (21)
     plot : bool (default: False)
         Toggle plotting of the aperture positions
     """
@@ -322,7 +322,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
         if napertures == 2:
             ap_size = 11
         else:
-            ap_size = 9
+            ap_size = 21
 
     apertures, fig = find_apertures(
         np.mean(cube['data'][:1], axis=0),
