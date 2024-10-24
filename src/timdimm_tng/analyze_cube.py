@@ -322,7 +322,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
         if napertures == 2:
             ap_size = 11
         else:
-            ap_size = 13
+            ap_size = 11
 
     apertures, fig = find_apertures(
         np.mean(cube['data'][:1], axis=0),
