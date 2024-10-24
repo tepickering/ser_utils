@@ -310,7 +310,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
     napertures : int (default: 2)
         Number of apertures in the DIMM mask
     ap_size : int (default: None)
-        Override the default ap_size for dimm (11) or hdimm (21)
+        Override the default ap_size for dimm (11) or hdimm (17)
     plot : bool (default: False)
         Toggle plotting of the aperture positions
     """
@@ -322,7 +322,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
         if napertures == 2:
             ap_size = 11
         else:
-            ap_size = 21
+            ap_size = 17
 
     apertures, fig = find_apertures(
         np.mean(cube['data'][:1], axis=0),
