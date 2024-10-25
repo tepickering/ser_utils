@@ -50,7 +50,7 @@ time.sleep(1)
 # grab a short full-frame cube
 cam.stream_exposure(0.001)
 cam.set_ROI(0, 0, 1608, 1104)
-cam.record_frames(3, savedir="/seeing", filename="find_boxes.ser")
+cam.record_frames(2, savedir="/seeing", filename="find_boxes.ser")
 time.sleep(1)
 aperture_data = load_ser_file("/seeing/find_boxes.ser")
 aperture_image = np.mean(aperture_data['data'], axis=0)
