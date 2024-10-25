@@ -325,7 +325,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
             ap_size = 15
 
     apertures, fig = find_apertures(
-        np.mean(cube['data'][:3], axis=0),
+        np.mean(cube['data'][:1], axis=0),
         brightest=napertures,
         ap_size=ap_size,
         plot=plot
