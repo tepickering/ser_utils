@@ -147,7 +147,8 @@ def find_apertures(
     plot=False,
     ap_size=7,
     brightest=3,
-    std=None
+    std=None,
+    deblend=True
 ):
     """
     Use DAOStarFinder() to find and centroid star images from each DIMM aperture.
@@ -174,7 +175,7 @@ def find_apertures(
     threshold = threshold * std
     kernel = make_2dgaussian_kernel(5, size=15)
     convolved_data = astropy.convolution.convolve(data, kernel)
-    finder = SourceFinder(npixels=15, deblend=False, progress_bar=False)
+    finder = SourceFinder(npixels=15, deblend=deblend, progress_bar=False)
     segment_map = finder(convolved_data, threshold)
     t = SourceCatalog(data, segment_map, convolved_data=convolved_data).to_table()
     t.sort('max_value')
@@ -236,6 +237,7 @@ def hdimm_calc(data, aps):
                 data,
                 brightest=3,
                 ap_size=aps.r,
+                deblend=False,
                 plot=False
             )
             ap_stats = ApertureStats(data, new_aps)
@@ -328,6 +330,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
         np.mean(cube['data'][:1], axis=0),
         brightest=napertures,
         ap_size=ap_size,
+        deblend=False,
         plot=plot
     )
 
