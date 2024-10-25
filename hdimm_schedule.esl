@@ -462,14 +462,14 @@
 	</Job>
 	<SchedulerAlgorithm value="1"></SchedulerAlgorithm>
 	<ErrorHandlingStrategy value="1">
-		<delay>0</delay>
+		<delay>1</delay>
 	</ErrorHandlingStrategy>
 	<StartupProcedure>
 		<Procedure value="/home/astronaut/timdimm_tng/scripts/ekos_hdimm/startup.py">StartupScript</Procedure>
 		<Procedure>UnparkMount</Procedure>
 	</StartupProcedure>
 	<ShutdownProcedure>
-		<Procedure>ParkMount</Procedure>
 		<Procedure value="/home/astronaut/timdimm_tng/scripts/ekos_hdimm/shutdown.py">ShutdownScript</Procedure>
+		<Procedure>ParkMount</Procedure>
 	</ShutdownProcedure>
 </SchedulerList>
