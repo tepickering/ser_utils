@@ -3,7 +3,7 @@
 import sys
 import json
 import time
-import os
+import shutil
 
 from pathlib import Path
 import logging
@@ -118,5 +118,6 @@ if np.isfinite(seeing_data['seeing'].value) and seeing_data['seeing'].value < 10
 
 else:
     log.warning("Analysis of seeing data failed.")
+    shutil.copy("/seeing/seeing.ser", Path.home() / "seeing_failed.ser")
 
 sys.exit(0)
