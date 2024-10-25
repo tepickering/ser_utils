@@ -172,9 +172,9 @@ def find_apertures(
 
     data = data - mean
     threshold = threshold * std
-    kernel = make_2dgaussian_kernel(3, size=3)
+    kernel = make_2dgaussian_kernel(5, size=15)
     convolved_data = astropy.convolution.convolve(data, kernel)
-    finder = SourceFinder(npixels=15, progress_bar=False)
+    finder = SourceFinder(npixels=25, progress_bar=False)
     segment_map = finder(convolved_data, threshold)
     t = SourceCatalog(data, segment_map, convolved_data=convolved_data).to_table()
     t.sort('max_value')
@@ -322,10 +322,10 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
         if napertures == 2:
             ap_size = 11
         else:
-            ap_size = 9
+            ap_size = 15
 
     apertures, fig = find_apertures(
-        np.mean(cube['data'][:1], axis=0),
+        np.mean(cube['data'][:3], axis=0),
         brightest=napertures,
         ap_size=ap_size,
         plot=plot
