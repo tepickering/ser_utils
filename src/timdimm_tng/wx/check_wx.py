@@ -41,7 +41,7 @@ def get_current_conditions():
     wx_dict['GFZ'] = gfz_wx()
 
     # get the current weather conditions from the MONET weather station
-    wx_dict['MONET'] = monet_wx()
+    #wx_dict['MONET'] = monet_wx()
 
     humidity = []
     precip = []
