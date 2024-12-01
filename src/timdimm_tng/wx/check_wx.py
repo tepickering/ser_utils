@@ -75,7 +75,7 @@ def get_current_conditions():
             'wind': wind_check,
             'temp': temp_check,
             'cloud': cloud_check,
-            'monet': wx_dict['MONET']['Open'],
+            # 'monet': wx_dict['MONET']['Open'],
             'salt': wx_dict['SALT']['Open']
         }
     else:
