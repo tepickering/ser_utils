@@ -68,10 +68,10 @@ sun_azel = sun_coord.transform_to(AltAz(obstime=Time.now(), location=SAAO))
 try:
     wx, safety_checks = get_current_conditions()
 
-    if safety_checks['monet']:
-        open_ok = True
-        log.info("MONET safety check passed. Safe to open.")
-        wx_message += "MONET says it's ok to open; "
+    # if safety_checks['monet']:
+    #     open_ok = True
+    #     log.info("MONET safety check passed. Safe to open.")
+    #     wx_message += "MONET says it's ok to open; "
 
     if safety_checks['salt']:
         open_ok = True
