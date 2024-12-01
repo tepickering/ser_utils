@@ -143,7 +143,7 @@ def timdimm_seeing(sigma):
 
 def find_apertures(
     data,
-    threshold=7.0,
+    threshold=15.0,
     plot=False,
     ap_size=7,
     brightest=3,
