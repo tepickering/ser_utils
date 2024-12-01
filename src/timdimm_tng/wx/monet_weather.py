@@ -50,7 +50,11 @@ def parse_monet():
     monet_wx['Temp'] = monet_wx.pop('temp')
     monet_wx['Rel_Hum'] = monet_wx.pop('humid')
     monet_wx['Bar_Press'] = monet_wx.pop('press')
-    monet_wx['DewTemp'] = dewpoint(monet_wx['Temp'], monet_wx['Rel_Hum'])
+    try:
+        monet_wx['DewTemp'] = dewpoint(monet_wx['Temp'], monet_wx['Rel_Hum'])
+    except Exception as e:
+        print(f'Error calculating dewpoint: {e}')
+        monet_wx['DewTemp'] = 'N/A'
 
     return monet_wx
 
@@ -67,7 +71,12 @@ def main():
         print("Wind Direction   : ", monet['Wind_dir'])
         print("Temperature      : ", monet['Temp'])
         print("Relative Humidity: ", monet['Rel_Hum'], "%")
-        print("T - T(dew)       : ", float(monet['Temp']) - float(monet['DewTemp']))
+        try:
+            print("T - T(dew)       : ", float(monet['Temp']) - float(monet['DewTemp']))
+        except Exception as e:
+            print(f'Error calculating T - T(dew): {e}')
+            print("T - T(dew)       :  N/A")
+        print("Dew Point        : ", monet['DewTemp'])
         print("Barometric Pres. : ", monet['Bar_Press'])
         print("Open?            : ", monet['Open'])
         print("\n")
