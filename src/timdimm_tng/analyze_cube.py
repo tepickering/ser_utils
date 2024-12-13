@@ -265,7 +265,7 @@ def dimm_calc(data, aps):
         new_aps = CircularAperture(ap_pos, aps.r)
     else:
         try:
-            new_aps, _ = find_apertures(data, brightest=2, ap_size=aps.r, plot=False)
+            new_aps, _ = find_apertures(data, brightest=2, threshold=7, ap_size=aps.r, plot=False)
             ap_stats = ApertureStats(data, new_aps)
             ap_pos = ap_stats.centroid
         except Exception as _:
