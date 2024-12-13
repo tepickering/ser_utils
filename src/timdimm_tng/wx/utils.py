@@ -1,7 +1,7 @@
 import math
 
 
-__all__= ['dewpoint']
+__all__ = ["dewpoint"]
 
 
 def dewpoint(temp, humidity):

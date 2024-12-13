@@ -8,98 +8,89 @@ from astropy.time import Time
 from timdimm_tng.indi import INDI_Camera
 
 
-warnings.filterwarnings('error', module='astropy._erfa')
-log = logging.getLogger('SER video capture')
+warnings.filterwarnings("error", module="astropy._erfa")
+log = logging.getLogger("SER video capture")
 log.setLevel(logging.INFO)
 
 ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(logging.INFO)
-formatter = logging.Formatter('%(levelname)s - %(message)s')
+formatter = logging.Formatter("%(levelname)s - %(message)s")
 ch.setFormatter(formatter)
 log.addHandler(ch)
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Utility for recording videos from INDI cameras')
+    parser = argparse.ArgumentParser(
+        description="Utility for recording videos from INDI cameras"
+    )
 
     parser.add_argument(
-        '--host',
+        "--host",
         metavar="<hostname>",
         help="Hostname of INDI Server Host Computer",
-        default='localhost'
+        default="localhost",
     )
 
     parser.add_argument(
-        '--port',
-        metavar="<port>",
-        help="INDI Server Port",
-        default=7624
+        "--port", metavar="<port>", help="INDI Server Port", default=7624
     )
 
     parser.add_argument(
-        '-c', '--camera',
+        "-c",
+        "--camera",
         metavar="<INDI camera>",
         help="Name of INDI Camera",
-        default='CCD Simulator'
+        default="CCD Simulator",
     )
 
     parser.add_argument(
-        '-e', '--exposure',
+        "-e",
+        "--exposure",
         metavar="<exposure time>",
         help="Camera Exposure Time in seconds",
-        default=0.001
+        default=0.001,
     )
 
     capture_group = parser.add_mutually_exclusive_group()
     capture_group.add_argument(
-        '-n', '--nframes',
+        "-n",
+        "--nframes",
         metavar="<record N frames>",
         help="Number of Frames to Capture",
-        default=10
+        default=10,
     )
 
     capture_group.add_argument(
-        '-d', '--duration',
+        "-d",
+        "--duration",
         metavar="<record N seconds>",
         help="Duration to capture in seconds",
     )
 
     parser.add_argument(
-        '--savedir',
-        metavar="<save directory>",
-        help="Directory to Save to"
+        "--savedir", metavar="<save directory>", help="Directory to Save to"
     )
 
     parser.add_argument(
-        '--filename',
-        metavar="<filename>",
-        help="Filename to Save Video to"
+        "--filename", metavar="<filename>", help="Filename to Save Video to"
     )
 
     record_group = parser.add_mutually_exclusive_group()
     record_group.add_argument(
-        '--ser',
-        action='store_true',
-        help="Use SER Video Recorder"
+        "--ser", action="store_true", help="Use SER Video Recorder"
     )
 
     record_group.add_argument(
-        '--ogv',
-        action='store_true',
-        help="Use OGV Video Recorder"
+        "--ogv", action="store_true", help="Use OGV Video Recorder"
     )
 
     encoder_group = parser.add_mutually_exclusive_group()
     encoder_group.add_argument(
-        '--raw',
-        action='store_true',
-        help="Use RAW Video Encoder"
+        "--raw", action="store_true", help="Use RAW Video Encoder"
     )
 
     encoder_group.add_argument(
-        '--mjpeg',
-        action='store_true',
-        help="Use MJPEG Video Encoder"
+        "--mjpeg", action="store_true", help="Use MJPEG Video Encoder"
     )
 
     args = parser.parse_args()

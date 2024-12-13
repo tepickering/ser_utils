@@ -18,7 +18,8 @@ class INDI_Device:
     port : int (default: 7624)
         Port the INDI server is using
     """
-    def __init__(self, devname, host='localhost', port=7624, log=None):
+
+    def __init__(self, devname, host="localhost", port=7624, log=None):
         self.devname = devname
         self.host = host
         self.port = str(port)
@@ -41,7 +42,7 @@ class INDI_Device:
         key : str
             Which key of the property to query
         """
-        cmd = ['indi_getprop', '-h', self.host, '-p', self.port]
+        cmd = ["indi_getprop", "-h", self.host, "-p", self.port]
 
         indi_str = f"{self.devname}.{property}.{key}"
 
@@ -55,7 +56,7 @@ class INDI_Device:
 
         self.log.info(f"Get {indi_str} from {self.host}:{self.port}")
 
-        value = p.stdout.decode().split('=')[1]
+        value = p.stdout.decode().split("=")[1]
 
         return value
 
@@ -74,7 +75,7 @@ class INDI_Device:
         value : str or float
             New value of the property key
         """
-        cmd = ['indi_setprop', '-h', self.host, '-p', self.port]
+        cmd = ["indi_setprop", "-h", self.host, "-p", self.port]
 
         if value is not None:
             indi_str = f"{self.devname}.{property}.{key}={value}"
@@ -103,6 +104,7 @@ class INDI_Camera(INDI_Device):
     """
     Provide higher-level interface to an INDI camera
     """
+
     def ccd_exposure(self, exptime):
         """
         Set exposure time for a single exposure
@@ -242,5 +244,5 @@ class INDI_Camera(INDI_Device):
         """
         self.set_prop(
             "CCD_FRAME",
-            f"X={int(x)};Y={int(y)};WIDTH={int(width)};HEIGHT={int(height)}"
+            f"X={int(x)};Y={int(y)};WIDTH={int(width)};HEIGHT={int(height)}",
         )
