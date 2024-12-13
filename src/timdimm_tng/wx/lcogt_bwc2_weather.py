@@ -6,7 +6,7 @@ import datetime
 import time
 
 
-__all__ = ['get_weather']
+__all__ = ["get_weather"]
 
 
 def open_page(sensor=0):
@@ -17,11 +17,11 @@ def open_page(sensor=0):
 
     try:
         page = urlopen("http://196.21.94.19:8080/RawttyUSB%i.txt" % sensor)
-        info_string = page.readlines()[0].strip().decode('utf-8')
+        info_string = page.readlines()[0].strip().decode("utf-8")
         page.close()
 
     except URLError:
-        info_string = 'None'
+        info_string = "None"
 
     return info_string
 
@@ -32,8 +32,8 @@ def is_data(info_string):
     calibration data.
     if check_char = 'D' then it is valid data
     """
-    datetime = info_string.split(' : ')[0]
-    data = info_string.split(' : ')[1].strip().split()
+    datetime = info_string.split(" : ")[0]
+    data = info_string.split(" : ")[1].strip().split()
 
     # jpk 20130702: last check is to drop data where windsp = -2 and
     # cloud =0. these values give false RAIN values and should not be
@@ -44,7 +44,7 @@ def is_data(info_string):
 
     check_char = data[0]
 
-    if check_char == 'D' and check_data:
+    if check_char == "D" and check_data:
 
         return True, datetime, data
 
@@ -57,7 +57,7 @@ def get_lcogt_bwc2_data(sensor=0):
     get the data from the website, but poll the website until we get valid data
     three tries to get the corrected data, otherwise return a False
     """
-    for i in [1,2,3]:
+    for i in [1, 2, 3]:
         info_string = open_page(sensor)
         valid, datetime, data = is_data(info_string)
 
@@ -75,40 +75,41 @@ def get_weather():
     valid, BW_datetime, data = get_lcogt_bwc2_data(sensor=1)
 
     if valid is False:
-        d['Valid'] = False
+        d["Valid"] = False
         return d
     else:
         DateNow = BW_datetime.split()[0]
         Year = int(DateNow[0:4])
         Month = int(DateNow[4:6])
         Day = int(DateNow[6:8])
-        Time =  BW_datetime.split()[1]
-        Hours = int(Time.split(':')[0])
-        Minutes = int(Time.split(':')[1])
-        Seconds = int(Time.split(':')[2])
-        d['TimeStamp_SAST'] = datetime.datetime(Year, Month, Day, Hours, Minutes, Seconds)
+        Time = BW_datetime.split()[1]
+        Hours = int(Time.split(":")[0])
+        Minutes = int(Time.split(":")[1])
+        Seconds = int(Time.split(":")[2])
+        d["TimeStamp_SAST"] = datetime.datetime(
+            Year, Month, Day, Hours, Minutes, Seconds
+        )
 
         # the LCOGT time is in UT, have to add two hours to the sensor time
-        d['TimeStamp_SAST'] = d['TimeStamp_SAST'] + datetime.timedelta(hours=2)
+        d["TimeStamp_SAST"] = d["TimeStamp_SAST"] + datetime.timedelta(hours=2)
 
-        d['Cloud'] = float(data[7])*1.45
-        d['Temp'] = round(float(data[8]), 1)
-        d['Wind_speed'] = round(float(data[9]), 0)
+        d["Cloud"] = float(data[7]) * 1.45
+        d["Temp"] = round(float(data[8]), 1)
+        d["Wind_speed"] = round(float(data[9]), 0)
         Wet = data[10].strip()
         RainNow = data[11].strip()
-        d['Rel_Hum'] = round(float(data[12]), 0)
-        d['DewTemp'] = round(float(data[13]), 1)
+        d["Rel_Hum"] = round(float(data[12]), 0)
+        d["DewTemp"] = round(float(data[13]), 1)
 
-
-        if (d['Cloud'] < -900.0) or (d['Cloud'] > 900.0):
-            d['Cloud'] = 0
+        if (d["Cloud"] < -900.0) or (d["Cloud"] > 900.0):
+            d["Cloud"] = 0
 
         if (RainNow == "r") or (RainNow == "R") or (Wet == "w") or (Wet == "W"):
-            d['SkyCon'] = "RAIN"
+            d["SkyCon"] = "RAIN"
         else:
-            d['SkyCon'] = "DRY"
+            d["SkyCon"] = "DRY"
 
-        d['Valid'] = True
+        d["Valid"] = True
 
         return d
 
@@ -118,13 +119,13 @@ def main():
 
     print("")
     print("------------ BWC2 Weather Data ------------")
-    print("TimeStamp (SAST) : ", BWC2['TimeStamp_SAST'])
-    print("Sky Condition    : ", BWC2['SkyCon'])
-    print("Wind Speed (km/h): ", BWC2['Wind_speed'])
-    print("Temperature      : ", BWC2['Temp'])
-    print("Relative Humidity: ", BWC2['Rel_Hum'], "%")
-    print("T - T(dew)       : ", BWC2['Temp'] - BWC2['DewTemp'])
-    print("Cloud Cover      : ", BWC2['Cloud'])
+    print("TimeStamp (SAST) : ", BWC2["TimeStamp_SAST"])
+    print("Sky Condition    : ", BWC2["SkyCon"])
+    print("Wind Speed (km/h): ", BWC2["Wind_speed"])
+    print("Temperature      : ", BWC2["Temp"])
+    print("Relative Humidity: ", BWC2["Rel_Hum"], "%")
+    print("T - T(dew)       : ", BWC2["Temp"] - BWC2["DewTemp"])
+    print("Cloud Cover      : ", BWC2["Cloud"])
     print("\n")
 
 

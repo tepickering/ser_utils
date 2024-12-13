@@ -8,7 +8,7 @@ import time
 def run(program, *args):
     pid = os.fork()
     if not pid:
-       os.execvp(program, (program,) + args)
+        os.execvp(program, (program,) + args)
     return pid
 
 
@@ -53,12 +53,12 @@ def kstars(b):
 
 
 def open_oxwagon(b):
-    print('Opening Ox Wagon')
+    print("Opening Ox Wagon")
     os.system("oxwagon OPEN 3600")
 
 
 def close_oxwagon(b):
-    print('Closing Ox Wagon')
+    print("Closing Ox Wagon")
     os.system("oxwagon CLOSE")
 
 

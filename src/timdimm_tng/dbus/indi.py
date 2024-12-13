@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 from typing import List, Tuple
@@ -11,21 +10,14 @@ from sdbus import (
 
 class INDI(
     DbusInterfaceCommon,
-    interface_name='org.kde.kstars.INDI',
+    interface_name="org.kde.kstars.INDI",
 ):
     def __init__(self, *args, **kwargs):
         super(INDI, self).__init__(
-            service_name="org.kde.kstars",
-            object_path="/KStars/INDI",
-            *args,
-            **kwargs
+            service_name="org.kde.kstars", object_path="/KStars/INDI", *args, **kwargs
         )
 
-    @dbus_method(
-        input_signature='ias',
-        result_signature='b',
-        method_name='start'
-    )
+    @dbus_method(input_signature="ias", result_signature="b", method_name="start")
     def start(
         self,
         port: int,
@@ -33,22 +25,14 @@ class INDI(
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method(
-        input_signature='s',
-        result_signature='b',
-        method_name='stop'
-    )
+    @dbus_method(input_signature="s", result_signature="b", method_name="stop")
     def stop(
         self,
         port: str,
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method(
-        input_signature='si',
-        result_signature='b',
-        method_name='connect'
-    )
+    @dbus_method(input_signature="si", result_signature="b", method_name="connect")
     def connect(
         self,
         host: str,
@@ -56,11 +40,7 @@ class INDI(
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method(
-        input_signature='si',
-        result_signature='b',
-        method_name='disconnet'
-    )
+    @dbus_method(input_signature="si", result_signature="b", method_name="disconnet")
     def disconnect(
         self,
         host: str,
@@ -68,19 +48,14 @@ class INDI(
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method(
-        result_signature='as',
-        method_name='getDevices'
-    )
+    @dbus_method(result_signature="as", method_name="getDevices")
     def get_devices(
         self,
     ) -> List[str]:
         raise NotImplementedError
 
     @dbus_method(
-        input_signature='s',
-        result_signature='as',
-        method_name='getProperties'
+        input_signature="s", result_signature="as", method_name="getProperties"
     )
     def get_properties(
         self,
@@ -89,9 +64,7 @@ class INDI(
         raise NotImplementedError
 
     @dbus_method(
-        input_signature='ss',
-        result_signature='s',
-        method_name='getPropertyState'
+        input_signature="ss", result_signature="s", method_name="getPropertyState"
     )
     def get_property_state(
         self,
@@ -101,9 +74,7 @@ class INDI(
         raise NotImplementedError
 
     @dbus_method(
-        input_signature='i',
-        result_signature='as',
-        method_name='getDevicesPaths'
+        input_signature="i", result_signature="as", method_name="getDevicesPaths"
     )
     def get_devices_paths(
         self,
@@ -111,11 +82,7 @@ class INDI(
     ) -> List[str]:
         raise NotImplementedError
 
-    @dbus_method(
-        input_signature='ss',
-        result_signature='b',
-        method_name='sendProperty'
-    )
+    @dbus_method(input_signature="ss", result_signature="b", method_name="sendProperty")
     def send_property(
         self,
         device: str,
@@ -123,11 +90,7 @@ class INDI(
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method(
-        input_signature='sss',
-        result_signature='s',
-        method_name='getLight'
-    )
+    @dbus_method(input_signature="sss", result_signature="s", method_name="getLight")
     def get_light(
         self,
         device: str,
@@ -136,11 +99,7 @@ class INDI(
     ) -> str:
         raise NotImplementedError
 
-    @dbus_method(
-        input_signature='ssss',
-        result_signature='b',
-        method_name='setSwitch'
-    )
+    @dbus_method(input_signature="ssss", result_signature="b", method_name="setSwitch")
     def set_switch(
         self,
         device: str,
@@ -150,11 +109,7 @@ class INDI(
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method(
-        input_signature='sss',
-        result_signature='s',
-        method_name='getSwitch'
-    )
+    @dbus_method(input_signature="sss", result_signature="s", method_name="getSwitch")
     def get_switch(
         self,
         device: str,
@@ -163,11 +118,7 @@ class INDI(
     ) -> str:
         raise NotImplementedError
 
-    @dbus_method(
-        input_signature='ssss',
-        result_signature='b',
-        method_name='setText'
-    )
+    @dbus_method(input_signature="ssss", result_signature="b", method_name="setText")
     def set_text(
         self,
         device: str,
@@ -177,11 +128,7 @@ class INDI(
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method(
-        input_signature='sss',
-        result_signature='s',
-        method_name='getText'
-    )
+    @dbus_method(input_signature="sss", result_signature="s", method_name="getText")
     def get_text(
         self,
         device: str,
@@ -190,11 +137,7 @@ class INDI(
     ) -> str:
         raise NotImplementedError
 
-    @dbus_method(
-        input_signature='sssd',
-        result_signature='b',
-        method_name='setNumber'
-    )
+    @dbus_method(input_signature="sssd", result_signature="b", method_name="setNumber")
     def set_number(
         self,
         device: str,
@@ -204,11 +147,7 @@ class INDI(
     ) -> bool:
         raise NotImplementedError
 
-    @dbus_method(
-        input_signature='sss',
-        result_signature='d',
-        method_name='getNumber'
-    )
+    @dbus_method(input_signature="sss", result_signature="d", method_name="getNumber")
     def get_number(
         self,
         device: str,
@@ -218,9 +157,7 @@ class INDI(
         raise NotImplementedError
 
     @dbus_method(
-        input_signature='sss',
-        result_signature='aysi',
-        method_name='getBLOBData'
+        input_signature="sss", result_signature="aysi", method_name="getBLOBData"
     )
     def get_blob_data(
         self,
@@ -231,9 +168,7 @@ class INDI(
         raise NotImplementedError
 
     @dbus_method(
-        input_signature='sss',
-        result_signature='ssi',
-        method_name='getBLOBFile'
+        input_signature="sss", result_signature="ssi", method_name="getBLOBFile"
     )
     def get_blob_file(
         self,
@@ -242,4 +177,3 @@ class INDI(
         blob_name: str,
     ) -> Tuple[str, str, int]:
         raise NotImplementedError
-

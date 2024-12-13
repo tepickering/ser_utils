@@ -25,14 +25,14 @@ from photutils.aperture import ApertureStats, CircularAperture
 
 from timdimm_tng.ser import load_ser_file
 
-warnings.filterwarnings('ignore', module='erfa')
+warnings.filterwarnings("ignore", module="erfa")
 
 
 def moments(
     data,
     aperture_diameter=76.2 * u.mm,
     wavelength=0.5 * u.um,
-    pixel_scale=0.93 * u.arcsec
+    pixel_scale=0.93 * u.arcsec,
 ):
     """
     Returns (height, x, y, width_x, width_y)
@@ -61,17 +61,15 @@ def moments(
     x = (X * data).sum() / total
     y = (Y * data).sum() / total
     col = data[:, int(x)]
-    width_x = np.sqrt(
-        abs((np.arange(col.size) - y) ** 2 * col).sum() / col.sum()
-    )
+    width_x = np.sqrt(abs((np.arange(col.size) - y) ** 2 * col).sum() / col.sum())
     row = data[int(y), :]
-    width_y = np.sqrt(
-        abs((np.arange(row.size) - x) ** 2 * row).sum() / row.sum()
-    )
+    width_y = np.sqrt(abs((np.arange(row.size) - x) ** 2 * row).sum() / row.sum())
     height = data.max()
-    strehl = (height / total) * (4.0 / np.pi) * (
-        wavelength / (aperture_diameter * dx)
-    ).decompose().value ** 2
+    strehl = (
+        (height / total)
+        * (4.0 / np.pi)
+        * (wavelength / (aperture_diameter * dx)).decompose().value ** 2
+    )
     return height, strehl, x, y, width_x, width_y
 
 
@@ -81,7 +79,7 @@ def seeing(
     aperture_diameter=76.2 * u.mm,
     wavelength=0.64 * u.um,
     pixel_scale=0.742 * u.arcsec,
-    direction='longitudinal'
+    direction="longitudinal",
 ):
     """
     Calculate seeing from image motion variance, sigma, using the equations from
@@ -104,17 +102,24 @@ def seeing(
     """
     b = (baseline / aperture_diameter).decompose().value
     sigma = sigma * pixel_scale.to(u.radian).value  # convert stddev to radians
-    variance = sigma ** 2.0
+    variance = sigma**2.0
     k = {}
-    k['longitudinal'] = 0.364 * (1.0 - 0.532 * b ** (-1.0 / 3.0) - 0.024 * b ** (-7.0 / 3.0))
-    k['transverse'] = 0.364 * (1.0 - 0.798 * b ** (-1.0 / 3.0) + 0.018 * b ** (-7.0 / 3.0))
+    k["longitudinal"] = 0.364 * (
+        1.0 - 0.532 * b ** (-1.0 / 3.0) - 0.024 * b ** (-7.0 / 3.0)
+    )
+    k["transverse"] = 0.364 * (
+        1.0 - 0.798 * b ** (-1.0 / 3.0) + 0.018 * b ** (-7.0 / 3.0)
+    )
 
     if direction not in k:
         raise ValueError(f"Valid motion directions are {' and '.join(k.keys())}")
 
-    seeing = 0.98 * \
-        ((aperture_diameter / wavelength).decompose().value ** 0.2) * \
-        ((variance / k[direction]) ** 0.6) * u.radian
+    seeing = (
+        0.98
+        * ((aperture_diameter / wavelength).decompose().value ** 0.2)
+        * ((variance / k[direction]) ** 0.6)
+        * u.radian
+    )
     return seeing.to(u.arcsec)
 
 
@@ -122,11 +127,7 @@ def massdimm_seeing(sigma):
     """
     Calculate seeing for an ASI432MM camera on an LX200 attached to the MASSDIMM instrument
     """
-    return seeing(
-        sigma,
-        baseline=170 * u.mm,
-        aperture_diameter=70 * u.mm
-    )
+    return seeing(sigma, baseline=170 * u.mm, aperture_diameter=70 * u.mm)
 
 
 def timdimm_seeing(sigma):
@@ -134,21 +135,11 @@ def timdimm_seeing(sigma):
     Calculate seeing for the new timDIMM configuration with the old SAAO DIMM mask
     and an ASI432MM camera
     """
-    return seeing(
-        sigma,
-        baseline=200 * u.mm,
-        aperture_diameter=50 * u.mm
-    )
+    return seeing(sigma, baseline=200 * u.mm, aperture_diameter=50 * u.mm)
 
 
 def find_apertures(
-    data,
-    threshold=15.0,
-    plot=False,
-    ap_size=7,
-    brightest=3,
-    std=None,
-    deblend=True
+    data, threshold=15.0, plot=False, ap_size=7, brightest=3, std=None, deblend=True
 ):
     """
     Use DAOStarFinder() to find and centroid star images from each DIMM aperture.
@@ -178,14 +169,14 @@ def find_apertures(
     finder = SourceFinder(npixels=15, deblend=deblend, progress_bar=False)
     segment_map = finder(convolved_data, threshold)
     t = SourceCatalog(data, segment_map, convolved_data=convolved_data).to_table()
-    t.sort('max_value')
+    t.sort("max_value")
     stars = t[-brightest:]
-    stars.sort('xcentroid')
+    stars.sort("xcentroid")
 
     if stars is None:
         raise Exception("No stars detected in image")
 
-    positions = list(zip(stars['xcentroid'], stars['ycentroid']))
+    positions = list(zip(stars["xcentroid"], stars["ycentroid"]))
     apertures = CircularAperture(positions, r=ap_size)
 
     fig = None
@@ -193,13 +184,10 @@ def find_apertures(
         fig, ax = plt.subplots()
         fig.set_label("DIMM Apertures")
         im, _ = visualization.imshow_norm(
-            data,
-            ax,
-            origin='lower',
-            stretch=visualization.LogStretch()
+            data, ax, origin="lower", stretch=visualization.LogStretch()
         )
         fig.colorbar(im)
-        apertures.plot(color='red', lw=1.5, alpha=0.5, axes=ax)
+        apertures.plot(color="red", lw=1.5, alpha=0.5, axes=ax)
     return apertures, fig
 
 
@@ -229,16 +217,17 @@ def hdimm_calc(data, aps):
         if b < 0.5 * aps.r:
             overlapped = True
 
-    if np.isfinite(ap_pos).all() and len(ap_pos) == 3 and np.all(ap_stats.sum > 0) and not overlapped:
+    if (
+        np.isfinite(ap_pos).all()
+        and len(ap_pos) == 3
+        and np.all(ap_stats.sum > 0)
+        and not overlapped
+    ):
         new_aps = CircularAperture(ap_pos, aps.r)
     else:
         try:
             new_aps, _ = find_apertures(
-                data,
-                brightest=3,
-                ap_size=aps.r,
-                deblend=True,
-                plot=False
+                data, brightest=3, ap_size=aps.r, deblend=True, plot=False
             )
             ap_stats = ApertureStats(data, new_aps)
             ap_pos = ap_stats.centroid
@@ -276,12 +265,7 @@ def dimm_calc(data, aps):
         new_aps = CircularAperture(ap_pos, aps.r)
     else:
         try:
-            new_aps, _ = find_apertures(
-                data,
-                brightest=2,
-                ap_size=aps.r,
-                plot=False
-            )
+            new_aps, _ = find_apertures(data, brightest=2, ap_size=aps.r, plot=False)
             ap_stats = ApertureStats(data, new_aps)
             ap_pos = ap_stats.centroid
         except Exception as _:
@@ -296,7 +280,14 @@ def dimm_calc(data, aps):
     return new_aps, [dist_baseline], ap_stats.sum
 
 
-def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertures=2, ap_size=None, plot=False):
+def analyze_dimm_cube(
+    filename,
+    airmass=1.0,
+    seeing_func=timdimm_seeing,
+    napertures=2,
+    ap_size=None,
+    plot=False,
+):
     """
     Analyze an SER format data cube of DIMM observations and calculate the seeing from the
     differential motion along the longitudinal axis of each baseline.
@@ -318,7 +309,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
     """
     cube = load_ser_file(Path(filename))
 
-    nframes = cube['data'].shape[0]
+    nframes = cube["data"].shape[0]
 
     if ap_size is None:
         if napertures == 2:
@@ -327,10 +318,10 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
             ap_size = 15
 
     apertures, fig = find_apertures(
-        np.mean(cube['data'][:2], axis=0),
+        np.mean(cube["data"][:2], axis=0),
         brightest=napertures,
         ap_size=ap_size,
-        plot=plot
+        plot=plot,
     )
 
     baselines = []
@@ -338,10 +329,10 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
     fluxes = []
     nbad = 0
 
-    frame_meds = np.median(cube['data'], axis=(1, 2))
+    frame_meds = np.median(cube["data"], axis=(1, 2))
 
     for i in range(nframes):
-        frame = cube['data'][i, :, :] - frame_meds[i]
+        frame = cube["data"][i, :, :] - frame_meds[i]
 
         if napertures == 2:
             dimm_meas = dimm_calc(frame, apertures)
@@ -365,7 +356,7 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
     seeing_vals = []
     for baseline in baselines:
         _, _, baseline_std = stats.sigma_clipped_stats(baseline, sigma=10, maxiters=10)
-        #baseline_std = np.std(baseline)
+        # baseline_std = np.std(baseline)
         seeing_vals.append(seeing_func(baseline_std) / airmass**0.6)
 
     ave_seeing = u.Quantity(seeing_vals).mean()
@@ -376,9 +367,9 @@ def analyze_dimm_cube(filename, airmass=1.0, seeing_func=timdimm_seeing, napertu
         "baseline_lengths": baselines,
         "aperture_positions": positions,
         "aperture_fluxes": fluxes,
-        "frame_times": cube['frame_times'],
+        "frame_times": cube["frame_times"],
         "N_bad": nbad,
-        "aperture_plot": fig
+        "aperture_plot": fig,
     }
 
 
@@ -476,7 +467,7 @@ def _process_slice_func(
     slice_shape=(100, 100),
     input_key=None,
     output_key=None,
-    center_gain=0.1
+    center_gain=0.1,
 ):
     """
     Process a slice of a FASS cube to unwrap polar coordinates to a cartesian grid
@@ -522,8 +513,8 @@ def _process_slice_func(
         output_shape=slice_shape,
         center=(x0, y0),
         radius=radius,
-        scaling='linear',
-        preserve_range=True
+        scaling="linear",
+        preserve_range=True,
     )
     # recast output as float32. memory savings/performance
     # worth the small loss of precision.
@@ -535,7 +526,7 @@ def _rectify_slice(
     tform=None,
     input_key=None,
     input_dtype=np.float32,
-    input_shape=(1000, 100, 100)
+    input_shape=(1000, 100, 100),
 ):
     input_shm = shared_memory.SharedMemory(name=input_key)
     input_cube = np.ndarray(input_shape, dtype=input_dtype, buffer=input_shm.buf)
@@ -569,18 +560,27 @@ def unwrap_fass_cube(image_cube, center_gain=0.1, radial_pad=10, oversample=2, n
     _, x, y, width = init_fass_cube(image_cube)
     x0 = x
     y0 = y
-    radius = width/2 + radial_pad
+    radius = width / 2 + radial_pad
 
     with SharedMemoryManager() as _:
         input_shm = shared_memory.SharedMemory(create=True, size=image_cube.nbytes)
         input_dtype = image_cube.dtype
-        input_shm_cube = np.ndarray(image_cube.shape, dtype=input_dtype, buffer=input_shm.buf)
+        input_shm_cube = np.ndarray(
+            image_cube.shape, dtype=input_dtype, buffer=input_shm.buf
+        )
         input_shm_cube[:] = image_cube[:]
-        output_slice_shape = (int(2 * np.pi * oversample * radius), int(oversample * radius))
+        output_slice_shape = (
+            int(2 * np.pi * oversample * radius),
+            int(oversample * radius),
+        )
         output_cube_shape = (image_cube.shape[0],) + output_slice_shape
-        output_size = image_cube.shape[0] * output_slice_shape[0] * output_slice_shape[1] * 4  # we'll use float32 outputs
+        output_size = (
+            image_cube.shape[0] * output_slice_shape[0] * output_slice_shape[1] * 4
+        )  # we'll use float32 outputs
         output_shm = shared_memory.SharedMemory(create=True, size=output_size)
-        unwrapped_cube = np.ndarray(output_cube_shape, dtype=np.float32, buffer=output_shm.buf)
+        unwrapped_cube = np.ndarray(
+            output_cube_shape, dtype=np.float32, buffer=output_shm.buf
+        )
         returned_cube = np.ndarray(output_cube_shape, dtype=np.float32)
         with Pool(processes=nproc) as pool:
             proc_slice = partial(
@@ -594,7 +594,7 @@ def unwrap_fass_cube(image_cube, center_gain=0.1, radial_pad=10, oversample=2, n
                 slice_shape=output_slice_shape,
                 input_key=input_shm.name,
                 output_key=output_shm.name,
-                center_gain=center_gain
+                center_gain=center_gain,
             )
             pool.map(proc_slice, range(image_cube.shape[0]))
             # copy data out of shared memory before closing
@@ -603,11 +603,7 @@ def unwrap_fass_cube(image_cube, center_gain=0.1, radial_pad=10, oversample=2, n
 
 
 def rectify_fass_cube(
-    image_cube,
-    smooth_sigma=4,
-    contour_level=0.3,
-    contour_degree=5,
-    nproc=8
+    image_cube, smooth_sigma=4, contour_level=0.3, contour_degree=5, nproc=8
 ):
     stacked = image_cube.mean(axis=0)
     smoothed = filters.gaussian(stacked, sigma=smooth_sigma)
@@ -639,7 +635,9 @@ def rectify_fass_cube(
     with SharedMemoryManager() as _:
         input_shm = shared_memory.SharedMemory(create=True, size=image_cube.nbytes)
         input_dtype = image_cube.dtype
-        input_shm_cube = np.ndarray(image_cube.shape, dtype=input_dtype, buffer=input_shm.buf)
+        input_shm_cube = np.ndarray(
+            image_cube.shape, dtype=input_dtype, buffer=input_shm.buf
+        )
         input_shm_cube[:] = image_cube[:]
         with Pool(processes=nproc) as pool:
             proc_slice = partial(
@@ -647,7 +645,7 @@ def rectify_fass_cube(
                 tform=tform,
                 input_key=input_shm.name,
                 input_dtype=input_dtype,
-                input_shape=image_cube.shape
+                input_shape=image_cube.shape,
             )
             pool.map(proc_slice, range(image_cube.shape[0]))
             # copy data out of shared memory before closing
@@ -660,20 +658,24 @@ def timdimm_analyze():
     """
     Set up command-line interface to analyze timDIMM datacubes
     """
-    parser = argparse.ArgumentParser(description='Utility for analyzing timDIMM data cubes')
-
-    parser.add_argument(
-        '-f', '--filename',
-        metavar="<filename>",
-        help="Filename of SER data cube to analyze"
+    parser = argparse.ArgumentParser(
+        description="Utility for analyzing timDIMM data cubes"
     )
 
     parser.add_argument(
-        '-a', '--airmass',
+        "-f",
+        "--filename",
+        metavar="<filename>",
+        help="Filename of SER data cube to analyze",
+    )
+
+    parser.add_argument(
+        "-a",
+        "--airmass",
         metavar="<airmass>",
         help="Airmass of observation",
         type=float,
-        default=1.0
+        default=1.0,
     )
 
     args = parser.parse_args()
@@ -681,12 +683,12 @@ def timdimm_analyze():
     results = analyze_dimm_cube(args.filename, airmass=args.airmass, plot=True)
 
     print(f"Seeing: {results['seeing']:.2f}")
-    with open("seeing.txt", 'w') as f:
+    with open("seeing.txt", "w") as f:
         print(f"{results['seeing'].value:.2f}", file=f)
-        tobs = results['frame_times'][-1].to_datetime(timezone=TimezoneInfo(2 * u.hour))
+        tobs = results["frame_times"][-1].to_datetime(timezone=TimezoneInfo(2 * u.hour))
         print(tobs, file=f)
 
-    results['aperture_plot'].savefig("apertures.png")
+    results["aperture_plot"].savefig("apertures.png")
 
     return 0
 
@@ -695,25 +697,31 @@ def hdimm_analyze():
     """
     Set up command-line interface to analyze 3-aperture HDIMM datacubes
     """
-    parser = argparse.ArgumentParser(description='Utility for analyzing HDIMM data cubes')
-
-    parser.add_argument(
-        '-f', '--filename',
-        metavar="<filename>",
-        help="Filename of SER data cube to analyze"
+    parser = argparse.ArgumentParser(
+        description="Utility for analyzing HDIMM data cubes"
     )
 
     parser.add_argument(
-        '-a', '--airmass',
+        "-f",
+        "--filename",
+        metavar="<filename>",
+        help="Filename of SER data cube to analyze",
+    )
+
+    parser.add_argument(
+        "-a",
+        "--airmass",
         metavar="<airmass>",
         help="Airmass of observation",
         type=float,
-        default=1.0
+        default=1.0,
     )
 
     args = parser.parse_args()
 
-    results = analyze_dimm_cube(args.filename, airmass=args.airmass, seeing_func=seeing, napertures=3, plot=True)
+    results = analyze_dimm_cube(
+        args.filename, airmass=args.airmass, seeing_func=seeing, napertures=3, plot=True
+    )
 
     print(f"Average Seeing: {results['seeing']:.2f}")
     print(f"    Baseline 1: {results['raw_seeing'][0]:.2f}")
@@ -721,6 +729,6 @@ def hdimm_analyze():
     print(f"    Baseline 3: {results['raw_seeing'][2]:.2f}")
     print(f"         N bad: {results['N_bad']}")
 
-    results['aperture_plot'].savefig("apertures.png")
+    results["aperture_plot"].savefig("apertures.png")
 
     return 0
