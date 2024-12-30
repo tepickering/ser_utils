@@ -34,7 +34,7 @@ def get_current_conditions():
     # wx_dict['LCO_boltwood'] = lcogt_bwc2_wx()
 
     # get the current weather conditions from the GFZ weather station
-    wx_dict["GFZ"] = gfz_wx()
+    # wx_dict["GFZ"] = gfz_wx()
 
     # get the current weather conditions from the MONET weather station
     # wx_dict['MONET'] = monet_wx()
